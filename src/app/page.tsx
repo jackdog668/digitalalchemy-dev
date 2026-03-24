@@ -11,6 +11,7 @@ import {
 } from "@/components/effects/FadeInOnScroll";
 import { GlowOrb } from "@/components/effects/GlowOrb";
 import { MagneticWrapper } from "@/components/effects/MagneticWrapper";
+import { UnicornHero } from "@/components/effects/UnicornHero";
 import { TextReveal } from "@/components/effects/TextReveal";
 import { ShimmerLine } from "@/components/effects/ShimmerLine";
 import { SITE } from "@/lib/constants";
@@ -43,12 +44,10 @@ export default function HomePage() {
     <>
       {/* ── HERO ── */}
       <section className="relative flex min-h-screen items-center overflow-hidden px-6 pt-24">
-        {/* Background ambient orbs */}
-        <GlowOrb color="indigo" size="lg" className="top-20 -left-32" />
-        <GlowOrb color="purple" size="md" className="bottom-20 right-10" />
-        <GlowOrb color="amber" size="sm" className="top-1/2 right-1/3" />
+        {/* WebGL background scene */}
+        <UnicornHero />
 
-        <div className="relative mx-auto max-w-5xl text-center">
+        <div className="relative z-10 mx-auto max-w-5xl text-center">
           {/* Credential badge */}
           <FadeInOnScroll>
             <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-da-border bg-da-surface/60 px-4 py-2 text-sm text-da-muted backdrop-blur-sm">
