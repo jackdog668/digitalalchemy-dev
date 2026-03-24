@@ -29,13 +29,13 @@ const FEATURED_CARDS = [
     title: "Our Services",
     desc: "AI consulting, vibe coding workshops, and custom systems for brands and teams.",
     href: "/services",
-    accent: "from-da-purple to-da-amber",
+    accent: "from-da-purple to-da-cyan",
   },
   {
     title: "The Portfolio",
     desc: "Music, art, apps, tools — proof that creators can build real things with AI.",
     href: "/portfolio",
-    accent: "from-da-amber to-da-indigo",
+    accent: "from-da-cyan to-da-indigo",
   },
 ] as const;
 
@@ -51,7 +51,7 @@ export default function HomePage() {
           {/* Credential badge */}
           <FadeInOnScroll>
             <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-da-border bg-da-surface/60 px-4 py-2 text-sm text-da-muted backdrop-blur-sm">
-              <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-da-amber" />
+              <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-da-cyan" />
               Taught by a {SITE.credential}
             </div>
           </FadeInOnScroll>
@@ -162,7 +162,7 @@ export default function HomePage() {
           <FadeInOnScroll>
             <p className="font-display text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
               You have 47 subscriptions and{" "}
-              <span className="text-da-amber">$0 in results.</span>
+              <span className="text-da-cyan">$0 in results.</span>
             </p>
             <p className="mt-4 text-xl text-da-muted">That ends today.</p>
             <div className="mt-8 flex justify-center">

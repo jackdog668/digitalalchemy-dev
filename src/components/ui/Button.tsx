@@ -28,7 +28,7 @@ const variantStyles: Record<Variant, string> = {
   secondary:
     "bg-da-purple text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] hover:bg-da-purple/90",
   accent:
-    "bg-da-amber text-da-dark font-semibold shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[0_0_35px_rgba(245,158,11,0.6)] hover:bg-da-amber/90",
+    "bg-da-cyan text-da-dark font-semibold shadow-[0_0_20px_rgba(0,212,255,0.4)] hover:shadow-[0_0_35px_rgba(0,212,255,0.6)] hover:bg-da-cyan/90",
   outline:
     "border border-da-border text-da-text hover:border-da-indigo/60 hover:shadow-[0_0_20px_rgba(99,102,241,0.2)] hover:bg-da-indigo/5",
   ghost: "text-da-muted hover:text-da-text hover:bg-da-surface/50",

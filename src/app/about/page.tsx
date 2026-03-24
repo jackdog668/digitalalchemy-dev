@@ -70,7 +70,7 @@ export default function AboutPage() {
 
         <div className="relative mx-auto max-w-4xl">
           <FadeInOnScroll>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-da-border bg-da-surface/60 px-4 py-2 text-sm text-da-amber">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-da-border bg-da-surface/60 px-4 py-2 text-sm text-da-cyan">
               {SITE.credential}
             </div>
           </FadeInOnScroll>
@@ -78,7 +78,7 @@ export default function AboutPage() {
           <FadeInOnScroll delay={100}>
             <h1 className="font-display text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
               I got tired of watching people{" "}
-              <span className="text-da-amber">learn forever</span> and{" "}
+              <span className="text-da-cyan">learn forever</span> and{" "}
               <span className="text-da-indigo">build nothing.</span>
             </h1>
           </FadeInOnScroll>
@@ -136,7 +136,7 @@ export default function AboutPage() {
                       <span className="text-da-muted">{pillar.consumer}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-da-amber">&#10003;</span>
+                      <span className="text-da-cyan">&#10003;</span>
                       <span className="text-da-text">{pillar.alchemist}</span>
                     </div>
                   </div>
@@ -179,7 +179,7 @@ export default function AboutPage() {
                     </StaggerItem>
                   ))}
                   <StaggerItem>
-                    <p className="pt-4 text-2xl font-bold text-da-amber">
+                    <p className="pt-4 text-2xl font-bold text-da-cyan">
                       I am an Alchemist.
                     </p>
                   </StaggerItem>
@@ -208,7 +208,7 @@ export default function AboutPage() {
           >
             <StaggerItem>
               <div className="rounded-lg border border-da-border bg-da-surface px-6 py-3 text-sm">
-                <span className="text-da-amber font-semibold">Google</span>{" "}
+                <span className="text-da-cyan font-semibold">Google</span>{" "}
                 <span className="text-da-muted">
                   Gemini Certified Educator
                 </span>
@@ -216,7 +216,7 @@ export default function AboutPage() {
             </StaggerItem>
             <StaggerItem>
               <div className="rounded-lg border border-da-border bg-da-surface px-6 py-3 text-sm">
-                <span className="text-da-amber font-semibold">10+</span>{" "}
+                <span className="text-da-cyan font-semibold">10+</span>{" "}
                 <span className="text-da-muted">
                   Years in Creative Education
                 </span>
@@ -224,7 +224,7 @@ export default function AboutPage() {
             </StaggerItem>
             <StaggerItem>
               <div className="rounded-lg border border-da-border bg-da-surface px-6 py-3 text-sm">
-                <span className="text-da-amber font-semibold">340+</span>{" "}
+                <span className="text-da-cyan font-semibold">340+</span>{" "}
                 <span className="text-da-muted">AI Assets Created</span>
               </div>
             </StaggerItem>

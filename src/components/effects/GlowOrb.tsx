@@ -14,7 +14,7 @@
  *
  *   // Custom positioning
  *   <GlowOrb color="purple" size="lg" className="-top-32 -right-32" />
- *   <GlowOrb color="amber"  size="sm" className="bottom-0 left-1/2" />
+ *   <GlowOrb color="cyan"  size="sm" className="bottom-0 left-1/2" />
  *
  * Accessibility: always aria-hidden — purely decorative.
  */
@@ -22,7 +22,7 @@
 import { motion } from "framer-motion";
 
 interface GlowOrbProps {
-  color?: "indigo" | "purple" | "amber";
+  color?: "indigo" | "purple" | "cyan";
   size?: "sm" | "md" | "lg";
   className?: string;
 }
@@ -30,7 +30,7 @@ interface GlowOrbProps {
 const colorMap = {
   indigo: "bg-da-indigo/20",
   purple: "bg-da-purple/20",
-  amber:  "bg-da-amber/15",
+  cyan:   "bg-da-cyan/15",
 };
 
 const sizeMap = {

@@ -27,7 +27,7 @@ export function Footer() {
                   href="/"
                   className="font-display text-xl font-bold tracking-tight text-da-text"
                 >
-                  DIGITAL<span className="text-da-amber">ALCHEMY</span>
+                  DIGITAL<span className="text-da-cyan">ALCHEMY</span>
                 </Link>
               </motion.div>
               <p className="mt-4 max-w-xs text-sm leading-relaxed text-da-muted">

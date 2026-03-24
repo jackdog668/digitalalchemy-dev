@@ -107,7 +107,7 @@ export default function ServicesPage() {
                         key={feature}
                         className="flex items-center gap-2 text-sm text-da-muted"
                       >
-                        <span className="text-da-amber text-xs">&#9670;</span>
+                        <span className="text-da-cyan text-xs">&#9670;</span>
                         {feature}
                       </li>
                     ))}
@@ -131,14 +131,14 @@ export default function ServicesPage() {
 
           <div className="relative">
             {/* Vertical line */}
-            <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-da-indigo via-da-purple to-da-amber hidden sm:block" />
+            <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-da-indigo via-da-purple to-da-cyan hidden sm:block" />
 
             <StaggerContainer className="space-y-12" staggerDelay={0.15}>
               {processSteps.map((step) => (
                 <StaggerItem key={step.step}>
                   <div className="flex gap-6">
                     <div className="relative flex-shrink-0">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-da-surface border border-da-border font-display text-sm font-bold text-da-amber">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-da-surface border border-da-border font-display text-sm font-bold text-da-cyan">
                         {step.step}
                       </div>
                     </div>
@@ -168,7 +168,7 @@ export default function ServicesPage() {
           <FadeInOnScroll>
             <h2 className="font-display text-3xl font-bold sm:text-4xl">
               Let&apos;s Build{" "}
-              <span className="text-da-amber">Something.</span>
+              <span className="text-da-cyan">Something.</span>
             </h2>
             <p className="mt-4 text-lg text-da-muted">
               Ready to stop brainstorming and start shipping? Let&apos;s talk

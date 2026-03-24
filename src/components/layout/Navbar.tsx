@@ -44,7 +44,7 @@ export function Navbar() {
             href="/"
             className="font-display text-xl font-bold tracking-tight text-da-text"
           >
-            DIGITAL<span className="text-da-amber">ALCHEMY</span>
+            DIGITAL<span className="text-da-cyan">ALCHEMY</span>
           </Link>
         </motion.div>
 

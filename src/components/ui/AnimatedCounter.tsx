@@ -75,7 +75,7 @@ export function AnimatedCounter({
         transition={{ type: "spring", damping: 20, stiffness: 100 }}
       >
         {count}
-        <span className="text-da-amber">{suffix}</span>
+        <span className="text-da-cyan">{suffix}</span>
       </motion.div>
       <div className="mt-1 text-sm text-da-muted uppercase tracking-wider">
         {label}

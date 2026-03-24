@@ -54,7 +54,7 @@ export default function SchoolPage() {
       {/* ── HERO ── */}
       <section className="relative px-6 pt-32 pb-24 overflow-hidden">
         <GlowOrb color="purple" size="lg" className="-left-20 top-20" />
-        <GlowOrb color="amber" size="sm" className="right-20 bottom-10" />
+        <GlowOrb color="cyan" size="sm" className="right-20 bottom-10" />
 
         <div className="relative mx-auto max-w-4xl text-center">
           <FadeInOnScroll>
@@ -71,7 +71,7 @@ export default function SchoolPage() {
             <p className="mx-auto mt-6 max-w-2xl text-xl text-da-muted">
               Courses create consumers who &quot;learned something.&quot; We
               create{" "}
-              <span className="text-da-amber font-semibold">Alchemists</span>{" "}
+              <span className="text-da-cyan font-semibold">Alchemists</span>{" "}
               who build everything.
             </p>
           </FadeInOnScroll>
@@ -96,7 +96,7 @@ export default function SchoolPage() {
                     <th className="pb-4 pr-8 font-display text-sm uppercase tracking-wider text-red-400">
                       Consumer
                     </th>
-                    <th className="pb-4 font-display text-sm uppercase tracking-wider text-da-amber">
+                    <th className="pb-4 font-display text-sm uppercase tracking-wider text-da-cyan">
                       Alchemist
                     </th>
                   </tr>
@@ -132,7 +132,7 @@ export default function SchoolPage() {
             <div className="mt-12 text-center">
               <p className="font-display text-2xl font-bold sm:text-3xl">
                 100 Days. 340+ Assets.{" "}
-                <span className="text-da-amber">Your name on all of them.</span>
+                <span className="text-da-cyan">Your name on all of them.</span>
               </p>
             </div>
           </FadeInOnScroll>
@@ -168,7 +168,7 @@ export default function SchoolPage() {
                   <p className="mt-2 text-sm text-da-muted leading-relaxed">
                     {mod.description}
                   </p>
-                  <div className="mt-4 inline-flex items-center gap-1 rounded-full bg-da-amber/10 px-3 py-1 text-xs font-semibold text-da-amber">
+                  <div className="mt-4 inline-flex items-center gap-1 rounded-full bg-da-cyan/10 px-3 py-1 text-xs font-semibold text-da-cyan">
                     {mod.deliverables}
                   </div>
                 </Card>
@@ -215,13 +215,13 @@ export default function SchoolPage() {
 
       {/* ── CTA ── */}
       <section className="relative px-6 py-24 overflow-hidden">
-        <GlowOrb color="amber" size="lg" className="-right-20 top-0" />
+        <GlowOrb color="cyan" size="lg" className="-right-20 top-0" />
 
         <div className="relative mx-auto max-w-3xl text-center">
           <FadeInOnScroll>
             <h2 className="font-display text-3xl font-bold sm:text-4xl">
               Ready to stop collecting and{" "}
-              <span className="text-da-amber">start creating?</span>
+              <span className="text-da-cyan">start creating?</span>
             </h2>
             <p className="mt-4 text-lg text-da-muted">
               Join the Alchemists. Build real things. Own everything.

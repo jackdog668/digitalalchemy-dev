@@ -10,7 +10,7 @@
   /* Brand Colors */
   --da-indigo: #6366f1;
   --da-purple: #8b5cf6;
-  --da-amber: #f59e0b;
+  --da-cyan: #00D4FF;
   --da-dark: #0f172a;
   --da-darker: #0a0f1e;
   --da-surface: #1e293b;
@@ -22,7 +22,7 @@
   /* Glow variants */
   --glow-indigo: rgba(99, 102, 241, 0.4);
   --glow-purple: rgba(139, 92, 246, 0.4);
-  --glow-amber: rgba(245, 158, 11, 0.3);
+  --glow-cyan: rgba(0, 212, 255, 0.3);
 
   /* Base aliases */
   --background: var(--da-dark);
@@ -34,7 +34,7 @@
   /* Colors */
   --color-da-indigo: var(--da-indigo);
   --color-da-purple: var(--da-purple);
-  --color-da-amber: var(--da-amber);
+  --color-da-cyan: var(--da-cyan);
   --color-da-dark: var(--da-dark);
   --color-da-darker: var(--da-darker);
   --color-da-surface: var(--da-surface);
@@ -195,7 +195,7 @@ body {
     90deg,
     var(--da-indigo),
     var(--da-purple),
-    var(--da-amber),
+    var(--da-cyan),
     var(--da-indigo)
   );
   background-size: 300% 100%;

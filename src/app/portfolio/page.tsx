@@ -28,13 +28,13 @@ export default function PortfolioPage() {
     <>
       {/* ── HERO ── */}
       <section className="relative px-6 pt-32 pb-24 overflow-hidden">
-        <GlowOrb color="amber" size="lg" className="-left-20 top-20" />
+        <GlowOrb color="cyan" size="lg" className="-left-20 top-20" />
 
         <div className="relative mx-auto max-w-4xl text-center">
           <FadeInOnScroll>
             <h1 className="font-display text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
               Built,{" "}
-              <span className="text-da-amber">Not Collected.</span>
+              <span className="text-da-cyan">Not Collected.</span>
             </h1>
           </FadeInOnScroll>
 
