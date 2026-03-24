@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
+import { useSound } from "@/hooks/useSound";
 
 // Usage examples:
 // <Button variant="primary" size="lg" href="/join">Get Started</Button>
@@ -20,6 +21,8 @@ interface ButtonProps {
   external?: boolean;
   className?: string;
   onClick?: () => void;
+  /** Enable/disable sound. Defaults: on for primary/secondary/accent, off for outline/ghost */
+  sound?: boolean;
 }
 
 const variantStyles: Record<Variant, string> = {
@@ -34,6 +37,15 @@ const variantStyles: Record<Variant, string> = {
   ghost: "text-da-muted hover:text-da-text hover:bg-da-surface/50",
 };
 
+// Which variants have sound enabled by default
+const soundDefaults: Record<Variant, boolean> = {
+  primary: true,
+  secondary: true,
+  accent: true,
+  outline: false,
+  ghost: false,
+};
+
 const sizeStyles: Record<Size, string> = {
   sm: "px-4 py-2 text-sm",
   md: "px-6 py-3 text-base",
@@ -41,10 +53,10 @@ const sizeStyles: Record<Size, string> = {
 };
 
 // Spring config for snappy but natural feel
-const motionProps = {
-  whileHover: { scale: 1.03 },
-  whileTap: { scale: 0.97 },
-  transition: { type: "spring" as const, stiffness: 400, damping: 17 },
+const springTransition = {
+  type: "spring" as const,
+  stiffness: 400,
+  damping: 17,
 };
 
 export function Button({
@@ -55,10 +67,28 @@ export function Button({
   external = false,
   className = "",
   onClick,
+  sound,
 }: ButtonProps) {
+  const { play } = useSound();
+  const hasSound = sound ?? soundDefaults[variant];
+
   const baseStyles =
     "relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-300 cursor-pointer glow-button";
   const styles = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`;
+
+  // Sound handlers
+  const handleHover = hasSound ? () => play("hover") : undefined;
+  const handleMouseDown = hasSound
+    ? () => play(variant === "accent" ? "activate" : "click")
+    : undefined;
+
+  const motionProps = {
+    whileHover: { scale: 1.03 },
+    whileTap: { scale: 0.97 },
+    transition: springTransition,
+    onMouseEnter: handleHover,
+    onMouseDown: handleMouseDown,
+  };
 
   // External link — motion.a handles the anchor directly
   if (href && external) {
@@ -79,7 +109,14 @@ export function Button({
   // extend Link without losing its prefetch/navigation behavior
   if (href) {
     return (
-      <motion.div {...motionProps} className="inline-block">
+      <motion.div
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
+        transition={springTransition}
+        onMouseEnter={handleHover}
+        onMouseDown={handleMouseDown}
+        className="inline-block"
+      >
         <Link href={href} className={styles}>
           {children}
         </Link>
