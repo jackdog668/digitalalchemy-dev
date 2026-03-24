@@ -59,8 +59,6 @@ export const projects: Project[] = [
       "AI-powered screenshot beautifier that transforms plain captures into styled social-ready images.",
     category: "AI Tools",
     tags: ["Screenshots", "Design", "Social Media"],
-    url: "https://vibeshot2.vercel.app",
-    screenshot: screenshotUrl("https://vibeshot2.vercel.app"),
   },
   {
     title: "Content Hook Generator",
@@ -68,8 +66,6 @@ export const projects: Project[] = [
       "AI writing tool that generates viral-worthy hooks and openers for social media content. Built for creators.",
     category: "AI Tools",
     tags: ["Content", "AI Writing", "Social Media"],
-    url: "https://content-hook-generator.vercel.app",
-    screenshot: screenshotUrl("https://content-hook-generator.vercel.app"),
   },
   {
     title: "Firecrawl Site Insight",
@@ -77,8 +73,6 @@ export const projects: Project[] = [
       "Web scraping and analysis tool powered by Firecrawl. Extract structured data and insights from any website.",
     category: "Code",
     tags: ["Firecrawl", "Web Scraping", "Analysis"],
-    url: "https://firecrawl-site-insight.vercel.app",
-    screenshot: screenshotUrl("https://firecrawl-site-insight.vercel.app"),
   },
   {
     title: "LovePixel Sticker Studio",
@@ -86,17 +80,6 @@ export const projects: Project[] = [
       "Custom sticker creation platform with AI-generated designs, print-ready export, and a Valentine's Day theme.",
     category: "Design",
     tags: ["Stickers", "AI Design", "Print"],
-    url: "https://lovepixel.vercel.app",
-    screenshot: screenshotUrl("https://lovepixel.vercel.app"),
-  },
-  {
-    title: "Digital Alchemy Freebies",
-    description:
-      "Free resource hub for the Digital Alchemy community. Templates, assets, and tools — no strings attached.",
-    category: "Code",
-    tags: ["Resources", "Community", "Free Tools"],
-    url: "https://digital-alchemy-freebies.vercel.app",
-    screenshot: screenshotUrl("https://digital-alchemy-freebies.vercel.app"),
   },
   {
     title: "The 77",
@@ -104,17 +87,6 @@ export const projects: Project[] = [
       "Community platform with curated content and collaborative features. Built with modern web stack.",
     category: "Code",
     tags: ["Community", "Next.js", "Platform"],
-    url: "https://the-77.vercel.app",
-    screenshot: screenshotUrl("https://the-77.vercel.app"),
-  },
-  {
-    title: "Vibe Vocab",
-    description:
-      "AI-powered vocabulary builder that makes learning new words feel like a game. Personalized learning paths.",
-    category: "AI Tools",
-    tags: ["Education", "AI", "Gamification"],
-    url: "https://vibe-x92-p1k.vercel.app",
-    screenshot: screenshotUrl("https://vibe-x92-p1k.vercel.app"),
   },
   {
     title: "Video Analyzer",
@@ -122,8 +94,6 @@ export const projects: Project[] = [
       "AI video analysis tool that extracts insights, transcripts, and key moments from uploaded video content.",
     category: "Video",
     tags: ["AI Video", "Analysis", "Transcription"],
-    url: "https://videesadcfvs.vercel.app",
-    screenshot: screenshotUrl("https://videesadcfvs.vercel.app"),
   },
   {
     title: "AI Music Collection",

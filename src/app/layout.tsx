@@ -38,6 +38,13 @@ export const metadata: Metadata = {
     title: `${SITE.name} | Learn to Build Apps with AI — No Coding Required`,
     description: SITE.description,
   },
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
   robots: {
     index: true,
     follow: true,
