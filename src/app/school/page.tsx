@@ -243,6 +243,9 @@ export default function SchoolPage() {
               >
                 Start 7-Day Free Trial
               </Button>
+              <Button href={SITE.beaconsUrl} external variant="primary" size="lg">
+                All Links
+              </Button>
             </div>
           </FadeInOnScroll>
         </div>

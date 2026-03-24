@@ -231,15 +231,19 @@ export default function AboutPage() {
           </StaggerContainer>
 
           <FadeInOnScroll delay={400}>
-            <Button
-              href={SITE.skoolUrl}
-              external
-              variant="accent"
-              size="lg"
-              className="mt-10"
-            >
-              Join the Builders
-            </Button>
+            <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+              <Button
+                href={SITE.skoolUrl}
+                external
+                variant="accent"
+                size="lg"
+              >
+                Join the Builders
+              </Button>
+              <Button href={SITE.beaconsUrl} external variant="primary" size="lg">
+                All Links
+              </Button>
+            </div>
           </FadeInOnScroll>
         </div>
       </section>

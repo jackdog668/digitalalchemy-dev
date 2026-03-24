@@ -34,7 +34,7 @@ export function Footer() {
                 Transform from scattered AI consumer to asset-owning creator.
                 Build systems. Own everything. Become the Alchemist.
               </p>
-              <div className="mt-6">
+              <div className="mt-6 flex flex-wrap gap-3">
                 <Button
                   href={SITE.skoolUrl}
                   external
@@ -42,6 +42,14 @@ export function Footer() {
                   size="sm"
                 >
                   Become an Alchemist
+                </Button>
+                <Button
+                  href={SITE.beaconsUrl}
+                  external
+                  variant="outline"
+                  size="sm"
+                >
+                  All Links
                 </Button>
               </div>
             </div>

@@ -9,6 +9,7 @@ export const SITE = {
   founder: "Desmond Baker Jr",
   credential: "Gemini Certified Educator",
   skoolUrl: "https://www.skool.com/digital-alchemy-7170",
+  beaconsUrl: "https://beacons.ai/dbcreations",
 } as const;
 
 export const NAV_LINKS = [

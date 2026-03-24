@@ -86,6 +86,9 @@ export default function HomePage() {
                   Become an Alchemist
                 </Button>
               </MagneticWrapper>
+              <Button href={SITE.beaconsUrl} external variant="primary" size="lg">
+                All Links
+              </Button>
               <Button href="/portfolio" variant="outline" size="lg">
                 See What We Build
               </Button>
@@ -165,7 +168,7 @@ export default function HomePage() {
               <span className="text-da-cyan">$0 in results.</span>
             </p>
             <p className="mt-4 text-xl text-da-muted">That ends today.</p>
-            <div className="mt-8 flex justify-center">
+            <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <MagneticWrapper strength={0.25}>
                 <Button
                   href={SITE.skoolUrl}
@@ -176,6 +179,9 @@ export default function HomePage() {
                   Join Digital Alchemy
                 </Button>
               </MagneticWrapper>
+              <Button href={SITE.beaconsUrl} external variant="primary" size="lg">
+                All Links
+              </Button>
             </div>
           </FadeInOnScroll>
         </div>
