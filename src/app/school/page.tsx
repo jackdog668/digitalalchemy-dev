@@ -13,9 +13,9 @@ import { SITE } from "@/lib/constants";
 import { modules } from "@/data/modules";
 
 export const metadata: Metadata = {
-  title: "School",
+  title: "The School | 100-Day AI Building Program for Beginners",
   description:
-    "This is NOT a course. It's a 100-day system that transforms you from AI consumer to asset-owning creator. 6 forge modules. 340+ deliverables. Yours forever.",
+    "Live classes every week where you create real projects — apps, music, art, and tools — step by step. If you can follow along with a recipe, you can do this.",
 };
 
 const moduleIcons: Record<string, string> = {
@@ -30,7 +30,7 @@ const moduleIcons: Record<string, string> = {
 const testimonials = [
   {
     quote:
-      "I went from zero coding experience to shipping my first app in 3 weeks. This system works.",
+      "I went from zero coding experience to shipping my first app in 3 weeks. I literally cried.",
     name: "Coming Soon",
     role: "Alchemist",
   },
@@ -59,20 +59,16 @@ export default function SchoolPage() {
         <div className="relative mx-auto max-w-4xl text-center">
           <FadeInOnScroll>
             <h1 className="font-display text-5xl font-bold leading-tight sm:text-6xl lg:text-7xl">
-              This is{" "}
-              <span className="text-red-400 line-through decoration-2">
-                NOT
-              </span>{" "}
-              a Course.
+              Learn by Building.{" "}
+              <span className="text-da-cyan">Not by Watching.</span>
             </h1>
           </FadeInOnScroll>
 
           <FadeInOnScroll delay={100}>
             <p className="mx-auto mt-6 max-w-2xl text-xl text-da-muted">
-              Courses create consumers who &quot;learned something.&quot; We
-              create{" "}
-              <span className="text-da-cyan font-semibold">Alchemists</span>{" "}
-              who build everything.
+              Live classes every week where you create real projects — apps,
+              music, art, and tools — step by step, with me. If you can follow
+              along with a recipe, you can do this.
             </p>
           </FadeInOnScroll>
         </div>
@@ -80,12 +76,11 @@ export default function SchoolPage() {
 
       <ShimmerLine />
 
-      {/* ── TRANSFORMATION PROMISE ── */}
+      {/* ── WHAT MAKES THIS DIFFERENT ── */}
       <section className="px-6 py-24 bg-da-surface/20">
         <div className="mx-auto max-w-5xl">
           <SectionHeading
-            title="The 100-Day Transformation"
-            subtitle="See the difference between consumers and Alchemists."
+            title={`Here's How Most AI "Courses" Work vs. How We Work`}
           />
 
           <FadeInOnScroll delay={100}>
@@ -93,33 +88,44 @@ export default function SchoolPage() {
               <table className="w-full text-left">
                 <thead>
                   <tr className="border-b border-da-border">
-                    <th className="pb-4 pr-8 font-display text-sm uppercase tracking-wider text-red-400">
-                      Consumer
+                    <th className="pb-4 pr-8 font-display text-sm uppercase tracking-wider text-da-muted">
+                      The Typical Course
                     </th>
                     <th className="pb-4 font-display text-sm uppercase tracking-wider text-da-cyan">
-                      Alchemist
+                      Digital Alchemy
                     </th>
                   </tr>
                 </thead>
                 <tbody className="text-sm">
                   {[
-                    ["Collects courses", "Builds systems"],
-                    ["Watches tutorials", "Creates deliverables"],
-                    ["Has 47 subscriptions", "Has intentional stack"],
-                    ["Hopes for results", "Architects outcomes"],
-                    ["Follows trends", "Designs workflows"],
-                    ["Scattered across tools", "Unified in their lab"],
-                    ["Vague about goals", "Clear on deliverables"],
-                    ["Consumes content", "Creates content"],
-                    ["Spends on courses", "Earns from skills"],
-                  ].map(([consumer, alchemist]) => (
+                    [
+                      "Pre-recorded videos you watch alone",
+                      "Live classes where you build alongside me",
+                    ],
+                    [
+                      '"Here\'s what AI can do"',
+                      '"Open your laptop. We\'re building this right now."',
+                    ],
+                    [
+                      "You finish feeling informed",
+                      "You finish with a working project",
+                    ],
+                    [
+                      "No one notices if you disappear",
+                      "Your community checks in on you",
+                    ],
+                    [
+                      "You learn a tool",
+                      "You learn a skill you can sell",
+                    ],
+                  ].map(([typical, alchemy]) => (
                     <tr
-                      key={consumer}
+                      key={typical}
                       className="border-b border-da-border/50"
                     >
-                      <td className="py-3 pr-8 text-da-muted">{consumer}</td>
+                      <td className="py-3 pr-8 text-da-muted">{typical}</td>
                       <td className="py-3 text-da-text font-medium">
-                        {alchemist}
+                        {alchemy}
                       </td>
                     </tr>
                   ))}
@@ -131,8 +137,8 @@ export default function SchoolPage() {
           <FadeInOnScroll delay={200}>
             <div className="mt-12 text-center">
               <p className="font-display text-2xl font-bold sm:text-3xl">
-                100 Days. 340+ Assets.{" "}
-                <span className="text-da-cyan">Your name on all of them.</span>
+                100 days. 340+ assets.{" "}
+                <span className="text-da-cyan">Everything has your name on it.</span>
               </p>
             </div>
           </FadeInOnScroll>
@@ -141,12 +147,12 @@ export default function SchoolPage() {
 
       <ShimmerLine />
 
-      {/* ── MODULES GRID ── */}
+      {/* ── THE 6 MODULES ── */}
       <section className="px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <SectionHeading
-            title="The 6 Forges"
-            subtitle="Each module is a forge where you create real, ownable assets."
+            title="What You'll Build"
+            subtitle="Each module focuses on a different creative skill. By the end, you don't just understand AI — you have a portfolio to prove it."
           />
 
           <StaggerContainer
@@ -180,77 +186,13 @@ export default function SchoolPage() {
 
       <ShimmerLine />
 
-      {/* ── ACCOUNTABILITY SYSTEM ── */}
+      {/* ── THE AAAS FRAMEWORK ── */}
       <section className="px-6 py-24 bg-da-surface/20">
-        <div className="mx-auto max-w-5xl">
-          <SectionHeading
-            title="You're Not Supposed To Build Alone"
-            subtitle="The accountability system that makes sure you actually finish."
-          />
-
-          <StaggerContainer
-            className="grid gap-6 md:grid-cols-3"
-            staggerDelay={0.12}
-          >
-            <StaggerItem>
-              <Card variant="glow" className="h-full text-center">
-                <div className="text-3xl mb-3">👥</div>
-                <h3 className="font-display text-lg font-bold text-da-text">
-                  Accountability Buddies
-                </h3>
-                <p className="mt-2 text-sm text-da-muted">
-                  Members with buddies are{" "}
-                  <span className="text-da-cyan font-semibold">4x more likely</span>{" "}
-                  to complete. You get paired. Someone NOTICES when you disappear.
-                </p>
-              </Card>
-            </StaggerItem>
-            <StaggerItem>
-              <Card variant="glow" className="h-full text-center">
-                <div className="text-3xl mb-3">🏆</div>
-                <h3 className="font-display text-lg font-bold text-da-text">
-                  Pods & Leaderboards
-                </h3>
-                <p className="mt-2 text-sm text-da-muted">
-                  Small builder pods competing and collaborating. This community
-                  is allergic to lurking. You build, or you get called out.
-                </p>
-              </Card>
-            </StaggerItem>
-            <StaggerItem>
-              <Card variant="glow" className="h-full text-center">
-                <div className="text-3xl mb-3">🔥</div>
-                <h3 className="font-display text-lg font-bold text-da-text">
-                  Direct Founder Access
-                </h3>
-                <p className="mt-2 text-sm text-da-muted">
-                  Small community on purpose. You&apos;re not ticket #4,927 in a
-                  support queue. You get direct access to the person who built
-                  the system.
-                </p>
-              </Card>
-            </StaggerItem>
-          </StaggerContainer>
-        </div>
-      </section>
-
-      <ShimmerLine />
-
-      {/* ── AI-AS-A-SERVICE FRAMEWORK ── */}
-      <section className="px-6 py-24">
         <div className="mx-auto max-w-4xl">
           <SectionHeading
-            title="The AaaS Framework"
-            subtitle="How Alchemists turn AI skills into real income."
+            title="How Alchemists Turn AI Skills Into Income"
+            subtitle="This is exactly what web developers did in the early 2000s and cloud consultants did in the 2010s. We're in that same window right now — and you're early."
           />
-
-          <FadeInOnScroll delay={100}>
-            <p className="text-center text-da-muted mb-12 max-w-2xl mx-auto">
-              This is EXACTLY what web developers did in the early 2000s and cloud
-              consultants did in the 2010s. We&apos;re in that same window right now
-              for AI.
-            </p>
-          </FadeInOnScroll>
 
           <StaggerContainer className="space-y-8" staggerDelay={0.15}>
             {[
@@ -259,21 +201,21 @@ export default function SchoolPage() {
                 title: "The Audit",
                 price: "$0–500",
                 description:
-                  "Ask three questions: What takes you the most time every week? What tasks do you keep putting off? Where do you copy-paste between apps? Identify the AI opportunity.",
+                  "You sit down with a small business owner and ask three simple questions: What takes you the most time every week? What tasks do you keep putting off? Where are you copy-pasting between apps? That conversation reveals where AI can help — and that's your first paid engagement.",
               },
               {
                 step: "02",
-                title: "Implementation",
+                title: "The Build",
                 price: "$500–2,000",
                 description:
-                  "Build a custom GPT, automated workflow, or internal tool. Use Cursor, Bolt, or Replit to ship it fast. The client sees real results in days, not months.",
+                  "Now you build the solution. A custom AI tool, an automated workflow, an internal system. Using the exact same skills you learned in class. The client sees results in days, not months.",
               },
               {
                 step: "03",
-                title: "Retainer",
+                title: "The Retainer",
                 price: "$1,500–3,000/mo",
                 description:
-                  "Ongoing maintenance, prompt tuning, workflow updates. Recurring revenue. One client at $2K/month is $24K/year. Five clients is six figures.",
+                  "Ongoing maintenance, updates, and improvements. Recurring revenue. One client at $2,000/month is $24,000/year. Five clients is six figures. That's not a fantasy — that's math.",
               },
             ].map((item) => (
               <StaggerItem key={item.step}>
@@ -305,12 +247,69 @@ export default function SchoolPage() {
 
       <ShimmerLine />
 
+      {/* ── YOU'RE NOT BUILDING ALONE ── */}
+      <section className="px-6 py-24">
+        <div className="mx-auto max-w-5xl">
+          <SectionHeading
+            title="You're Not Building Alone"
+            subtitle="The support system that keeps you going."
+          />
+
+          <StaggerContainer
+            className="grid gap-6 md:grid-cols-3"
+            staggerDelay={0.12}
+          >
+            <StaggerItem>
+              <Card variant="glow" className="h-full text-center">
+                <h3 className="font-display text-lg font-bold text-da-text">
+                  Accountability Partners
+                </h3>
+                <p className="mt-2 text-sm text-da-muted">
+                  You get paired with another member. Someone who checks in when
+                  you miss a class. Someone who celebrates when you ship
+                  something. Members with partners are{" "}
+                  <span className="text-da-cyan font-semibold">
+                    4x more likely to finish
+                  </span>
+                  .
+                </p>
+              </Card>
+            </StaggerItem>
+            <StaggerItem>
+              <Card variant="glow" className="h-full text-center">
+                <h3 className="font-display text-lg font-bold text-da-text">
+                  Community + Collaboration
+                </h3>
+                <p className="mt-2 text-sm text-da-muted">
+                  A group of women who are all figuring this out together. No
+                  judgment. No gatekeeping. Just people who understand what it
+                  feels like to try something new and scary — and do it anyway.
+                </p>
+              </Card>
+            </StaggerItem>
+            <StaggerItem>
+              <Card variant="glow" className="h-full text-center">
+                <h3 className="font-display text-lg font-bold text-da-text">
+                  Direct Access to Me
+                </h3>
+                <p className="mt-2 text-sm text-da-muted">
+                  This is a small community on purpose. You&apos;re not support
+                  ticket #4,927. You ask a question, I answer it. You get stuck,
+                  we figure it out together.
+                </p>
+              </Card>
+            </StaggerItem>
+          </StaggerContainer>
+        </div>
+      </section>
+
+      <ShimmerLine />
+
       {/* ── TESTIMONIALS ── */}
       <section className="px-6 py-24 bg-da-surface/20">
         <div className="mx-auto max-w-5xl">
           <SectionHeading
-            title="What Alchemists Say"
-            subtitle="Real builders, real results."
+            title="What Alchemists Are Saying"
           />
 
           <StaggerContainer
@@ -345,11 +344,11 @@ export default function SchoolPage() {
         <div className="relative mx-auto max-w-3xl text-center">
           <FadeInOnScroll>
             <h2 className="font-display text-3xl font-bold sm:text-4xl">
-              Ready to stop collecting and{" "}
-              <span className="text-da-cyan">start creating?</span>
+              Ready to stop watching and{" "}
+              <span className="text-da-cyan">start building?</span>
             </h2>
             <p className="mt-4 text-lg text-da-muted">
-              Join the Alchemists. Build real things. Own everything.
+              Join the Alchemists. Build real things. Own everything you create.
             </p>
             <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Button
@@ -366,7 +365,7 @@ export default function SchoolPage() {
                 variant="outline"
                 size="lg"
               >
-                Start 7-Day Free Trial
+                Start Your 7-Day Free Trial
               </Button>
               <Button href={SITE.beaconsUrl} external variant="primary" size="lg">
                 All Links

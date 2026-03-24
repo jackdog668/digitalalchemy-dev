@@ -31,8 +31,8 @@ export function Footer() {
                 </Link>
               </motion.div>
               <p className="mt-4 max-w-xs text-sm leading-relaxed text-da-muted">
-                Transform from scattered AI consumer to asset-owning creator.
-                Build systems. Own everything. Become the Alchemist.
+                Learn to build with AI. Own everything you create. Become the
+                Alchemist.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Button
@@ -41,7 +41,7 @@ export function Footer() {
                   variant="accent"
                   size="sm"
                 >
-                  Become an Alchemist
+                  Join Digital Alchemy
                 </Button>
                 <Button
                   href={SITE.beaconsUrl}
@@ -62,7 +62,6 @@ export function Footer() {
               <ul className="mt-4 space-y-3">
                 {NAV_LINKS.map((link) => (
                   <li key={link.href}>
-                    {/* Hover: translateX nudge + color shift */}
                     <motion.div
                       whileHover={{ x: 4 }}
                       transition={{ type: "spring", stiffness: 400, damping: 20 }}

@@ -1,50 +1,50 @@
 export const modules = [
   {
     name: "THE SOUND ARCHITECT'S FORGE",
-    category: "Music",
+    category: "AI Music Production",
     description:
-      "Create 45+ original tracks using Suno AI. Learn prompt engineering for audio — lo-fi beats, cinematic scores, commercial jingles. Every track has YOUR name and commercial rights.",
-    deliverables: "45+ original tracks",
+      "Create original songs using Suno AI — lo-fi beats, cinematic scores, even commercial jingles. No musical training needed. You describe what you want, and the AI builds it. Then we show you how to get it on Spotify, Apple Music, and everywhere else.",
+    deliverables: "45+ original tracks with full commercial rights",
     icon: "music",
   },
   {
     name: "THE VISUAL STYLE FORGE",
-    category: "Design",
+    category: "AI Art & Visual Design",
     description:
-      "Master Midjourney with an Afrocentric surrealism focus. Build 100+ visual assets — brand graphics, product mockups, art collections using the Surreal Science Prompt Vault.",
-    deliverables: "100+ visual assets",
+      "Learn Midjourney to create stunning art, brand graphics, and product visuals. We specialize in Afrocentric surrealism — bold, beautiful images that stand out. You'll build a collection of 100+ visuals you can use for your business, sell as prints, or license commercially.",
+    deliverables: "100+ visual assets and a signature style",
     icon: "palette",
   },
   {
     name: "DIGITAL ARMOR",
-    category: "Security",
+    category: "Digital Security",
     description:
-      "90-minute security sprint. Lock down API keys, auth, database rules, input validation. The gap between 'it works' and 'it's shippable' — we close it.",
-    deliverables: "Security playbook",
+      "A 90-minute sprint to lock down everything you build. We cover the essentials — protecting your accounts, securing your apps, keeping your data safe. Think of it as putting a lock on the door before you open for business.",
+    deliverables: "A personal security playbook",
     icon: "shield",
   },
   {
     name: "THE VIBE CODER'S LAB",
-    category: "Coding",
+    category: "Vibe Coding",
     description:
-      "Build 10+ working apps using Cursor, Bolt, and Replit Agent. No CS degree needed. From idea to deployed app using vibe coding methodology. 27+ App Blueprints included.",
-    deliverables: "10+ working apps",
+      "This is the big one. Build real, working apps — without writing code the traditional way. You describe what you want, AI helps you build it, and we deploy it to the internet together. This is called \"vibe coding\" and it's changing who gets to call themselves a builder.",
+    deliverables: "10+ working apps + 27+ app blueprints",
     icon: "code",
   },
   {
     name: "THE VIDEO ALCHEMIST'S STUDIO",
-    category: "Video",
+    category: "AI Video",
     description:
-      "AI-powered video production — from short-form clips to full workflows. Create 20+ video assets using Google AI Studio and AI editing tools.",
+      "AI-powered video creation — from short social clips to full production workflows. Learn the tools that let you create professional video content without a film crew, editing suite, or years of experience.",
     deliverables: "20+ video assets",
     icon: "video",
   },
   {
     name: "THE MONETIZATION LAB",
-    category: "Business",
+    category: "Monetization",
     description:
-      "The AI-as-a-Service framework: Audit ($0-500) → Build ($500-2K) → Retainer ($1.5K-3K/month). This is what web devs did in the 2000s. Your turn.",
-    deliverables: "Revenue playbook + pricing",
+      "This is where everything comes together. We teach you the AI-as-a-Service framework — a proven model for turning your new skills into real income by helping small businesses use AI. This is the same playbook that made web developers wealthy in the 2000s. It's your turn now.",
+    deliverables: "Complete service offering + pricing strategy",
     icon: "dollar",
   },
 ] as const;

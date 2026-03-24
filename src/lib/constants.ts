@@ -2,12 +2,12 @@
 
 export const SITE = {
   name: "Digital Alchemy",
-  tagline: "Stop Learning AI. Start Building With It.",
+  tagline: "Learn to Build with AI. Own Everything You Create.",
   description:
-    "Transform from scattered AI consumer to asset-owning creator in 100 days. Vibe coding, AI building, and real portfolio results.",
+    "Learn to build real apps, create AI music, design stunning visuals — and turn those skills into income. No coding experience required.",
   url: "https://digitalalchemy.dev",
   founder: "Desmond Baker Jr",
-  credential: "Gemini Certified Educator",
+  credential: "Google Gemini Certified Educator",
   skoolUrl: "https://www.skool.com/digital-alchemy-7170",
   beaconsUrl: "https://beacons.ai/dbcreations",
 } as const;

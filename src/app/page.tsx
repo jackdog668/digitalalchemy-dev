@@ -21,19 +21,19 @@ import Link from "next/link";
 const FEATURED_CARDS = [
   {
     title: "The School",
-    desc: "6 forge modules. 340+ assets. 100-day system. Build a portfolio of work you actually own.",
+    desc: "Live classes every week. Step-by-step projects you build alongside me. Walk away with apps, music, art, and a portfolio — all with your name on it.",
     href: "/school",
     accent: "from-da-indigo to-da-purple",
   },
   {
     title: "Our Services",
-    desc: "AI consulting, vibe coding workshops, and custom systems for brands and teams.",
+    desc: "AI consulting, workshops, and custom tools for brands and teams who want to stop talking about AI and start using it.",
     href: "/services",
     accent: "from-da-purple to-da-cyan",
   },
   {
     title: "The Portfolio",
-    desc: "Music, art, apps, tools — proof that creators can build real things with AI.",
+    desc: "Music, art, apps, and tools — built by me and by community members using the exact methods we teach in class.",
     href: "/portfolio",
     accent: "from-da-cyan to-da-indigo",
   },
@@ -56,24 +56,25 @@ export default function HomePage() {
             </div>
           </FadeInOnScroll>
 
-          {/* Main headline — TextReveal on the first line, glow-text on the second */}
+          {/* Main headline */}
           <FadeInOnScroll delay={100}>
             <h1 className="font-display text-5xl font-bold leading-tight tracking-tight sm:text-6xl lg:text-7xl">
-              <TextReveal text="Stop Learning AI." />
+              <TextReveal text="You Don't Need a Tech Background." />
               <br />
-              <span className="glow-text">Start Building With It.</span>
+              <span className="glow-text">You Need the Right Guide.</span>
             </h1>
           </FadeInOnScroll>
 
           {/* Subheadline */}
           <FadeInOnScroll delay={200}>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-da-muted sm:text-xl">
-              Transform from scattered AI consumer to asset-owning creator in
-              100 days. Real projects. Real portfolio. Real results.
+              Learn to build real apps, create AI music, design stunning
+              visuals — and turn those skills into income. No coding experience
+              required. Just show up ready to learn.
             </p>
           </FadeInOnScroll>
 
-          {/* CTAs — primary wrapped in MagneticWrapper for the pull effect */}
+          {/* CTAs */}
           <FadeInOnScroll delay={300}>
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <MagneticWrapper strength={0.25}>
@@ -83,14 +84,14 @@ export default function HomePage() {
                   variant="accent"
                   size="lg"
                 >
-                  Become an Alchemist
+                  Start Your Free Trial
                 </Button>
               </MagneticWrapper>
-              <Button href={SITE.beaconsUrl} external variant="primary" size="lg">
-                All Links
-              </Button>
-              <Button href="/portfolio" variant="outline" size="lg">
+              <Button href="/portfolio" variant="primary" size="lg">
                 See What We Build
+              </Button>
+              <Button href={SITE.beaconsUrl} external variant="outline" size="lg">
+                All Links
               </Button>
             </div>
           </FadeInOnScroll>
@@ -104,12 +105,10 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl">
           <FadeInOnScroll>
             <SectionHeading
-              title="What We Do"
-              subtitle="We don't teach AI. We make you BUILD with it."
+              title="Three Ways to Start Building"
             />
           </FadeInOnScroll>
 
-          {/* StaggerContainer cascades each card's entrance */}
           <StaggerContainer className="grid gap-6 md:grid-cols-3">
             {FEATURED_CARDS.map((card) => (
               <StaggerItem key={card.title}>
@@ -140,7 +139,6 @@ export default function HomePage() {
 
       {/* ── STATS BAR ── */}
       <section className="border-y border-da-border bg-da-surface/30 px-6 py-16">
-        {/* StaggerContainer staggers each counter's entrance */}
         <StaggerContainer className="mx-auto grid max-w-5xl grid-cols-2 gap-8 md:grid-cols-4">
           {stats.map((stat) => (
             <StaggerItem key={stat.label}>
@@ -164,10 +162,18 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-3xl text-center">
           <FadeInOnScroll>
             <p className="font-display text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
-              You have 47 subscriptions and{" "}
-              <span className="text-da-cyan">$0 in results.</span>
+              You&apos;ve been collecting courses.{" "}
+              <span className="text-da-cyan">
+                It&apos;s time to start creating.
+              </span>
             </p>
-            <p className="mt-4 text-xl text-da-muted">That ends today.</p>
+            <p className="mt-4 text-lg text-da-muted">
+              Every subscription promised you results. Most of them just gave
+              you more tabs to keep open. Digital Alchemy is different — you
+              build real things in every single class. Apps. Music. Art. Tools.
+              And when you&apos;re ready, we show you how to sell those skills
+              to clients.
+            </p>
             <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <MagneticWrapper strength={0.25}>
                 <Button
