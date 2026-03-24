@@ -112,6 +112,51 @@ export default function ServicesPage() {
                       </li>
                     ))}
                   </ul>
+                  {"pricing" in service && (
+                    <div className="mt-4 pt-4 border-t border-da-border">
+                      <span className="text-sm font-semibold text-da-cyan">
+                        {(service as { pricing: string }).pricing}
+                      </span>
+                    </div>
+                  )}
+                </Card>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </div>
+      </section>
+
+      <ShimmerLine />
+
+      {/* ── MARKET STATS ── */}
+      <section className="px-6 py-24">
+        <div className="mx-auto max-w-4xl text-center">
+          <FadeInOnScroll>
+            <h2 className="font-display text-3xl font-bold sm:text-4xl">
+              The Window Is{" "}
+              <span className="text-da-cyan">Right Now.</span>
+            </h2>
+            <p className="mt-4 text-lg text-da-muted max-w-2xl mx-auto">
+              The same opportunity web developers had in the early 2000s and
+              cloud consultants had in the 2010s — that&apos;s where AI is today.
+            </p>
+          </FadeInOnScroll>
+
+          <StaggerContainer
+            className="mt-12 grid gap-6 md:grid-cols-3"
+            staggerDelay={0.12}
+          >
+            {[
+              { stat: "63%", label: "of active vibe coders are non-developers" },
+              { stat: "$9B", label: "Replit valuation (2026)" },
+              { stat: "2M+", label: "Suno paid subscribers" },
+            ].map((item) => (
+              <StaggerItem key={item.label}>
+                <Card variant="default" className="text-center">
+                  <p className="font-display text-3xl font-bold text-da-cyan">
+                    {item.stat}
+                  </p>
+                  <p className="mt-2 text-sm text-da-muted">{item.label}</p>
                 </Card>
               </StaggerItem>
             ))}

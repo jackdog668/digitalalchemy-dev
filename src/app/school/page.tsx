@@ -180,6 +180,131 @@ export default function SchoolPage() {
 
       <ShimmerLine />
 
+      {/* ── ACCOUNTABILITY SYSTEM ── */}
+      <section className="px-6 py-24 bg-da-surface/20">
+        <div className="mx-auto max-w-5xl">
+          <SectionHeading
+            title="You're Not Supposed To Build Alone"
+            subtitle="The accountability system that makes sure you actually finish."
+          />
+
+          <StaggerContainer
+            className="grid gap-6 md:grid-cols-3"
+            staggerDelay={0.12}
+          >
+            <StaggerItem>
+              <Card variant="glow" className="h-full text-center">
+                <div className="text-3xl mb-3">👥</div>
+                <h3 className="font-display text-lg font-bold text-da-text">
+                  Accountability Buddies
+                </h3>
+                <p className="mt-2 text-sm text-da-muted">
+                  Members with buddies are{" "}
+                  <span className="text-da-cyan font-semibold">4x more likely</span>{" "}
+                  to complete. You get paired. Someone NOTICES when you disappear.
+                </p>
+              </Card>
+            </StaggerItem>
+            <StaggerItem>
+              <Card variant="glow" className="h-full text-center">
+                <div className="text-3xl mb-3">🏆</div>
+                <h3 className="font-display text-lg font-bold text-da-text">
+                  Pods & Leaderboards
+                </h3>
+                <p className="mt-2 text-sm text-da-muted">
+                  Small builder pods competing and collaborating. This community
+                  is allergic to lurking. You build, or you get called out.
+                </p>
+              </Card>
+            </StaggerItem>
+            <StaggerItem>
+              <Card variant="glow" className="h-full text-center">
+                <div className="text-3xl mb-3">🔥</div>
+                <h3 className="font-display text-lg font-bold text-da-text">
+                  Direct Founder Access
+                </h3>
+                <p className="mt-2 text-sm text-da-muted">
+                  Small community on purpose. You&apos;re not ticket #4,927 in a
+                  support queue. You get direct access to the person who built
+                  the system.
+                </p>
+              </Card>
+            </StaggerItem>
+          </StaggerContainer>
+        </div>
+      </section>
+
+      <ShimmerLine />
+
+      {/* ── AI-AS-A-SERVICE FRAMEWORK ── */}
+      <section className="px-6 py-24">
+        <div className="mx-auto max-w-4xl">
+          <SectionHeading
+            title="The AaaS Framework"
+            subtitle="How Alchemists turn AI skills into real income."
+          />
+
+          <FadeInOnScroll delay={100}>
+            <p className="text-center text-da-muted mb-12 max-w-2xl mx-auto">
+              This is EXACTLY what web developers did in the early 2000s and cloud
+              consultants did in the 2010s. We&apos;re in that same window right now
+              for AI.
+            </p>
+          </FadeInOnScroll>
+
+          <StaggerContainer className="space-y-8" staggerDelay={0.15}>
+            {[
+              {
+                step: "01",
+                title: "The Audit",
+                price: "$0–500",
+                description:
+                  "Ask three questions: What takes you the most time every week? What tasks do you keep putting off? Where do you copy-paste between apps? Identify the AI opportunity.",
+              },
+              {
+                step: "02",
+                title: "Implementation",
+                price: "$500–2,000",
+                description:
+                  "Build a custom GPT, automated workflow, or internal tool. Use Cursor, Bolt, or Replit to ship it fast. The client sees real results in days, not months.",
+              },
+              {
+                step: "03",
+                title: "Retainer",
+                price: "$1,500–3,000/mo",
+                description:
+                  "Ongoing maintenance, prompt tuning, workflow updates. Recurring revenue. One client at $2K/month is $24K/year. Five clients is six figures.",
+              },
+            ].map((item) => (
+              <StaggerItem key={item.step}>
+                <div className="flex gap-6">
+                  <div className="flex-shrink-0">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-da-surface border border-da-border font-display text-sm font-bold text-da-cyan">
+                      {item.step}
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-baseline gap-3">
+                      <h3 className="font-display text-xl font-semibold text-da-text">
+                        {item.title}
+                      </h3>
+                      <span className="text-sm font-semibold text-da-cyan">
+                        {item.price}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-sm text-da-muted leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </div>
+      </section>
+
+      <ShimmerLine />
+
       {/* ── TESTIMONIALS ── */}
       <section className="px-6 py-24 bg-da-surface/20">
         <div className="mx-auto max-w-5xl">

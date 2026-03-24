@@ -2,49 +2,53 @@ export const services = [
   {
     title: "AI Consulting for Brands",
     description:
-      "Help your team integrate AI into creative workflows. Strategy, implementation, and training — all tailored to your business.",
+      "We start with three questions: What takes you the most time every week? What tasks do you keep putting off? Where do you copy-paste between apps? Then we build the AI solution.",
     features: [
-      "AI tool stack audit & recommendations",
-      "Custom workflow design",
-      "Team training sessions",
-      "Ongoing advisory support",
+      "AI tool stack audit & custom recommendations",
+      "Workflow automation design (save 10+ hours/week)",
+      "Team training — your people learn to build, not just use",
+      "Ongoing advisory & prompt tuning support",
     ],
+    pricing: "$500–2,000 per engagement",
     icon: "brain",
   },
   {
     title: "Vibe Coding Workshops",
     description:
-      "Hands-on sessions for teams who want to build apps with AI — no traditional coding background required.",
+      "Hands-on sessions using Cursor, Bolt, and Replit Agent. No coding background needed — 63% of active vibe coders are non-developers. Your team ships a working app by end of day.",
     features: [
-      "Half-day or full-day formats",
-      "Customized to your team's goals",
-      "Every participant ships something",
-      "Post-workshop support included",
+      "Half-day or full-day formats, customized to your goals",
+      "Every participant deploys a real application",
+      "27+ App Blueprints as starting templates",
+      "Post-workshop support + recording access",
     ],
+    pricing: "Custom pricing per team",
     icon: "workshop",
   },
   {
     title: "Portfolio Building",
     description:
-      "Guided process to create a production-quality portfolio of AI-generated assets. Walk away with work you can sell.",
+      "Guided 1-on-1 sessions to create a production-quality portfolio across multiple mediums — music tracks (Suno), visual assets (Midjourney), working apps (Cursor/Bolt), and video content.",
     features: [
-      "1-on-1 guided sessions",
-      "Multi-medium portfolio (art, music, apps)",
-      "Commercial rights on everything",
-      "Positioning & pricing strategy",
+      "Multi-medium portfolio: art, music, apps, video",
+      "Commercial rights on everything you create",
+      "Positioning & pricing strategy for your work",
+      "Walk away with assets you can sell immediately",
     ],
+    pricing: "Starting at $500",
     icon: "portfolio",
   },
   {
     title: "Custom AI Systems",
     description:
-      "Bespoke AI tools and automation workflows built for your specific needs. From chatbots to content pipelines.",
+      "Bespoke AI tools for your business — custom GPTs, automated content pipelines, internal dashboards, chatbots. Built fast with vibe coding, maintained on retainer.",
     features: [
-      "Requirements analysis",
-      "Custom tool development",
-      "Integration with your existing stack",
-      "Documentation & handoff",
+      "Custom GPT & AI tool development",
+      "Automated workflows & content pipelines",
+      "Integration with your existing tools & data",
+      "Documentation, handoff & optional retainer ($1.5K–3K/mo)",
     ],
+    pricing: "$2,000+ per project",
     icon: "gear",
   },
 ] as const;

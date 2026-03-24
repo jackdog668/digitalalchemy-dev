@@ -88,25 +88,73 @@ export default function AboutPage() {
               <p>
                 I&apos;m Desmond Baker Jr — founder of Digital Alchemy and DB
                 Creations LLC. For over 10 years I&apos;ve been in creative
-                education, watching the same pattern repeat: talented people
-                consume endless tutorials, buy every course, and still have
-                nothing to show for it.
+                education, and I kept seeing the same pattern: talented people
+                consume endless tutorials, buy every course, open 47 browser
+                tabs, and still have <span className="text-da-text font-semibold">nothing to show for it</span>.
               </p>
               <p>
-                So I built a system. Not a course — a{" "}
-                <span className="text-da-text font-semibold">system</span>.
-                One that takes you from scattered AI consumer to asset-owning
-                creator in 100 days. Where you walk away with 340+ assets that
-                have YOUR name on them. With commercial rights.
+                I went deep into AI — Midjourney for Afrocentric surrealism art,
+                Suno for original music production, Cursor and Bolt for vibe
+                coding real applications. I built 340+ AI-created assets, 45+
+                original music tracks, 27+ app blueprints. Then I realized: the
+                value isn&apos;t in knowing the tools. It&apos;s in having a{" "}
+                <span className="text-da-text font-semibold">system</span> that
+                makes you build with them.
               </p>
               <p>
-                I&apos;m a Gemini Certified Educator — officially recognized
-                by Google. But credentials don&apos;t mean shit if you
-                can&apos;t help people build real things. That&apos;s what
-                Digital Alchemy is about.
+                So I built Digital Alchemy — not a course (courses create
+                consumers who &quot;learned something&quot;). A 100-day system
+                where you create 340+ assets with YOUR name on them. With
+                commercial rights. Where you walk away as an Alchemist, not a
+                student.
+              </p>
+              <p>
+                I&apos;m a Gemini Certified Educator — officially recognized by
+                Google. I&apos;ve spoken on the main stage at AI Tinkerers
+                demoing Agent Forge. I&apos;m involved with the Compass Detroit
+                IWD Innovation Summit. But credentials don&apos;t mean shit if
+                you can&apos;t help people build real things. That&apos;s what
+                this is about.
               </p>
             </div>
           </FadeInOnScroll>
+        </div>
+      </section>
+
+      <ShimmerLine />
+
+      {/* ── MY STACK ── */}
+      <section className="px-6 py-24 bg-da-surface/20">
+        <div className="mx-auto max-w-6xl">
+          <SectionHeading
+            title="The Alchemist's Stack"
+            subtitle="The tools I use every day to build, create, and teach."
+          />
+
+          <StaggerContainer
+            className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+            staggerDelay={0.08}
+          >
+            {[
+              { name: "Claude Code", role: "AI development partner" },
+              { name: "Cursor", role: "AI code editor" },
+              { name: "Midjourney", role: "AI art & visual creation" },
+              { name: "Suno", role: "AI music production" },
+              { name: "Google AI Studio", role: "Gemini API & prototyping" },
+              { name: "Firebase", role: "Auth, database, hosting" },
+              { name: "Vercel", role: "App deployment" },
+              { name: "Notion", role: "Docs, wiki, task hub" },
+            ].map((tool) => (
+              <StaggerItem key={tool.name}>
+                <Card variant="default" className="text-center py-4">
+                  <p className="font-display text-sm font-semibold text-da-text">
+                    {tool.name}
+                  </p>
+                  <p className="text-xs text-da-muted mt-1">{tool.role}</p>
+                </Card>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
         </div>
       </section>
 
@@ -204,30 +252,23 @@ export default function AboutPage() {
 
           <StaggerContainer
             className="mt-8 flex flex-wrap justify-center gap-4"
-            staggerDelay={0.12}
+            staggerDelay={0.1}
           >
-            <StaggerItem>
-              <div className="rounded-lg border border-da-border bg-da-surface px-6 py-3 text-sm">
-                <span className="text-da-cyan font-semibold">Google</span>{" "}
-                <span className="text-da-muted">
-                  Gemini Certified Educator
-                </span>
-              </div>
-            </StaggerItem>
-            <StaggerItem>
-              <div className="rounded-lg border border-da-border bg-da-surface px-6 py-3 text-sm">
-                <span className="text-da-cyan font-semibold">10+</span>{" "}
-                <span className="text-da-muted">
-                  Years in Creative Education
-                </span>
-              </div>
-            </StaggerItem>
-            <StaggerItem>
-              <div className="rounded-lg border border-da-border bg-da-surface px-6 py-3 text-sm">
-                <span className="text-da-cyan font-semibold">340+</span>{" "}
-                <span className="text-da-muted">AI Assets Created</span>
-              </div>
-            </StaggerItem>
+            {[
+              { highlight: "Google", label: "Gemini Certified Educator" },
+              { highlight: "10+", label: "Years in Creative Education" },
+              { highlight: "340+", label: "AI Assets (Music, Art, Video, Code)" },
+              { highlight: "45+", label: "Original AI Music Tracks" },
+              { highlight: "27+", label: "App Blueprints Built" },
+              { highlight: "Main Stage", label: "AI Tinkerers Speaker" },
+            ].map((cred) => (
+              <StaggerItem key={cred.label}>
+                <div className="rounded-lg border border-da-border bg-da-surface px-6 py-3 text-sm">
+                  <span className="text-da-cyan font-semibold">{cred.highlight}</span>{" "}
+                  <span className="text-da-muted">{cred.label}</span>
+                </div>
+              </StaggerItem>
+            ))}
           </StaggerContainer>
 
           <FadeInOnScroll delay={400}>

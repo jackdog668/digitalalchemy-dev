@@ -3,7 +3,7 @@ export const modules = [
     name: "THE SOUND ARCHITECT'S FORGE",
     category: "Music",
     description:
-      "Create original music tracks, sound effects, and audio assets with AI. Build a portfolio of 45+ tracks you own completely.",
+      "Create 45+ original tracks using Suno AI. Learn prompt engineering for audio — lo-fi beats, cinematic scores, commercial jingles. Every track has YOUR name and commercial rights.",
     deliverables: "45+ original tracks",
     icon: "music",
   },
@@ -11,7 +11,7 @@ export const modules = [
     name: "THE VISUAL STYLE FORGE",
     category: "Design",
     description:
-      "Master AI-powered visual creation. From brand assets to product mockups to art collections. Everything with commercial rights.",
+      "Master Midjourney with an Afrocentric surrealism focus. Build 100+ visual assets — brand graphics, product mockups, art collections using the Surreal Science Prompt Vault.",
     deliverables: "100+ visual assets",
     icon: "palette",
   },
@@ -19,7 +19,7 @@ export const modules = [
     name: "DIGITAL ARMOR",
     category: "Security",
     description:
-      "Lock down your digital presence. Security fundamentals every creator needs — protect your work, your data, and your business.",
+      "90-minute security sprint. Lock down API keys, auth, database rules, input validation. The gap between 'it works' and 'it's shippable' — we close it.",
     deliverables: "Security playbook",
     icon: "shield",
   },
@@ -27,7 +27,7 @@ export const modules = [
     name: "THE VIBE CODER'S LAB",
     category: "Coding",
     description:
-      "Build real applications with AI as your pair programmer. No CS degree needed. Ship apps, not tutorials.",
+      "Build 10+ working apps using Cursor, Bolt, and Replit Agent. No CS degree needed. From idea to deployed app using vibe coding methodology. 27+ App Blueprints included.",
     deliverables: "10+ working apps",
     icon: "code",
   },
@@ -35,7 +35,7 @@ export const modules = [
     name: "THE VIDEO ALCHEMIST'S STUDIO",
     category: "Video",
     description:
-      "Create, edit, and produce video content using AI tools. From short-form clips to full production workflows.",
+      "AI-powered video production — from short-form clips to full workflows. Create 20+ video assets using Google AI Studio and AI editing tools.",
     deliverables: "20+ video assets",
     icon: "video",
   },
@@ -43,8 +43,8 @@ export const modules = [
     name: "THE MONETIZATION LAB",
     category: "Business",
     description:
-      "Turn your AI-created assets into income streams. Pricing, packaging, and selling what you build.",
-    deliverables: "Revenue playbook",
+      "The AI-as-a-Service framework: Audit ($0-500) → Build ($500-2K) → Retainer ($1.5K-3K/month). This is what web devs did in the 2000s. Your turn.",
+    deliverables: "Revenue playbook + pricing",
     icon: "dollar",
   },
 ] as const;
