@@ -15,6 +15,15 @@ import { GlowOrb } from "@/components/effects/GlowOrb";
 import { projects, categories, type ProjectCategory } from "@/data/projects";
 import { stats } from "@/data/stats";
 
+/** Category → emoji for projects without screenshots */
+const categoryEmoji: Record<string, string> = {
+  Music: "\uD83C\uDFB5",
+  Design: "\uD83C\uDFA8",
+  Code: "\u2328\uFE0F",
+  Video: "\uD83C\uDFAC",
+  "AI Tools": "\u2728",
+};
+
 export default function PortfolioPage() {
   const [activeCategory, setActiveCategory] =
     useState<ProjectCategory>("All");
@@ -111,47 +120,70 @@ export default function PortfolioPage() {
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ type: "spring", damping: 25, stiffness: 200 }}
                 >
-                  <Card
-                    variant="feature"
-                    className="group h-full hover:-translate-y-1 transition-transform"
-                  >
-                    {/* Placeholder thumbnail */}
-                    <div className="mb-4 aspect-video rounded-lg bg-gradient-to-br from-da-surface-light to-da-surface flex items-center justify-center overflow-hidden">
-                      <span className="text-4xl opacity-30">
-                        {project.category === "Music"
-                          ? "\uD83C\uDFB5"
-                          : project.category === "Design"
-                            ? "\uD83C\uDFA8"
-                            : project.category === "Code"
-                              ? "\u2328\uFE0F"
-                              : project.category === "Video"
-                                ? "\uD83C\uDFAC"
-                                : "\u2728"}
-                      </span>
-                    </div>
+                  {/* Wrap in anchor if project has a live URL */}
+                  <ProjectCardWrapper url={project.url}>
+                    <Card
+                      variant="feature"
+                      className="group h-full"
+                    >
+                      {/* Screenshot thumbnail or emoji fallback */}
+                      <div className="mb-4 aspect-video rounded-lg bg-gradient-to-br from-da-surface-light to-da-surface overflow-hidden relative">
+                        {project.screenshot ? (
+                          <>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={project.screenshot}
+                              alt={`Screenshot of ${project.title}`}
+                              className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                              loading="lazy"
+                            />
+                            {/* Hover overlay */}
+                            <div className="absolute inset-0 bg-da-indigo/0 group-hover:bg-da-indigo/10 transition-colors duration-300 flex items-center justify-center">
+                              <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm font-medium text-white bg-da-dark/80 px-4 py-2 rounded-full backdrop-blur-sm">
+                                View Live &rarr;
+                              </span>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span className="text-4xl opacity-30">
+                              {categoryEmoji[project.category] || "\u2728"}
+                            </span>
+                          </div>
+                        )}
+                      </div>
 
-                    <div className="text-xs font-semibold uppercase tracking-wider text-da-indigo mb-2">
-                      {project.category}
-                    </div>
-                    <h3 className="font-display text-lg font-semibold text-da-text group-hover:text-da-indigo transition-colors">
-                      {project.title}
-                    </h3>
-                    <p className="mt-2 text-sm text-da-muted leading-relaxed">
-                      {project.description}
-                    </p>
+                      <div className="text-xs font-semibold uppercase tracking-wider text-da-indigo mb-2">
+                        {project.category}
+                      </div>
+                      <h3 className="font-display text-lg font-semibold text-da-text group-hover:text-da-indigo transition-colors">
+                        {project.title}
+                      </h3>
+                      <p className="mt-2 text-sm text-da-muted leading-relaxed">
+                        {project.description}
+                      </p>
 
-                    {/* Tags */}
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {project.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-full bg-da-surface px-2 py-1 text-xs text-da-muted border border-da-border"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </Card>
+                      {/* Tags */}
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {project.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full bg-da-surface px-2 py-1 text-xs text-da-muted border border-da-border"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Live link indicator */}
+                      {project.url && (
+                        <div className="mt-4 flex items-center gap-2 text-xs text-da-cyan">
+                          <span className="inline-block h-1.5 w-1.5 rounded-full bg-da-cyan animate-pulse" />
+                          Live
+                        </div>
+                      )}
+                    </Card>
+                  </ProjectCardWrapper>
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -159,5 +191,26 @@ export default function PortfolioPage() {
         </div>
       </section>
     </>
+  );
+}
+
+/** Wraps a card in an anchor tag if the project has a URL, otherwise renders children directly */
+function ProjectCardWrapper({
+  url,
+  children,
+}: {
+  url?: string;
+  children: React.ReactNode;
+}) {
+  if (!url) return <>{children}</>;
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block h-full"
+    >
+      {children}
+    </a>
   );
 }
