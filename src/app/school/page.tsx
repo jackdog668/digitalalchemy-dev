@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { FadeInOnScroll } from "@/components/effects/FadeInOnScroll";
+import {
+  FadeInOnScroll,
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/effects/FadeInOnScroll";
+import { ShimmerLine } from "@/components/effects/ShimmerLine";
 import { GlowOrb } from "@/components/effects/GlowOrb";
 import { SITE } from "@/lib/constants";
 import { modules } from "@/data/modules";
@@ -21,6 +26,27 @@ const moduleIcons: Record<string, string> = {
   video: "\uD83C\uDFAC",
   dollar: "\uD83D\uDCB0",
 };
+
+const testimonials = [
+  {
+    quote:
+      "I went from zero coding experience to shipping my first app in 3 weeks. This system works.",
+    name: "Coming Soon",
+    role: "Alchemist",
+  },
+  {
+    quote:
+      "The accountability alone is worth it. Someone actually notices when you disappear.",
+    name: "Coming Soon",
+    role: "Alchemist",
+  },
+  {
+    quote:
+      "I have a portfolio now. A real one. Not screenshots of tutorials — actual projects I built.",
+    name: "Coming Soon",
+    role: "Alchemist",
+  },
+];
 
 export default function SchoolPage() {
   return (
@@ -44,22 +70,23 @@ export default function SchoolPage() {
           <FadeInOnScroll delay={100}>
             <p className="mx-auto mt-6 max-w-2xl text-xl text-da-muted">
               Courses create consumers who &quot;learned something.&quot; We
-              create <span className="text-da-amber font-semibold">Alchemists</span>{" "}
+              create{" "}
+              <span className="text-da-amber font-semibold">Alchemists</span>{" "}
               who build everything.
             </p>
           </FadeInOnScroll>
         </div>
       </section>
 
+      <ShimmerLine />
+
       {/* ── TRANSFORMATION PROMISE ── */}
       <section className="px-6 py-24 bg-da-surface/20">
         <div className="mx-auto max-w-5xl">
-          <FadeInOnScroll>
-            <SectionHeading
-              title="The 100-Day Transformation"
-              subtitle="See the difference between consumers and Alchemists."
-            />
-          </FadeInOnScroll>
+          <SectionHeading
+            title="The 100-Day Transformation"
+            subtitle="See the difference between consumers and Alchemists."
+          />
 
           <FadeInOnScroll delay={100}>
             <div className="overflow-x-auto">
@@ -112,19 +139,22 @@ export default function SchoolPage() {
         </div>
       </section>
 
+      <ShimmerLine />
+
       {/* ── MODULES GRID ── */}
       <section className="px-6 py-24">
         <div className="mx-auto max-w-6xl">
-          <FadeInOnScroll>
-            <SectionHeading
-              title="The 6 Forges"
-              subtitle="Each module is a forge where you create real, ownable assets."
-            />
-          </FadeInOnScroll>
+          <SectionHeading
+            title="The 6 Forges"
+            subtitle="Each module is a forge where you create real, ownable assets."
+          />
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {modules.map((mod, i) => (
-              <FadeInOnScroll key={mod.name} delay={i * 80}>
+          <StaggerContainer
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            staggerDelay={0.1}
+          >
+            {modules.map((mod) => (
+              <StaggerItem key={mod.name}>
                 <Card variant="feature" className="h-full">
                   <div className="text-3xl mb-3">
                     {moduleIcons[mod.icon] || "\u2728"}
@@ -142,44 +172,28 @@ export default function SchoolPage() {
                     {mod.deliverables}
                   </div>
                 </Card>
-              </FadeInOnScroll>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
-      {/* ── TESTIMONIALS (placeholder) ── */}
+      <ShimmerLine />
+
+      {/* ── TESTIMONIALS ── */}
       <section className="px-6 py-24 bg-da-surface/20">
         <div className="mx-auto max-w-5xl">
-          <FadeInOnScroll>
-            <SectionHeading
-              title="What Alchemists Say"
-              subtitle="Real builders, real results."
-            />
-          </FadeInOnScroll>
+          <SectionHeading
+            title="What Alchemists Say"
+            subtitle="Real builders, real results."
+          />
 
-          <div className="grid gap-6 md:grid-cols-3">
-            {[
-              {
-                quote:
-                  "I went from zero coding experience to shipping my first app in 3 weeks. This system works.",
-                name: "Coming Soon",
-                role: "Alchemist",
-              },
-              {
-                quote:
-                  "The accountability alone is worth it. Someone actually notices when you disappear.",
-                name: "Coming Soon",
-                role: "Alchemist",
-              },
-              {
-                quote:
-                  "I have a portfolio now. A real one. Not screenshots of tutorials — actual projects I built.",
-                name: "Coming Soon",
-                role: "Alchemist",
-              },
-            ].map((testimonial, i) => (
-              <FadeInOnScroll key={i} delay={i * 100}>
+          <StaggerContainer
+            className="grid gap-6 md:grid-cols-3"
+            staggerDelay={0.12}
+          >
+            {testimonials.map((testimonial) => (
+              <StaggerItem key={testimonial.quote}>
                 <Card variant="default" className="h-full">
                   <p className="text-sm text-da-muted italic leading-relaxed">
                     &quot;{testimonial.quote}&quot;
@@ -188,16 +202,16 @@ export default function SchoolPage() {
                     <p className="text-sm font-semibold text-da-text">
                       {testimonial.name}
                     </p>
-                    <p className="text-xs text-da-muted">
-                      {testimonial.role}
-                    </p>
+                    <p className="text-xs text-da-muted">{testimonial.role}</p>
                   </div>
                 </Card>
-              </FadeInOnScroll>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
+
+      <ShimmerLine />
 
       {/* ── CTA ── */}
       <section className="relative px-6 py-24 overflow-hidden">

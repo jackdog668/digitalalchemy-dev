@@ -1,11 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { motion, useInView } from "framer-motion";
+
+// Usage example:
+// <AnimatedCounter value={500} suffix="+" label="Students Enrolled" />
 
 interface AnimatedCounterProps {
   value: number;
   suffix?: string;
   label: string;
+}
+
+// easeOutExpo gives a fast start that decelerates to a precise stop —
+// feels snappy and intentional vs a linear or ease-in-out counter.
+function easeOutExpo(t: number): number {
+  return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
 }
 
 export function AnimatedCounter({
@@ -17,43 +27,56 @@ export function AnimatedCounter({
   const [hasAnimated, setHasAnimated] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          setHasAnimated(true);
-          // Animate counting up
-          const duration = 2000;
-          const steps = 60;
-          const increment = value / steps;
-          let current = 0;
-          const interval = setInterval(() => {
-            current += increment;
-            if (current >= value) {
-              setCount(value);
-              clearInterval(interval);
-            } else {
-              setCount(Math.floor(current));
-            }
-          }, duration / steps);
-        }
-      },
-      { threshold: 0.5 }
-    );
+  // useInView from framer-motion — fires once when 50px of the element
+  // enters the viewport. Cleaner than a manual IntersectionObserver.
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
 
-    const el = ref.current;
-    if (el) observer.observe(el);
-    return () => {
-      if (el) observer.unobserve(el);
-    };
+  const animate = useCallback(() => {
+    if (hasAnimated) return;
+    setHasAnimated(true);
+
+    const duration = 2000; // ms
+    const startTime = performance.now();
+
+    // requestAnimationFrame runs at the display refresh rate (typically 60fps),
+    // giving smooth interpolation vs setInterval's fixed ~16ms tick that can
+    // drift and cause visual stuttering.
+    function tick(now: number) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easedProgress = easeOutExpo(progress);
+
+      setCount(Math.floor(easedProgress * value));
+
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        // Clamp to exact target value at animation end
+        setCount(value);
+      }
+    }
+
+    requestAnimationFrame(tick);
   }, [value, hasAnimated]);
+
+  useEffect(() => {
+    if (isInView && !hasAnimated) {
+      animate();
+    }
+  }, [isInView, hasAnimated, animate]);
 
   return (
     <div ref={ref} className="text-center">
-      <div className="font-display text-4xl font-bold text-da-text sm:text-5xl">
+      <motion.div
+        className="font-display text-4xl font-bold text-da-text sm:text-5xl"
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ type: "spring", damping: 20, stiffness: 100 }}
+      >
         {count}
         <span className="text-da-amber">{suffix}</span>
-      </div>
+      </motion.div>
       <div className="mt-1 text-sm text-da-muted uppercase tracking-wider">
         {label}
       </div>

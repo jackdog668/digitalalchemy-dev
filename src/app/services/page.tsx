@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { FadeInOnScroll } from "@/components/effects/FadeInOnScroll";
+import {
+  FadeInOnScroll,
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/effects/FadeInOnScroll";
+import { ShimmerLine } from "@/components/effects/ShimmerLine";
 import { GlowOrb } from "@/components/effects/GlowOrb";
 import { services } from "@/data/services";
 
@@ -70,19 +75,22 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      <ShimmerLine />
+
       {/* ── SERVICE CARDS ── */}
       <section className="px-6 py-24 bg-da-surface/20">
         <div className="mx-auto max-w-6xl">
-          <FadeInOnScroll>
-            <SectionHeading
-              title="What We Offer"
-              subtitle="Every service ends with something shipped."
-            />
-          </FadeInOnScroll>
+          <SectionHeading
+            title="What We Offer"
+            subtitle="Every service ends with something shipped."
+          />
 
-          <div className="grid gap-6 md:grid-cols-2">
-            {services.map((service, i) => (
-              <FadeInOnScroll key={service.title} delay={i * 100}>
+          <StaggerContainer
+            className="grid gap-6 md:grid-cols-2"
+            staggerDelay={0.12}
+          >
+            {services.map((service) => (
+              <StaggerItem key={service.title}>
                 <Card variant="glow" className="h-full">
                   <div className="text-3xl mb-3">
                     {serviceIcons[service.icon] || "\u2728"}
@@ -105,29 +113,29 @@ export default function ServicesPage() {
                     ))}
                   </ul>
                 </Card>
-              </FadeInOnScroll>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
+
+      <ShimmerLine />
 
       {/* ── PROCESS ── */}
       <section className="px-6 py-24">
         <div className="mx-auto max-w-4xl">
-          <FadeInOnScroll>
-            <SectionHeading
-              title="How We Work"
-              subtitle="A system, not a sales pitch."
-            />
-          </FadeInOnScroll>
+          <SectionHeading
+            title="How We Work"
+            subtitle="A system, not a sales pitch."
+          />
 
           <div className="relative">
             {/* Vertical line */}
             <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-da-indigo via-da-purple to-da-amber hidden sm:block" />
 
-            <div className="space-y-12">
-              {processSteps.map((step, i) => (
-                <FadeInOnScroll key={step.step} delay={i * 100}>
+            <StaggerContainer className="space-y-12" staggerDelay={0.15}>
+              {processSteps.map((step) => (
+                <StaggerItem key={step.step}>
                   <div className="flex gap-6">
                     <div className="relative flex-shrink-0">
                       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-da-surface border border-da-border font-display text-sm font-bold text-da-amber">
@@ -143,12 +151,14 @@ export default function ServicesPage() {
                       </p>
                     </div>
                   </div>
-                </FadeInOnScroll>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           </div>
         </div>
       </section>
+
+      <ShimmerLine />
 
       {/* ── CONTACT CTA ── */}
       <section className="relative px-6 py-24 bg-da-surface/20 overflow-hidden">
@@ -165,7 +175,11 @@ export default function ServicesPage() {
               about what your team needs.
             </p>
             <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <Button href="mailto:hello@digitalalchemy.dev" variant="accent" size="lg">
+              <Button
+                href="mailto:hello@digitalalchemy.dev"
+                variant="accent"
+                size="lg"
+              >
                 Book a Call
               </Button>
               <Button href="/portfolio" variant="outline" size="lg">

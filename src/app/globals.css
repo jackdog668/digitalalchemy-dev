@@ -1,7 +1,13 @@
 @import "tailwindcss";
 
+/* ============================================================
+   DIGITAL ALCHEMY — GLOBAL STYLES
+   Stack: Next.js 16 + Tailwind CSS v4 (CSS-first @theme inline)
+   ============================================================ */
+
+/* ── CSS Custom Properties ─────────────────────────────────── */
 :root {
-  /* Digital Alchemy Brand Colors */
+  /* Brand Colors */
   --da-indigo: #6366f1;
   --da-purple: #8b5cf6;
   --da-amber: #f59e0b;
@@ -18,12 +24,14 @@
   --glow-purple: rgba(139, 92, 246, 0.4);
   --glow-amber: rgba(245, 158, 11, 0.3);
 
-  /* Base */
+  /* Base aliases */
   --background: var(--da-dark);
   --foreground: var(--da-text);
 }
 
+/* ── Tailwind v4 Theme Tokens ──────────────────────────────── */
 @theme inline {
+  /* Colors */
   --color-da-indigo: var(--da-indigo);
   --color-da-purple: var(--da-purple);
   --color-da-amber: var(--da-amber);
@@ -37,58 +45,112 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
+  /* Fonts */
   --font-sans: var(--font-inter);
   --font-display: var(--font-space-grotesk);
 
-  /* Custom animations */
+  /* Animation tokens — reference keyframe names defined below */
   --animate-glow: glow 3s ease-in-out infinite alternate;
-  --animate-float: float 6s ease-in-out infinite;
+  --animate-float: float 6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
   --animate-fade-in: fadeIn 0.6s ease-out forwards;
   --animate-fade-in-up: fadeInUp 0.6s ease-out forwards;
-  --animate-pulse-glow: pulseGlow 2s ease-in-out infinite;
+  --animate-shimmer: shimmer 4s linear infinite;
+  --animate-breathe: breathe 4s ease-in-out infinite;
   --animate-count-up: countUp 2s ease-out forwards;
+  --animate-border-glow: borderGlow 4s linear infinite;
 }
 
+/* ── Keyframes ─────────────────────────────────────────────── */
+
+/* Ambient glow pulse (box-shadow) */
 @keyframes glow {
   from { box-shadow: 0 0 20px var(--glow-indigo); }
-  to { box-shadow: 0 0 40px var(--glow-purple); }
+  to   { box-shadow: 0 0 40px var(--glow-purple); }
 }
 
+/*
+  Float — organic vertical drift.
+  Uses cubic-bezier(0.45, 0, 0.55, 1) for a softer ease-in/out
+  and reduced travel (12px) to avoid mechanical feel.
+*/
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+  0%, 100% { transform: translateY(0px);   }
+  50%       { transform: translateY(-12px); }
 }
 
 @keyframes fadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
 
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0);    }
 }
 
-@keyframes pulseGlow {
-  0%, 100% { text-shadow: 0 0 20px var(--glow-indigo), 0 0 40px var(--glow-purple); }
-  50% { text-shadow: 0 0 30px var(--glow-purple), 0 0 60px var(--glow-indigo); }
+/*
+  Shimmer — moving gradient sweep.
+  Replaces the old pulseGlow text-shadow approach with a smooth
+  background-position animation; works on both text and surfaces.
+*/
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+/*
+  Breathe — subtle scale pulse for ambient elements.
+  Keeps the element appearing "alive" without drawing focus.
+*/
+@keyframes breathe {
+  0%, 100% { transform: scale(1);    }
+  50%       { transform: scale(1.02); }
 }
 
 @keyframes countUp {
   from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0);    }
 }
 
+/*
+  Grain — GPU-accelerated noise animation.
+  translate3d forces compositing onto the GPU layer.
+  Short 0.5s linear loop avoids visible frame-skip steps.
+*/
 @keyframes grain {
-  0%, 100% { transform: translate(0, 0); }
-  10% { transform: translate(-5%, -10%); }
-  30% { transform: translate(3%, -15%); }
-  50% { transform: translate(12%, 9%); }
-  70% { transform: translate(9%, 4%); }
-  90% { transform: translate(-1%, 7%); }
+  0%   { transform: translate3d(0,    0,    0); }
+  10%  { transform: translate3d(-5%,  -10%, 0); }
+  20%  { transform: translate3d(8%,   -4%,  0); }
+  30%  { transform: translate3d(3%,   -15%, 0); }
+  40%  { transform: translate3d(-8%,  6%,   0); }
+  50%  { transform: translate3d(12%,  9%,   0); }
+  60%  { transform: translate3d(-3%,  -7%,  0); }
+  70%  { transform: translate3d(9%,   4%,   0); }
+  80%  { transform: translate3d(-6%,  11%,  0); }
+  90%  { transform: translate3d(-1%,  7%,   0); }
+  100% { transform: translate3d(0,    0,    0); }
 }
 
-/* Base styles */
+/*
+  Border glow — conic-gradient rotation via @property.
+  Requires @property to animate the custom angle value.
+*/
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes borderGlow {
+  0%   { --angle: 0deg;   }
+  100% { --angle: 360deg; }
+}
+
+/* ── Base Styles ───────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -97,12 +159,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Smooth scroll */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Custom scrollbar */
+/* ── Scrollbar ─────────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -120,8 +177,108 @@ html {
   background: var(--da-indigo);
 }
 
-/* Selection color */
+/* ── Selection ─────────────────────────────────────────────── */
 ::selection {
   background: rgba(99, 102, 241, 0.3);
   color: var(--da-text);
+}
+
+/* ── Premium Utility Classes ───────────────────────────────── */
+
+/*
+  .glow-text
+  Animated gradient text sweep using the shimmer keyframe.
+  Usage: <h1 className="glow-text">Digital Alchemy</h1>
+*/
+.glow-text {
+  background: linear-gradient(
+    90deg,
+    var(--da-indigo),
+    var(--da-purple),
+    var(--da-amber),
+    var(--da-indigo)
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+/*
+  .shimmer-line
+  1px horizontal divider with a sweeping light effect.
+  Usage: <div className="shimmer-line" />
+  (Also exposed as <ShimmerLine /> component)
+*/
+.shimmer-line {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(99, 102, 241, 0.3),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+/*
+  .glow-button
+  Adds a sweeping shine on hover via a ::before pseudo-element.
+  Usage: <button className="glow-button ...">CTA</button>
+*/
+.glow-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.glow-button:hover::before {
+  left: 100%;
+}
+
+/* ── Reduced Motion ────────────────────────────────────────── */
+/*
+  Respects the OS-level "reduce motion" accessibility preference.
+  All keyframe animations and transitions are disabled or minimised.
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .glow-text {
+    /* Fall back to a static gradient — still visually rich, no motion */
+    animation: none;
+    background-position: 0% center;
+  }
+
+  .shimmer-line {
+    animation: none;
+    background: rgba(99, 102, 241, 0.2);
+  }
+
+  .glow-button::before {
+    display: none;
+  }
 }

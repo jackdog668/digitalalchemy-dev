@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { FadeInOnScroll } from "@/components/effects/FadeInOnScroll";
+import {
+  FadeInOnScroll,
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/effects/FadeInOnScroll";
+import { ShimmerLine } from "@/components/effects/ShimmerLine";
 import { GlowOrb } from "@/components/effects/GlowOrb";
 import { SITE } from "@/lib/constants";
 
@@ -38,6 +43,22 @@ const pillars = [
     consumer: "Knows everything",
     alchemist: "Ships everything",
   },
+];
+
+const creedLines = [
+  { text: "I am not a consumer. I am a creator.", emphasis: true },
+  { text: "I don\u2019t collect courses. I build systems.", emphasis: false },
+  { text: "I don\u2019t follow trends. I design workflows.", emphasis: false },
+  {
+    text: "I don\u2019t hope for clarity. I architect outcomes.",
+    emphasis: false,
+  },
+  { text: "My stack is intentional.", emphasis: false },
+  { text: "My skills compound.", emphasis: false },
+  { text: "My output has value.", emphasis: false },
+  { text: "I am done being vague.", emphasis: false },
+  { text: "I am done being passive.", emphasis: false },
+  { text: "I am done being a follower.", emphasis: false },
 ];
 
 export default function AboutPage() {
@@ -89,19 +110,22 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <ShimmerLine />
+
       {/* ── MISSION / PILLARS ── */}
       <section className="px-6 py-24 bg-da-surface/20">
         <div className="mx-auto max-w-6xl">
-          <FadeInOnScroll>
-            <SectionHeading
-              title="What We Stand For"
-              subtitle="Five pillars that separate Alchemists from consumers."
-            />
-          </FadeInOnScroll>
+          <SectionHeading
+            title="What We Stand For"
+            subtitle="Five pillars that separate Alchemists from consumers."
+          />
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {pillars.map((pillar, i) => (
-              <FadeInOnScroll key={pillar.title} delay={i * 80}>
+          <StaggerContainer
+            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            staggerDelay={0.1}
+          >
+            {pillars.map((pillar) => (
+              <StaggerItem key={pillar.title}>
                 <Card variant="feature" className="h-full">
                   <h3 className="font-display text-lg font-semibold text-da-text">
                     {pillar.title}
@@ -117,18 +141,18 @@ export default function AboutPage() {
                     </div>
                   </div>
                 </Card>
-              </FadeInOnScroll>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
+
+      <ShimmerLine />
 
       {/* ── THE ALCHEMIST CREED ── */}
       <section className="px-6 py-24">
         <div className="mx-auto max-w-3xl">
-          <FadeInOnScroll>
-            <SectionHeading title="The Alchemist Creed" />
-          </FadeInOnScroll>
+          <SectionHeading title="The Alchemist Creed" />
 
           <FadeInOnScroll delay={100}>
             <Card
@@ -136,35 +160,37 @@ export default function AboutPage() {
               className="relative overflow-hidden text-center"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-da-indigo/5 to-da-purple/5" />
-              <div className="relative space-y-4 py-8 font-display text-lg leading-relaxed sm:text-xl">
-                <p className="font-semibold text-da-text">
-                  I am not a consumer. I am a creator.
-                </p>
-                <div className="space-y-2 text-da-muted">
-                  <p>I don&apos;t collect courses. I build systems.</p>
-                  <p>I don&apos;t follow trends. I design workflows.</p>
-                  <p>
-                    I don&apos;t hope for clarity. I architect outcomes.
-                  </p>
-                </div>
-                <div className="space-y-2 text-da-muted">
-                  <p>My stack is intentional.</p>
-                  <p>My skills compound.</p>
-                  <p>My output has value.</p>
-                </div>
-                <div className="space-y-2 text-da-muted">
-                  <p>I am done being vague.</p>
-                  <p>I am done being passive.</p>
-                  <p>I am done being a follower.</p>
-                </div>
-                <p className="pt-4 text-2xl font-bold text-da-amber">
-                  I am an Alchemist.
-                </p>
+              <div className="relative py-8">
+                <StaggerContainer
+                  className="space-y-4 font-display text-lg leading-relaxed sm:text-xl"
+                  staggerDelay={0.07}
+                >
+                  {creedLines.map((line) => (
+                    <StaggerItem key={line.text}>
+                      <p
+                        className={
+                          line.emphasis
+                            ? "font-semibold text-da-text"
+                            : "text-da-muted"
+                        }
+                      >
+                        {line.text}
+                      </p>
+                    </StaggerItem>
+                  ))}
+                  <StaggerItem>
+                    <p className="pt-4 text-2xl font-bold text-da-amber">
+                      I am an Alchemist.
+                    </p>
+                  </StaggerItem>
+                </StaggerContainer>
               </div>
             </Card>
           </FadeInOnScroll>
         </div>
       </section>
+
+      <ShimmerLine />
 
       {/* ── CREDENTIALS / CTA ── */}
       <section className="px-6 py-24 bg-da-surface/20">
@@ -174,24 +200,37 @@ export default function AboutPage() {
               Not theory.{" "}
               <span className="text-da-indigo">Proven execution.</span>
             </h2>
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
+          </FadeInOnScroll>
+
+          <StaggerContainer
+            className="mt-8 flex flex-wrap justify-center gap-4"
+            staggerDelay={0.12}
+          >
+            <StaggerItem>
               <div className="rounded-lg border border-da-border bg-da-surface px-6 py-3 text-sm">
                 <span className="text-da-amber font-semibold">Google</span>{" "}
                 <span className="text-da-muted">
                   Gemini Certified Educator
                 </span>
               </div>
+            </StaggerItem>
+            <StaggerItem>
               <div className="rounded-lg border border-da-border bg-da-surface px-6 py-3 text-sm">
                 <span className="text-da-amber font-semibold">10+</span>{" "}
                 <span className="text-da-muted">
                   Years in Creative Education
                 </span>
               </div>
+            </StaggerItem>
+            <StaggerItem>
               <div className="rounded-lg border border-da-border bg-da-surface px-6 py-3 text-sm">
                 <span className="text-da-amber font-semibold">340+</span>{" "}
                 <span className="text-da-muted">AI Assets Created</span>
               </div>
-            </div>
+            </StaggerItem>
+          </StaggerContainer>
+
+          <FadeInOnScroll delay={400}>
             <Button
               href={SITE.skoolUrl}
               external

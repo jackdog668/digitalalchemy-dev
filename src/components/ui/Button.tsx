@@ -1,5 +1,13 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
 import type { ReactNode } from "react";
+
+// Usage examples:
+// <Button variant="primary" size="lg" href="/join">Get Started</Button>
+// <Button variant="accent" onClick={handleClick}>Join Now</Button>
+// <Button variant="outline" href="https://x.com" external>Follow Us</Button>
 
 type Variant = "primary" | "secondary" | "accent" | "outline" | "ghost";
 type Size = "sm" | "md" | "lg";
@@ -16,13 +24,13 @@ interface ButtonProps {
 
 const variantStyles: Record<Variant, string> = {
   primary:
-    "bg-da-indigo hover:bg-da-indigo/80 text-white shadow-lg shadow-da-indigo/25 hover:shadow-da-indigo/40",
+    "bg-da-indigo text-white shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_35px_rgba(99,102,241,0.6)] hover:bg-da-indigo/90",
   secondary:
-    "bg-da-purple hover:bg-da-purple/80 text-white shadow-lg shadow-da-purple/25",
+    "bg-da-purple text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] hover:bg-da-purple/90",
   accent:
-    "bg-da-amber hover:bg-da-amber/90 text-da-dark font-semibold shadow-lg shadow-da-amber/25",
+    "bg-da-amber text-da-dark font-semibold shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[0_0_35px_rgba(245,158,11,0.6)] hover:bg-da-amber/90",
   outline:
-    "border border-da-border hover:border-da-indigo/50 text-da-text hover:bg-da-surface",
+    "border border-da-border text-da-text hover:border-da-indigo/60 hover:shadow-[0_0_20px_rgba(99,102,241,0.2)] hover:bg-da-indigo/5",
   ghost: "text-da-muted hover:text-da-text hover:bg-da-surface/50",
 };
 
@@ -30,6 +38,13 @@ const sizeStyles: Record<Size, string> = {
   sm: "px-4 py-2 text-sm",
   md: "px-6 py-3 text-base",
   lg: "px-8 py-4 text-lg",
+};
+
+// Spring config for snappy but natural feel
+const motionProps = {
+  whileHover: { scale: 1.03 },
+  whileTap: { scale: 0.97 },
+  transition: { type: "spring" as const, stiffness: 400, damping: 17 },
 };
 
 export function Button({
@@ -42,32 +57,40 @@ export function Button({
   onClick,
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 cursor-pointer";
+    "relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-300 cursor-pointer glow-button";
   const styles = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`;
 
-  if (href) {
-    if (external) {
-      return (
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles}
-        >
-          {children}
-        </a>
-      );
-    }
+  // External link — motion.a handles the anchor directly
+  if (href && external) {
     return (
-      <Link href={href} className={styles}>
+      <motion.a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles}
+        {...motionProps}
+      >
         {children}
-      </Link>
+      </motion.a>
     );
   }
 
+  // Internal link — motion.div wraps Next.js Link since motion can't
+  // extend Link without losing its prefetch/navigation behavior
+  if (href) {
+    return (
+      <motion.div {...motionProps} className="inline-block">
+        <Link href={href} className={styles}>
+          {children}
+        </Link>
+      </motion.div>
+    );
+  }
+
+  // Default button element
   return (
-    <button onClick={onClick} className={styles}>
+    <motion.button onClick={onClick} className={styles} {...motionProps}>
       {children}
-    </button>
+    </motion.button>
   );
 }
