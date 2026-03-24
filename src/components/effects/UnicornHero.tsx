@@ -18,10 +18,10 @@ export function UnicornHero() {
         sdkUrl="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.1.5/dist/unicornStudio.umd.js"
         width="100%"
         height="100%"
-        lazyLoad={false}
-        dpi={1.5}
+        lazyLoad={true}
+        dpi={1}
         scale={1}
-        fps={60}
+        fps={30}
       />
       {/* Dark gradient overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-da-dark/40 via-da-dark/60 to-da-dark" />
