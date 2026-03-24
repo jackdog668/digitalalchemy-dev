@@ -12,6 +12,8 @@ import {
 } from "@/components/effects/FadeInOnScroll";
 import { ShimmerLine } from "@/components/effects/ShimmerLine";
 import { GlowOrb } from "@/components/effects/GlowOrb";
+import { Button } from "@/components/ui/Button";
+import { SITE } from "@/lib/constants";
 import { projects, categories, type ProjectCategory } from "@/data/projects";
 import { stats } from "@/data/stats";
 
@@ -49,8 +51,8 @@ export default function PortfolioPage() {
 
           <FadeInOnScroll delay={100}>
             <p className="mx-auto mt-6 max-w-2xl text-xl text-da-muted">
-              Real projects. Real output. Everything here was created — not
-              curated from a tutorial.
+              Real projects built using the same tools and methods we teach in
+              class. Everything here was created — not curated from a tutorial.
             </p>
           </FadeInOnScroll>
         </div>
@@ -188,6 +190,38 @@ export default function PortfolioPage() {
               ))}
             </AnimatePresence>
           </div>
+        </div>
+      </section>
+
+      <ShimmerLine />
+
+      {/* ── BOTTOM CTA ── */}
+      <section className="relative px-6 py-24 overflow-hidden">
+        <GlowOrb color="cyan" size="md" className="-right-20 top-0" />
+
+        <div className="relative mx-auto max-w-3xl text-center">
+          <FadeInOnScroll>
+            <h2 className="font-display text-3xl font-bold sm:text-4xl">
+              Everything here was built with the same tools{" "}
+              <span className="text-da-cyan">we teach in class.</span>
+            </h2>
+            <p className="mt-4 text-lg text-da-muted">
+              Ready to add your own projects to the portfolio?
+            </p>
+            <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+              <Button
+                href={SITE.skoolUrl}
+                external
+                variant="accent"
+                size="lg"
+              >
+                Become an Alchemist
+              </Button>
+              <Button href={SITE.beaconsUrl} external variant="primary" size="lg">
+                All Links
+              </Button>
+            </div>
+          </FadeInOnScroll>
         </div>
       </section>
     </>

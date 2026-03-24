@@ -21,12 +21,12 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: `${SITE.name} | Build With AI, Not Just Learn It`,
+    default: `${SITE.name} | Learn to Build Apps with AI — No Coding Required`,
     template: `%s | ${SITE.name}`,
   },
   description: SITE.description,
   openGraph: {
-    title: `${SITE.name} | Build With AI, Not Just Learn It`,
+    title: `${SITE.name} | Learn to Build Apps with AI — No Coding Required`,
     description: SITE.description,
     url: SITE.url,
     siteName: SITE.name,
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE.name} | Build With AI, Not Just Learn It`,
+    title: `${SITE.name} | Learn to Build Apps with AI — No Coding Required`,
     description: SITE.description,
   },
   robots: {

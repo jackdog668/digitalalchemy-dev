@@ -12,9 +12,9 @@ import { GlowOrb } from "@/components/effects/GlowOrb";
 import { services } from "@/data/services";
 
 export const metadata: Metadata = {
-  title: "Services",
+  title: "AI Services | Consulting, Workshops & Custom AI Systems",
   description:
-    "AI consulting, vibe coding workshops, portfolio building, and custom AI systems. Build systems, not just ideas.",
+    "Consulting, workshops, and custom tools for organizations ready to put AI to work — not just talk about it.",
 };
 
 const serviceIcons: Record<string, string> = {
@@ -29,25 +29,25 @@ const processSteps = [
     step: "01",
     title: "Discovery",
     description:
-      "We understand your goals, constraints, and what success looks like for your team.",
+      "We learn your goals, your constraints, and what success actually looks like for your team.",
   },
   {
     step: "02",
     title: "System Design",
     description:
-      "We architect the solution — tools, workflows, and deliverables mapped to your outcomes.",
+      "We map out the solution — which tools, which workflows, which deliverables get you to your outcome.",
   },
   {
     step: "03",
     title: "Build Together",
     description:
-      "Hands-on implementation. Your team builds alongside us — learning by doing, not watching.",
+      "Hands-on implementation. Your team builds alongside us — learning by doing, not by watching a presentation.",
   },
   {
     step: "04",
     title: "Ship It",
     description:
-      "Launch, iterate, and optimize. You walk away with working systems and the skills to maintain them.",
+      "Launch, test, and optimize. You walk away with working systems and the skills to maintain them.",
   },
 ];
 
@@ -61,15 +61,15 @@ export default function ServicesPage() {
         <div className="relative mx-auto max-w-4xl text-center">
           <FadeInOnScroll>
             <h1 className="font-display text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-              Build Systems,{" "}
-              <span className="text-da-indigo">Not Just Ideas.</span>
+              We Build AI Systems{" "}
+              <span className="text-da-indigo">for Brands and Teams.</span>
             </h1>
           </FadeInOnScroll>
 
           <FadeInOnScroll delay={100}>
             <p className="mx-auto mt-6 max-w-2xl text-xl text-da-muted">
-              AI consulting, workshops, and custom systems for brands and
-              teams who are ready to build — not just brainstorm.
+              Consulting, workshops, and custom tools for organizations ready to
+              put AI to work — not just talk about it.
             </p>
           </FadeInOnScroll>
         </div>
@@ -128,17 +128,18 @@ export default function ServicesPage() {
 
       <ShimmerLine />
 
-      {/* ── MARKET STATS ── */}
+      {/* ── THE WINDOW / MARKET STATS ── */}
       <section className="px-6 py-24">
         <div className="mx-auto max-w-4xl text-center">
           <FadeInOnScroll>
             <h2 className="font-display text-3xl font-bold sm:text-4xl">
-              The Window Is{" "}
+              The Opportunity Is{" "}
               <span className="text-da-cyan">Right Now.</span>
             </h2>
             <p className="mt-4 text-lg text-da-muted max-w-2xl mx-auto">
-              The same opportunity web developers had in the early 2000s and
-              cloud consultants had in the 2010s — that&apos;s where AI is today.
+              The same window web developers had in the early 2000s and cloud
+              consultants had in the 2010s — that&apos;s exactly where AI
+              services are today. The businesses that move first win the most.
             </p>
           </FadeInOnScroll>
 
@@ -147,9 +148,18 @@ export default function ServicesPage() {
             staggerDelay={0.12}
           >
             {[
-              { stat: "63%", label: "of active vibe coders are non-developers" },
-              { stat: "$9B", label: "Replit valuation (2026)" },
-              { stat: "2M+", label: "Suno paid subscribers" },
+              {
+                stat: "63%",
+                label: "of active vibe coders have no traditional dev background",
+              },
+              {
+                stat: "$9B",
+                label: "Replit's 2026 valuation — proof the market is real",
+              },
+              {
+                stat: "2M+",
+                label: "Suno paid subscribers — AI music is mainstream",
+              },
             ].map((item) => (
               <StaggerItem key={item.label}>
                 <Card variant="default" className="text-center">
@@ -171,7 +181,6 @@ export default function ServicesPage() {
         <div className="mx-auto max-w-4xl">
           <SectionHeading
             title="How We Work"
-            subtitle="A system, not a sales pitch."
           />
 
           <div className="relative">
@@ -216,8 +225,8 @@ export default function ServicesPage() {
               <span className="text-da-cyan">Something.</span>
             </h2>
             <p className="mt-4 text-lg text-da-muted">
-              Ready to stop brainstorming and start shipping? Let&apos;s talk
-              about what your team needs.
+              Ready to put AI to work for your team? Let&apos;s talk about what
+              you need.
             </p>
             <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Button

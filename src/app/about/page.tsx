@@ -12,36 +12,31 @@ import { GlowOrb } from "@/components/effects/GlowOrb";
 import { SITE } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "About",
+  title: "About | AI Education for Women Who Want to Build",
   description:
-    "Meet Desmond Baker Jr — Gemini Certified Educator, founder of Digital Alchemy, and the person who will make you stop watching tutorials and start building.",
+    "Meet Desmond Baker Jr — Google Gemini Certified Educator, founder of Digital Alchemy, and the guide who will help you go from 'I'm not techy' to 'I just shipped my first app.'",
 };
 
 const pillars = [
   {
-    title: "Building Over Learning",
-    consumer: "Watches tutorials",
-    alchemist: "Ships projects",
+    title: "Building Over Watching",
+    body: "Every class ends with something you made. Not something you watched someone else make.",
   },
   {
-    title: "Ownership Over Consumption",
-    consumer: "Collects courses",
-    alchemist: "Owns 340+ assets",
+    title: "Ownership Over Subscriptions",
+    body: "Everything you create here belongs to you. Your name. Your commercial rights. Your portfolio.",
   },
   {
-    title: "Systems Over Information",
-    consumer: "Has 47 browser tabs",
-    alchemist: "Has a structured stack",
+    title: "Systems Over Scattered Tabs",
+    body: "We give you one clear path — not 47 browser tabs and a prayer. Each week builds on the last.",
   },
   {
-    title: "Community Over Isolation",
-    consumer: "Builds alone",
-    alchemist: "Never builds alone",
+    title: "Community Over Going It Alone",
+    body: "You're building alongside other women who are figuring this out too. Nobody's judging. Everybody's helping.",
   },
   {
-    title: "Execution Over Knowledge",
-    consumer: "Knows everything",
-    alchemist: "Ships everything",
+    title: "Results Over Knowledge",
+    body: "Knowing about AI is nice. Having a portfolio of things you actually built with AI? That's the goal.",
   },
 ];
 
@@ -58,7 +53,6 @@ const creedLines = [
   { text: "My output has value.", emphasis: false },
   { text: "I am done being vague.", emphasis: false },
   { text: "I am done being passive.", emphasis: false },
-  { text: "I am done being a follower.", emphasis: false },
 ];
 
 export default function AboutPage() {
@@ -77,9 +71,9 @@ export default function AboutPage() {
 
           <FadeInOnScroll delay={100}>
             <h1 className="font-display text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-              I got tired of watching people{" "}
-              <span className="text-da-cyan">learn forever</span> and{" "}
-              <span className="text-da-indigo">build nothing.</span>
+              I Spent 10 Years Watching Talented People{" "}
+              <span className="text-da-cyan">Get Stuck.</span>{" "}
+              <span className="text-da-indigo">So I Built a Way Out.</span>
             </h1>
           </FadeInOnScroll>
 
@@ -87,34 +81,44 @@ export default function AboutPage() {
             <div className="mt-8 space-y-6 text-lg text-da-muted leading-relaxed">
               <p>
                 I&apos;m Desmond Baker Jr — founder of Digital Alchemy and DB
-                Creations LLC. For over 10 years I&apos;ve been in creative
-                education, and I kept seeing the same pattern: talented people
-                consume endless tutorials, buy every course, open 47 browser
-                tabs, and still have <span className="text-da-text font-semibold">nothing to show for it</span>.
+                Creations LLC.
               </p>
               <p>
-                I went deep into AI — Midjourney for Afrocentric surrealism art,
-                Suno for original music production, Cursor and Bolt for vibe
-                coding real applications. I built 340+ AI-created assets, 45+
-                original music tracks, 27+ app blueprints. Then I realized: the
-                value isn&apos;t in knowing the tools. It&apos;s in having a{" "}
-                <span className="text-da-text font-semibold">system</span> that
-                makes you build with them.
+                For over a decade I&apos;ve worked in creative education, and I
+                kept seeing the same pattern: smart, capable people would buy
+                every course, watch every tutorial, open 47 browser tabs — and
+                still have{" "}
+                <span className="text-da-text font-semibold">
+                  nothing to show for it
+                </span>
+                . Not because they weren&apos;t talented. Because nobody gave
+                them a real system to follow.
               </p>
               <p>
-                So I built Digital Alchemy — not a course (courses create
-                consumers who &quot;learned something&quot;). A 100-day system
-                where you create 340+ assets with YOUR name on them. With
-                commercial rights. Where you walk away as an Alchemist, not a
-                student.
+                So I went deep into AI and built that system myself. I created
+                340+ assets — original music with Suno, Afrocentric surrealism
+                art with Midjourney, 27+ app blueprints using vibe coding tools.
+                I realized the value isn&apos;t in knowing what the tools are.
+                It&apos;s in having someone walk you through building real things
+                with them.
               </p>
               <p>
-                I&apos;m a Gemini Certified Educator — officially recognized by
-                Google. I&apos;ve spoken on the main stage at AI Tinkerers
-                demoing Agent Forge. I&apos;m involved with the Compass Detroit
-                IWD Innovation Summit. But credentials don&apos;t mean shit if
-                you can&apos;t help people build real things. That&apos;s what
-                this is about.
+                That&apos;s what Digital Alchemy is. Not another course that
+                makes you feel productive while you&apos;re watching and lost
+                when you&apos;re done. A community where you build alongside me,
+                live, every week. Where every project has your name on it. Where
+                the women in this community go from &quot;I&apos;m not
+                techy&quot; to &quot;I just shipped my first app.&quot;
+              </p>
+              <p>
+                I&apos;m a {SITE.credential}. I&apos;ve spoken on the main
+                stage at AI Tinkerers demoing live builds. But honestly, the
+                thing I&apos;m most proud of is watching a woman in her 50s who
+                &apos;s never written a line of code deploy her first working
+                app and say &quot;wait… I made that?&quot;
+              </p>
+              <p className="text-da-text font-semibold">
+                Yeah. You did. And you&apos;re about to make a lot more.
               </p>
             </div>
           </FadeInOnScroll>
@@ -123,27 +127,29 @@ export default function AboutPage() {
 
       <ShimmerLine />
 
-      {/* ── MY STACK ── */}
+      {/* ── THE ALCHEMIST'S STACK ── */}
       <section className="px-6 py-24 bg-da-surface/20">
         <div className="mx-auto max-w-6xl">
           <SectionHeading
-            title="The Alchemist's Stack"
-            subtitle="The tools I use every day to build, create, and teach."
+            title="The Tools We Use Every Week"
+            subtitle="You don't need to know these yet — that's what class is for. But here's what powers everything we build."
           />
 
           <StaggerContainer
-            className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+            className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5"
             staggerDelay={0.08}
           >
             {[
-              { name: "Claude Code", role: "AI development partner" },
-              { name: "Cursor", role: "AI code editor" },
-              { name: "Midjourney", role: "AI art & visual creation" },
-              { name: "Suno", role: "AI music production" },
-              { name: "Google AI Studio", role: "Gemini API & prototyping" },
-              { name: "Firebase", role: "Auth, database, hosting" },
-              { name: "Vercel", role: "App deployment" },
-              { name: "Notion", role: "Docs, wiki, task hub" },
+              { name: "Google AI Studio", role: "Where we prototype ideas with Google's Gemini AI" },
+              { name: "GitHub", role: "Where your code lives (your project filing cabinet)" },
+              { name: "Antigravity", role: "One-click app deployment — no server setup needed" },
+              { name: "Vercel", role: "Where your apps go live on the internet" },
+              { name: "Claude", role: "Our AI co-pilot for writing, planning, and building" },
+              { name: "Lovable", role: "Visual app builder — drag, drop, and ship" },
+              { name: "Suno", role: "AI music creation — full songs from a text description" },
+              { name: "Midjourney", role: "AI art and visual design" },
+              { name: "Make.com", role: "Connect your apps together with automated workflows" },
+              { name: "NotebookLM", role: "AI research and study tool by Google" },
             ].map((tool) => (
               <StaggerItem key={tool.name}>
                 <Card variant="default" className="text-center py-4">
@@ -160,12 +166,11 @@ export default function AboutPage() {
 
       <ShimmerLine />
 
-      {/* ── MISSION / PILLARS ── */}
+      {/* ── WHAT WE STAND FOR ── */}
       <section className="px-6 py-24 bg-da-surface/20">
         <div className="mx-auto max-w-6xl">
           <SectionHeading
-            title="What We Stand For"
-            subtitle="Five pillars that separate Alchemists from consumers."
+            title="Five Things That Make This Different"
           />
 
           <StaggerContainer
@@ -178,16 +183,9 @@ export default function AboutPage() {
                   <h3 className="font-display text-lg font-semibold text-da-text">
                     {pillar.title}
                   </h3>
-                  <div className="mt-4 space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <span className="text-red-400">&#10005;</span>
-                      <span className="text-da-muted">{pillar.consumer}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-da-cyan">&#10003;</span>
-                      <span className="text-da-text">{pillar.alchemist}</span>
-                    </div>
-                  </div>
+                  <p className="mt-3 text-sm text-da-muted leading-relaxed">
+                    {pillar.body}
+                  </p>
                 </Card>
               </StaggerItem>
             ))}
@@ -243,21 +241,14 @@ export default function AboutPage() {
       {/* ── CREDENTIALS / CTA ── */}
       <section className="px-6 py-24 bg-da-surface/20">
         <div className="mx-auto max-w-3xl text-center">
-          <FadeInOnScroll>
-            <h2 className="font-display text-3xl font-bold sm:text-4xl">
-              Not theory.{" "}
-              <span className="text-da-indigo">Proven execution.</span>
-            </h2>
-          </FadeInOnScroll>
-
           <StaggerContainer
-            className="mt-8 flex flex-wrap justify-center gap-4"
+            className="flex flex-wrap justify-center gap-4"
             staggerDelay={0.1}
           >
             {[
               { highlight: "Google", label: "Gemini Certified Educator" },
               { highlight: "10+", label: "Years in Creative Education" },
-              { highlight: "340+", label: "AI Assets (Music, Art, Video, Code)" },
+              { highlight: "340+", label: "AI Assets Created" },
               { highlight: "45+", label: "Original AI Music Tracks" },
               { highlight: "27+", label: "App Blueprints Built" },
               { highlight: "Main Stage", label: "AI Tinkerers Speaker" },
