@@ -84,7 +84,7 @@ export default function HomePage() {
                   variant="accent"
                   size="lg"
                 >
-                  Start Your Free Trial
+                  Become an Alchemist
                 </Button>
               </MagneticWrapper>
               <Button href="/portfolio" variant="primary" size="lg">

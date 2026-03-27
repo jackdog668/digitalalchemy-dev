@@ -20,7 +20,7 @@
 
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import type { ReactNode } from "react";
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 
 interface MagneticWrapperProps {
   children: ReactNode;
@@ -48,14 +48,26 @@ export function MagneticWrapper({
   const springX = useSpring(x, { stiffness: 150, damping: 15 });
   const springY = useSpring(y, { stiffness: 150, damping: 15 });
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set((e.clientX - centerX) * strength);
-    y.set((e.clientY - centerY) * strength);
-  };
+  // Throttle mousemove to ~60fps via rAF to avoid layout thrashing
+  const rafId = useRef<number>(0);
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (rafId.current) return;
+      rafId.current = requestAnimationFrame(() => {
+        if (!ref.current) {
+          rafId.current = 0;
+          return;
+        }
+        const rect = ref.current.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        x.set((e.clientX - centerX) * strength);
+        y.set((e.clientY - centerY) * strength);
+        rafId.current = 0;
+      });
+    },
+    [strength, x, y],
+  );
 
   const handleMouseLeave = () => {
     x.set(0);

@@ -32,8 +32,8 @@ export const projects: Project[] = [
       "Professional QR code generator with custom styling, logo embedding, and batch export. Built with Next.js.",
     category: "AI Tools",
     tags: ["Next.js", "QR Codes", "Design Tool"],
-    url: "https://qr-forge-pro-mu.vercel.app",
-    screenshot: screenshotUrl("https://qr-forge-pro-mu.vercel.app"),
+    url: "https://qrcodybydb.vercel.app/",
+    screenshot: screenshotUrl("https://qrcodybydb.vercel.app/"),
   },
   {
     title: "Idea2PRD Generator",
