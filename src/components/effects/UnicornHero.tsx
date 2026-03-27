@@ -14,7 +14,7 @@ export function UnicornHero() {
   return (
     <div className="absolute inset-0 z-0" aria-hidden="true">
       <UnicornScene
-        projectId="ujYM8acC6p2g3clIqwE6"
+        projectId="MVkjffIpWmaJtF0iIv18"
         sdkUrl="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.1.5/dist/unicornStudio.umd.js"
         width="100%"
         height="100%"
