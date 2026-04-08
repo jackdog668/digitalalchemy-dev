@@ -29,8 +29,14 @@ create index if not exists posts_status_published_at_idx
 create index if not exists posts_slug_idx on public.posts(slug);
 
 -- auto-update updated_at
+-- search_path is pinned to empty: only references `new` (trigger pseudo-record)
+-- and `now()` (lives in pg_catalog, always implicitly searched). Pinning
+-- prevents schema-shadowing attacks flagged by Supabase Security Advisor.
 create or replace function public.set_updated_at()
-returns trigger language plpgsql as $$
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
 begin
   new.updated_at = now();
   return new;
@@ -86,3 +92,11 @@ revoke all on public.subscribers  from anon, authenticated;
 revoke all on public.post_views   from anon, authenticated;
 
 grant select on public.posts to anon, authenticated;
+
+-- Explicit deny-all on post_views so the Security Advisor stops flagging
+-- "RLS enabled, no policies." Service-role bypasses RLS, so server code
+-- (which is the only writer/reader anyway) is unaffected.
+drop policy if exists "no public access to post_views" on public.post_views;
+create policy "no public access to post_views" on public.post_views
+  for all to anon, authenticated
+  using (false) with check (false);
