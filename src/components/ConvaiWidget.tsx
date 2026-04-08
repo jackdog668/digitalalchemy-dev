@@ -13,11 +13,12 @@ export function ConvaiWidget() {
 
   // Hide the "Powered by ElevenAgents" badge inside the widget's shadow DOM.
   // The widget is a custom element loaded from unpkg; its branding sits in a
-  // shadow root we have to pierce after the script mounts. We poll briefly,
-  // then attach a MutationObserver in case the badge re-renders.
+  // shadow root we have to pierce after the script mounts. We poll briefly
+  // and stop as soon as we successfully inject the stylesheet — no observer,
+  // no retry loop, to avoid bloating the console with mutation noise.
   useEffect(() => {
-    if (hidden) return;
-    let cancelled = false;
+    if (hidden || typeof window === "undefined") return;
+
     const HIDE_CSS = `
       a[href*="elevenlabs" i],
       a[href*="elevenagents" i],
@@ -32,50 +33,43 @@ export function ConvaiWidget() {
       }
     `;
 
-    function injectInto(root: ShadowRoot | Document) {
-      if (root.querySelector("style[data-da-hide-brand]")) return;
-      const style = document.createElement("style");
-      style.setAttribute("data-da-hide-brand", "");
-      style.textContent = HIDE_CSS;
-      root.appendChild(style);
-    }
-
-    function tryHide() {
-      if (cancelled) return;
-      const widget = document.querySelector("elevenlabs-convai");
-      if (widget && widget.shadowRoot) {
-        injectInto(widget.shadowRoot);
-        // Walk any nested shadow roots inside the widget too
-        widget.shadowRoot
-          .querySelectorAll("*")
-          .forEach((el) => {
-            const sr = (el as Element & { shadowRoot?: ShadowRoot | null })
-              .shadowRoot;
-            if (sr) injectInto(sr);
-          });
-        // Belt-and-suspenders: also hide anything in light DOM that matches
-        injectInto(document);
+    // Only ShadowRoot or Element targets — never Document (illegal append).
+    function injectInto(root: ShadowRoot | Element): boolean {
+      try {
+        if (root.querySelector("style[data-da-hide-brand]")) return true;
+        const style = document.createElement("style");
+        style.setAttribute("data-da-hide-brand", "");
+        style.textContent = HIDE_CSS;
+        root.appendChild(style);
         return true;
+      } catch {
+        return false;
       }
-      return false;
     }
 
-    // Poll every 250ms for up to 15s waiting for the widget script to mount
+    function tryHide(): boolean {
+      const widget = document.querySelector("elevenlabs-convai");
+      if (!widget || !widget.shadowRoot) return false;
+      let ok = injectInto(widget.shadowRoot);
+      // Walk one level of nested shadow roots inside the widget if any
+      widget.shadowRoot.querySelectorAll("*").forEach((el) => {
+        const sr = (el as Element & { shadowRoot?: ShadowRoot | null })
+          .shadowRoot;
+        if (sr) ok = injectInto(sr) || ok;
+      });
+      return ok;
+    }
+
+    // Poll every 300ms for up to 15s. Stop on first success.
     let attempts = 0;
-    const interval = setInterval(() => {
+    const interval = window.setInterval(() => {
       attempts += 1;
-      if (tryHide() || attempts > 60) clearInterval(interval);
-    }, 250);
+      if (tryHide() || attempts > 50) {
+        window.clearInterval(interval);
+      }
+    }, 300);
 
-    // Re-apply if the widget re-renders its UI
-    const observer = new MutationObserver(() => tryHide());
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-      observer.disconnect();
-    };
+    return () => window.clearInterval(interval);
   }, [hidden, pathname]);
 
   if (hidden) return null;
