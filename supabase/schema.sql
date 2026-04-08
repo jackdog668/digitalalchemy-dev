@@ -101,6 +101,13 @@ create policy "no public access to post_views" on public.post_views
   for all to anon, authenticated
   using (false) with check (false);
 
+-- Same deny-all pattern for subscribers. All subscribe/confirm/unsubscribe
+-- operations go through server routes using service_role, which bypasses RLS.
+drop policy if exists "no public access to subscribers" on public.subscribers;
+create policy "no public access to subscribers" on public.subscribers
+  for all to anon, authenticated
+  using (false) with check (false);
+
 -- =========================================================================
 -- SCHEDULING (Phase 1) — event types, availability, bookings, oauth tokens
 -- =========================================================================
