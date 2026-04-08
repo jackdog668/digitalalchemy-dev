@@ -228,3 +228,139 @@ export async function countBookings(): Promise<number> {
   if (error) return 0;
   return count ?? 0;
 }
+
+export async function getBookingsForDateRange(
+  eventTypeId: string,
+  fromIso: string,
+  toIso: string,
+): Promise<Booking[]> {
+  const db = createServiceRoleClient();
+  const { data, error } = await db
+    .from("scheduling_bookings")
+    .select("*")
+    .eq("event_type_id", eventTypeId)
+    .gte("start_time", fromIso)
+    .lte("start_time", toIso)
+    .order("start_time", { ascending: true });
+  if (error) {
+    console.error("getBookingsForDateRange error:", error);
+    return [];
+  }
+  return (data ?? []).map(rowToBooking);
+}
+
+export async function getAllBookingsInRange(
+  fromIso: string,
+  toIso: string,
+): Promise<Booking[]> {
+  const db = createServiceRoleClient();
+  const { data, error } = await db
+    .from("scheduling_bookings")
+    .select("*")
+    .gte("start_time", fromIso)
+    .lte("start_time", toIso)
+    .order("start_time", { ascending: true });
+  if (error) return [];
+  return (data ?? []).map(rowToBooking);
+}
+
+export async function getBookingById(
+  id: string,
+): Promise<Booking | undefined> {
+  const db = createServiceRoleClient();
+  const { data, error } = await db
+    .from("scheduling_bookings")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error || !data) return undefined;
+  return rowToBooking(data);
+}
+
+export async function getBookingByCancelToken(
+  token: string,
+): Promise<Booking | undefined> {
+  const db = createServiceRoleClient();
+  const { data, error } = await db
+    .from("scheduling_bookings")
+    .select("*")
+    .eq("cancel_token", token)
+    .maybeSingle();
+  if (error || !data) return undefined;
+  return rowToBooking(data);
+}
+
+export interface CreateBookingInput {
+  eventTypeId: string;
+  inviteeName: string;
+  inviteeEmail: string;
+  inviteeNotes: string | null;
+  customAnswers: Record<string, string>;
+  startTimeUtc: string;
+  endTimeUtc: string;
+  timezone: string;
+}
+
+export async function createBookingRow(
+  input: CreateBookingInput,
+): Promise<Booking> {
+  const db = createServiceRoleClient();
+  const { data, error } = await db
+    .from("scheduling_bookings")
+    .insert({
+      event_type_id: input.eventTypeId,
+      invitee_name: input.inviteeName,
+      invitee_email: input.inviteeEmail.toLowerCase(),
+      invitee_notes: input.inviteeNotes,
+      custom_answers: input.customAnswers,
+      start_time: input.startTimeUtc,
+      end_time: input.endTimeUtc,
+      timezone: input.timezone,
+      status: "confirmed",
+    })
+    .select()
+    .single();
+  if (error) throw new Error(`createBookingRow: ${error.message}`);
+  return rowToBooking(data);
+}
+
+export async function cancelBookingRow(
+  id: string,
+  reason: string | null,
+): Promise<Booking> {
+  const db = createServiceRoleClient();
+  const { data, error } = await db
+    .from("scheduling_bookings")
+    .update({
+      status: "cancelled",
+      cancellation_reason: reason,
+      cancelled_at: new Date().toISOString(),
+    })
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) throw new Error(`cancelBookingRow: ${error.message}`);
+  return rowToBooking(data);
+}
+
+export async function updateBookingStatus(
+  id: string,
+  status: Booking["status"],
+): Promise<void> {
+  const db = createServiceRoleClient();
+  const { error } = await db
+    .from("scheduling_bookings")
+    .update({ status })
+    .eq("id", id);
+  if (error) throw new Error(`updateBookingStatus: ${error.message}`);
+}
+
+export async function listAllBookings(): Promise<Booking[]> {
+  const db = createServiceRoleClient();
+  const { data, error } = await db
+    .from("scheduling_bookings")
+    .select("*")
+    .order("start_time", { ascending: false });
+  if (error) return [];
+  return (data ?? []).map(rowToBooking);
+}

@@ -7,13 +7,20 @@ import {
   createServiceRoleClient,
   createSupabaseServerClient,
 } from "@/lib/supabase/server";
-import { serverEnv } from "@/lib/env";
+import { serverEnv, isResendConfigured } from "@/lib/env";
 import {
   LOCATION_TYPES,
   EVENT_TYPE_STATUSES,
   CUSTOM_QUESTION_TYPES,
   POPULAR_TIMEZONES,
 } from "@/lib/scheduling-constants";
+import {
+  getBookingById,
+  getEventTypeById,
+  cancelBookingRow,
+  updateBookingStatus,
+} from "@/lib/scheduling";
+import { sendCancellationEmails } from "@/lib/scheduling-emails";
 
 // ============================================================
 // Admin guard (mirrors src/app/admin/_actions.ts assertAdmin)
@@ -211,4 +218,45 @@ export async function upsertAvailabilityRules(raw: unknown) {
 
   revalidatePath("/admin/scheduling/availability");
   revalidatePath("/admin/scheduling");
+}
+
+// ============================================================
+// Booking actions (admin-side)
+// ============================================================
+function revalidateBookingPaths(bookingId?: string) {
+  revalidatePath("/admin/scheduling");
+  revalidatePath("/admin/scheduling/bookings");
+  if (bookingId) revalidatePath(`/admin/scheduling/bookings/${bookingId}`);
+}
+
+export async function markBookingCompleted(id: string) {
+  await assertAdmin();
+  await updateBookingStatus(id, "completed");
+  revalidateBookingPaths(id);
+}
+
+export async function markBookingNoShow(id: string) {
+  await assertAdmin();
+  await updateBookingStatus(id, "no_show");
+  revalidateBookingPaths(id);
+}
+
+export async function cancelBookingAsAdmin(id: string, reason: string) {
+  await assertAdmin();
+  const existing = await getBookingById(id);
+  if (!existing) throw new Error("Booking not found");
+  const eventType = await getEventTypeById(existing.eventTypeId);
+  if (!eventType) throw new Error("Event type missing");
+
+  const cancelled = await cancelBookingRow(id, reason || null);
+
+  if (isResendConfigured()) {
+    try {
+      await sendCancellationEmails(cancelled, eventType, "admin");
+    } catch (err) {
+      console.error("Admin cancel email failed:", err);
+    }
+  }
+
+  revalidateBookingPaths(id);
 }

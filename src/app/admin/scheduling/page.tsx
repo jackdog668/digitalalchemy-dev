@@ -76,11 +76,10 @@ export default async function SchedulingDashboard() {
         />
         <DashboardCard
           title="Bookings"
-          description="Upcoming and past bookings. Public booking page arrives in Phase 2."
-          href="#"
-          cta="Coming soon"
+          description="Upcoming and past bookings. View, cancel, mark completed or no-show."
+          href="/admin/scheduling/bookings"
+          cta="View bookings →"
           accent="from-da-cyan to-da-indigo"
-          disabled
         />
       </div>
     </div>
