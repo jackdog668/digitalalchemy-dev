@@ -16,7 +16,7 @@ const STATIC_ROUTES: Array<{
   { path: "/talk", changeFrequency: "monthly", priority: 0.6 },
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((r) => ({
     url: `${SITE.url}${r.path}`,
@@ -25,7 +25,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: r.priority,
   }));
 
-  const postEntries: MetadataRoute.Sitemap = getAllPosts().map((post) => ({
+  const posts = await getAllPosts();
+  const postEntries: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${SITE.url}/blog/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: "monthly",

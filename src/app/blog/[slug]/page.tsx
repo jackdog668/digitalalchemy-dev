@@ -11,6 +11,7 @@ import { ShimmerLine } from "@/components/effects/ShimmerLine";
 import { GlowOrb } from "@/components/effects/GlowOrb";
 import { Button } from "@/components/ui/Button";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { TableOfContents } from "@/components/blog/TableOfContents";
 import { SITE } from "@/lib/constants";
 import Link from "next/link";
 
@@ -18,13 +19,16 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const revalidate = 300;
+
 export async function generateStaticParams() {
-  return getAllPosts().map((post) => ({ slug: post.slug }));
+  const posts = await getAllPosts();
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) return {};
 
   const canonicalPath = `/blog/${post.slug}`;
@@ -63,10 +67,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) notFound();
 
-  const allPosts = getAllPosts();
+  const allPosts = await getAllPosts();
   const related = allPosts
     .filter((p) => p.slug !== post.slug && p.category === post.category)
     .slice(0, 3);
@@ -150,21 +154,26 @@ export default async function BlogPostPage({ params }: PageProps) {
 
       {/* ── POST CONTENT ── */}
       <section className="px-6 py-16">
-        <article className="prose-da mx-auto max-w-3xl">
-          <MDXRemote
-            source={post.content}
-            components={mdxComponents}
-            options={{
-              mdxOptions: {
-                rehypePlugins: [
-                  rehypeSlug,
-                  [rehypeAutolinkHeadings, { behavior: "wrap" }],
-                  [rehypePrettyCode, { theme: "one-dark-pro" }],
-                ],
-              },
-            }}
-          />
-        </article>
+        <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_220px]">
+          <article className="prose-da max-w-3xl">
+            <MDXRemote
+              source={post.content}
+              components={mdxComponents}
+              options={{
+                mdxOptions: {
+                  rehypePlugins: [
+                    rehypeSlug,
+                    [rehypeAutolinkHeadings, { behavior: "wrap" }],
+                    [rehypePrettyCode, { theme: "one-dark-pro" }],
+                  ],
+                },
+              }}
+            />
+          </article>
+          <aside>
+            <TableOfContents />
+          </aside>
+        </div>
       </section>
 
       <ShimmerLine />

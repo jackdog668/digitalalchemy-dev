@@ -14,8 +14,8 @@ function escapeXml(unsafe: string): string {
     .replace(/'/g, "&apos;");
 }
 
-export function GET() {
-  const posts = getAllPosts();
+export async function GET() {
+  const posts = await getAllPosts();
   const lastBuildDate = new Date().toUTCString();
 
   const items = posts

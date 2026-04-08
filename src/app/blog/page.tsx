@@ -7,6 +7,7 @@ import { FadeInOnScroll } from "@/components/effects/FadeInOnScroll";
 import { Button } from "@/components/ui/Button";
 import { CategoryFilter } from "@/components/blog/CategoryFilter";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { SubscribeForm } from "@/components/SubscribeForm";
 import { SITE } from "@/lib/constants";
 
 const BLOG_DESCRIPTION =
@@ -36,9 +37,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BlogPage() {
-  const posts = getAllPosts();
-  const categories = getAllCategories();
+export const revalidate = 300;
+
+export default async function BlogPage() {
+  const posts = await getAllPosts();
+  const categories = await getAllCategories();
 
   const blogJsonLd = {
     "@context": "https://schema.org",
@@ -81,6 +84,12 @@ export default function BlogPage() {
               Tutorials, build breakdowns, and lessons from the frontlines of
               AI-powered creation. Written by builders, for builders.
             </p>
+          </FadeInOnScroll>
+
+          <FadeInOnScroll delay={300}>
+            <div className="mt-10 flex justify-center">
+              <SubscribeForm />
+            </div>
           </FadeInOnScroll>
         </div>
       </section>
