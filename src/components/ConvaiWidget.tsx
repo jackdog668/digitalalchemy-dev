@@ -9,6 +9,8 @@ import { usePathname } from "next/navigation";
 export function ConvaiWidget() {
   const pathname = usePathname();
   if (pathname === "/talk") return null;
+  // Don't show the chat bubble inside the admin backend
+  if (pathname?.startsWith("/admin")) return null;
 
   return (
     <>

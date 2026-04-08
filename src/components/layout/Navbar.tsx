@@ -12,6 +12,9 @@ export function Navbar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
 
+  // Admin has its own chrome — hide the public-site navbar on /admin/**
+  if (pathname?.startsWith("/admin")) return null;
+
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {

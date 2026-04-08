@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { NAV_LINKS, SITE } from "@/lib/constants";
 import { Button } from "@/components/ui/Button";
@@ -8,6 +9,10 @@ import { FadeInOnScroll } from "@/components/effects/FadeInOnScroll";
 import { ShimmerLine } from "@/components/effects/ShimmerLine";
 
 export function Footer() {
+  const pathname = usePathname();
+  // Admin has its own chrome — hide the public-site footer on /admin/**
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <footer className="bg-da-darker">
       {/* ShimmerLine replaces the plain border-t as a premium separator */}
