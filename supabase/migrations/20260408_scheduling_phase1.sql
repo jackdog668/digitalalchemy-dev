@@ -1,110 +1,12 @@
--- Digital Alchemy — Blog + Newsletter schema
--- Run this ONCE in the Supabase SQL editor for a fresh project.
--- All writes go through service_role in server code; RLS is deny-all except
--- for one public SELECT on published posts (belt-and-suspenders).
+-- Scheduling Phase 1 — event types, availability rules, bookings, oauth tokens
+-- Idempotent: safe to re-run. Reuses public.set_updated_at() from the blog migration.
+--
+-- After running this, the admin can create event types and set weekly availability
+-- via /admin/scheduling. Public booking pages arrive in Phase 2.
 
 -- =========================
--- posts
+-- scheduling_event_types
 -- =========================
-create table if not exists public.posts (
-  id             uuid primary key default gen_random_uuid(),
-  slug           text unique not null,
-  title          text not null,
-  description    text not null,
-  content        text not null, -- raw MDX source
-  category       text not null,
-  tags           text[] not null default '{}',
-  cover_image    text,
-  author         text not null default 'Desmond Baker Jr',
-  status         text not null default 'draft'
-                   check (status in ('draft','published','scheduled')),
-  published_at   timestamptz,
-  created_at     timestamptz not null default now(),
-  updated_at     timestamptz not null default now()
-);
-
-create index if not exists posts_status_published_at_idx
-  on public.posts(status, published_at desc);
-
-create index if not exists posts_slug_idx on public.posts(slug);
-
--- auto-update updated_at
--- search_path is pinned to empty: only references `new` (trigger pseudo-record)
--- and `now()` (lives in pg_catalog, always implicitly searched). Pinning
--- prevents schema-shadowing attacks flagged by Supabase Security Advisor.
-create or replace function public.set_updated_at()
-returns trigger
-language plpgsql
-set search_path = ''
-as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$;
-
-drop trigger if exists posts_set_updated_at on public.posts;
-create trigger posts_set_updated_at
-  before update on public.posts
-  for each row execute function public.set_updated_at();
-
--- =========================
--- subscribers
--- =========================
-create table if not exists public.subscribers (
-  id                 uuid primary key default gen_random_uuid(),
-  email              text unique not null,
-  confirmed          boolean not null default false,
-  confirm_token      text,
-  unsubscribe_token  text not null default gen_random_uuid()::text,
-  created_at         timestamptz not null default now(),
-  confirmed_at       timestamptz
-);
-
-create index if not exists subscribers_email_idx on public.subscribers(email);
-create index if not exists subscribers_confirmed_idx on public.subscribers(confirmed);
-
--- =========================
--- post views
--- =========================
-create table if not exists public.post_views (
-  post_id    uuid not null references public.posts(id) on delete cascade,
-  viewed_on  date not null default current_date,
-  count      integer not null default 0,
-  primary key (post_id, viewed_on)
-);
-
--- =========================
--- RLS
--- =========================
-alter table public.posts enable row level security;
-alter table public.subscribers enable row level security;
-alter table public.post_views enable row level security;
-
--- Public can read PUBLISHED posts only (service_role bypasses RLS anyway).
-drop policy if exists "public read published posts" on public.posts;
-create policy "public read published posts" on public.posts
-  for select using (status = 'published' and published_at <= now());
-
--- Everything else: deny-all. Server code uses service_role key.
-revoke all on public.posts        from anon, authenticated;
-revoke all on public.subscribers  from anon, authenticated;
-revoke all on public.post_views   from anon, authenticated;
-
-grant select on public.posts to anon, authenticated;
-
--- Explicit deny-all on post_views so the Security Advisor stops flagging
--- "RLS enabled, no policies." Service-role bypasses RLS, so server code
--- (which is the only writer/reader anyway) is unaffected.
-drop policy if exists "no public access to post_views" on public.post_views;
-create policy "no public access to post_views" on public.post_views
-  for all to anon, authenticated
-  using (false) with check (false);
-
--- =========================================================================
--- SCHEDULING (Phase 1) — event types, availability, bookings, oauth tokens
--- =========================================================================
-
 create table if not exists public.scheduling_event_types (
   id                     uuid primary key default gen_random_uuid(),
   slug                   text unique not null,
@@ -128,9 +30,13 @@ create table if not exists public.scheduling_event_types (
   created_at             timestamptz not null default now(),
   updated_at             timestamptz not null default now()
 );
+
 create index if not exists scheduling_event_types_status_idx
   on public.scheduling_event_types(status);
 
+-- =========================
+-- scheduling_availability_rules
+-- =========================
 create table if not exists public.scheduling_availability_rules (
   id            uuid primary key default gen_random_uuid(),
   day_of_week   smallint not null check (day_of_week between 0 and 6),
@@ -139,9 +45,13 @@ create table if not exists public.scheduling_availability_rules (
   timezone      text not null default 'America/Chicago',
   created_at    timestamptz not null default now()
 );
+
 create index if not exists scheduling_availability_rules_day_idx
   on public.scheduling_availability_rules(day_of_week);
 
+-- =========================
+-- scheduling_bookings
+-- =========================
 create table if not exists public.scheduling_bookings (
   id                        uuid primary key default gen_random_uuid(),
   event_type_id             uuid not null references public.scheduling_event_types(id) on delete restrict,
@@ -165,6 +75,7 @@ create table if not exists public.scheduling_bookings (
   created_at                timestamptz not null default now(),
   updated_at                timestamptz not null default now()
 );
+
 create index if not exists scheduling_bookings_event_start_idx
   on public.scheduling_bookings(event_type_id, start_time);
 create index if not exists scheduling_bookings_email_idx
@@ -172,6 +83,9 @@ create index if not exists scheduling_bookings_email_idx
 create index if not exists scheduling_bookings_status_start_idx
   on public.scheduling_bookings(status, start_time);
 
+-- =========================
+-- scheduling_google_oauth_tokens
+-- =========================
 create table if not exists public.scheduling_google_oauth_tokens (
   id             uuid primary key default gen_random_uuid(),
   admin_email    text unique not null,
@@ -184,6 +98,9 @@ create table if not exists public.scheduling_google_oauth_tokens (
   updated_at     timestamptz not null default now()
 );
 
+-- =========================
+-- Triggers (reuses public.set_updated_at())
+-- =========================
 drop trigger if exists scheduling_event_types_set_updated_at on public.scheduling_event_types;
 create trigger scheduling_event_types_set_updated_at
   before update on public.scheduling_event_types
@@ -199,15 +116,20 @@ create trigger scheduling_google_oauth_tokens_set_updated_at
   before update on public.scheduling_google_oauth_tokens
   for each row execute function public.set_updated_at();
 
+-- =========================
+-- RLS
+-- =========================
 alter table public.scheduling_event_types        enable row level security;
 alter table public.scheduling_availability_rules enable row level security;
 alter table public.scheduling_bookings           enable row level security;
 alter table public.scheduling_google_oauth_tokens enable row level security;
 
+-- Public can read active event types (so /book/[slug] renders in Phase 2).
 drop policy if exists "public read active event types" on public.scheduling_event_types;
 create policy "public read active event types" on public.scheduling_event_types
   for select using (status = 'active');
 
+-- Everything else: explicit deny-all (service-role bypasses).
 drop policy if exists "no public access to availability_rules" on public.scheduling_availability_rules;
 create policy "no public access to availability_rules" on public.scheduling_availability_rules
   for all to anon, authenticated using (false) with check (false);

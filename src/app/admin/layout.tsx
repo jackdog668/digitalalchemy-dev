@@ -23,6 +23,9 @@ export default function AdminLayout({
             <Link href="/admin" className="hover:text-da-text">
               Posts
             </Link>
+            <Link href="/admin/scheduling" className="hover:text-da-text">
+              Scheduling
+            </Link>
             <Link href="/" className="hover:text-da-text">
               ← View site
             </Link>

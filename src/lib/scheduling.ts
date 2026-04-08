@@ -1,0 +1,230 @@
+import "server-only";
+
+import { createServiceRoleClient } from "@/lib/supabase/server";
+import type {
+  EventType,
+  AvailabilityRule,
+  Booking,
+  CustomQuestion,
+} from "@/lib/scheduling-constants";
+
+// ============================================================
+// Row adapters — convert snake_case DB rows to camelCase TS
+// ============================================================
+
+interface EventTypeRow {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  duration_minutes: number;
+  color: string;
+  location_type: string;
+  location_details: string | null;
+  price_cents: number;
+  currency: string;
+  buffer_before_minutes: number;
+  buffer_after_minutes: number;
+  min_notice_hours: number;
+  max_per_day: number | null;
+  max_advance_days: number;
+  status: string;
+  custom_questions: CustomQuestion[] | null;
+  created_at: string;
+  updated_at: string;
+}
+
+function rowToEventType(row: EventTypeRow): EventType {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    description: row.description,
+    durationMinutes: row.duration_minutes,
+    color: row.color,
+    locationType: row.location_type as EventType["locationType"],
+    locationDetails: row.location_details,
+    priceCents: row.price_cents,
+    currency: row.currency,
+    bufferBeforeMinutes: row.buffer_before_minutes,
+    bufferAfterMinutes: row.buffer_after_minutes,
+    minNoticeHours: row.min_notice_hours,
+    maxPerDay: row.max_per_day,
+    maxAdvanceDays: row.max_advance_days,
+    status: row.status as EventType["status"],
+    customQuestions: row.custom_questions ?? [],
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+interface AvailabilityRuleRow {
+  id: string;
+  day_of_week: number;
+  start_time: string;
+  end_time: string;
+  timezone: string;
+  created_at: string;
+}
+
+function rowToAvailabilityRule(row: AvailabilityRuleRow): AvailabilityRule {
+  return {
+    id: row.id,
+    dayOfWeek: row.day_of_week,
+    // Postgres `time` comes back as "HH:MM:SS"; strip seconds for the UI.
+    startTime: row.start_time.slice(0, 5),
+    endTime: row.end_time.slice(0, 5),
+    timezone: row.timezone,
+    createdAt: row.created_at,
+  };
+}
+
+interface BookingRow {
+  id: string;
+  event_type_id: string;
+  invitee_name: string;
+  invitee_email: string;
+  invitee_notes: string | null;
+  custom_answers: Record<string, string> | null;
+  start_time: string;
+  end_time: string;
+  timezone: string;
+  status: string;
+  cancel_token: string;
+  reschedule_token: string;
+  cancellation_reason: string | null;
+  cancelled_at: string | null;
+  google_calendar_event_id: string | null;
+  google_meet_url: string | null;
+  stripe_payment_intent_id: string | null;
+  amount_paid_cents: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+function rowToBooking(row: BookingRow): Booking {
+  return {
+    id: row.id,
+    eventTypeId: row.event_type_id,
+    inviteeName: row.invitee_name,
+    inviteeEmail: row.invitee_email,
+    inviteeNotes: row.invitee_notes,
+    customAnswers: row.custom_answers ?? {},
+    startTime: row.start_time,
+    endTime: row.end_time,
+    timezone: row.timezone,
+    status: row.status as Booking["status"],
+    cancelToken: row.cancel_token,
+    rescheduleToken: row.reschedule_token,
+    cancellationReason: row.cancellation_reason,
+    cancelledAt: row.cancelled_at,
+    googleCalendarEventId: row.google_calendar_event_id,
+    googleMeetUrl: row.google_meet_url,
+    stripePaymentIntentId: row.stripe_payment_intent_id,
+    amountPaidCents: row.amount_paid_cents,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+// ============================================================
+// Event type queries
+// ============================================================
+
+export async function getAllEventTypes(): Promise<EventType[]> {
+  const db = createServiceRoleClient();
+  const { data, error } = await db
+    .from("scheduling_event_types")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) {
+    console.error("getAllEventTypes error:", error);
+    return [];
+  }
+  return (data ?? []).map(rowToEventType);
+}
+
+export async function getActiveEventTypes(): Promise<EventType[]> {
+  const db = createServiceRoleClient();
+  const { data, error } = await db
+    .from("scheduling_event_types")
+    .select("*")
+    .eq("status", "active")
+    .order("price_cents", { ascending: true });
+  if (error) {
+    console.error("getActiveEventTypes error:", error);
+    return [];
+  }
+  return (data ?? []).map(rowToEventType);
+}
+
+export async function getEventTypeBySlug(
+  slug: string,
+): Promise<EventType | undefined> {
+  const db = createServiceRoleClient();
+  const { data, error } = await db
+    .from("scheduling_event_types")
+    .select("*")
+    .eq("slug", slug)
+    .maybeSingle();
+  if (error || !data) return undefined;
+  return rowToEventType(data);
+}
+
+export async function getEventTypeById(
+  id: string,
+): Promise<EventType | undefined> {
+  const db = createServiceRoleClient();
+  const { data, error } = await db
+    .from("scheduling_event_types")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error || !data) return undefined;
+  return rowToEventType(data);
+}
+
+// ============================================================
+// Availability queries
+// ============================================================
+
+export async function getAvailabilityRules(): Promise<AvailabilityRule[]> {
+  const db = createServiceRoleClient();
+  const { data, error } = await db
+    .from("scheduling_availability_rules")
+    .select("*")
+    .order("day_of_week", { ascending: true })
+    .order("start_time", { ascending: true });
+  if (error) {
+    console.error("getAvailabilityRules error:", error);
+    return [];
+  }
+  return (data ?? []).map(rowToAvailabilityRule);
+}
+
+// ============================================================
+// Booking queries (Phase 2+ will use these heavily)
+// ============================================================
+
+export async function listRecentBookings(limit = 10): Promise<Booking[]> {
+  const db = createServiceRoleClient();
+  const { data, error } = await db
+    .from("scheduling_bookings")
+    .select("*")
+    .order("start_time", { ascending: false })
+    .limit(limit);
+  if (error) {
+    console.error("listRecentBookings error:", error);
+    return [];
+  }
+  return (data ?? []).map(rowToBooking);
+}
+
+export async function countBookings(): Promise<number> {
+  const db = createServiceRoleClient();
+  const { count, error } = await db
+    .from("scheduling_bookings")
+    .select("*", { count: "exact", head: true });
+  if (error) return 0;
+  return count ?? 0;
+}
