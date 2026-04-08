@@ -185,19 +185,51 @@ CRON_SECRET=<paste the random hex>
 
 Redeploy Vercel after adding env vars.
 
-## 3. Deploy — vercel.json activates the cron automatically
+## 3. Schedule the cron with an EXTERNAL service (not Vercel)
 
-`vercel.json` in the repo root now contains:
+> ⚠️ **Vercel Hobby plan limits crons to once per day.** Our `*/15 * * * *`
+> schedule is Pro-only, so we schedule the reminder job from an external
+> service instead. The endpoint is auth-gated by `CRON_SECRET` and works
+> with any caller — Vercel, GitHub Actions, cron-job.org, etc.
 
-```json
-{
-  "crons": [
-    { "path": "/api/scheduling/reminders", "schedule": "*/15 * * * *" }
-  ]
-}
+### Recommended: cron-job.org (free, 5-min minimum interval)
+
+1. Sign up at https://cron-job.org (email + password, no credit card)
+2. Click **Create cronjob**
+3. Configure:
+   - **Title**: `DA scheduling reminders`
+   - **URL**: `https://digitalalchemy.dev/api/scheduling/reminders`
+   - **Schedule**: Every 15 minutes (preset, or `*/15 * * * *` in advanced mode)
+4. Expand **Advanced** → **Headers** → add header:
+   - Name: `Authorization`
+   - Value: `Bearer <paste your CRON_SECRET here>`
+5. Save. It will start firing immediately.
+6. The **History** tab shows every invocation with the HTTP status + response body. Look for `200 OK` with a `[reminder cron]`-style JSON body.
+
+### Alternative: GitHub Actions (free for public repos)
+
+Create `.github/workflows/scheduling-reminders.yml`:
+
+```yaml
+name: Scheduling reminders
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -fsS -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            https://digitalalchemy.dev/api/scheduling/reminders
 ```
 
-Once you push and Vercel picks up the new `vercel.json`, the cron appears under Settings → Cron Jobs in the Vercel dashboard. Invocations log to the Function Logs for `/api/scheduling/reminders` — look for lines starting with `[reminder cron]`.
+Then add `CRON_SECRET` as a GitHub Actions secret (Settings → Secrets and variables → Actions).
+
+### Why not Vercel's built-in cron?
+
+Every deploy with `"crons": [{ "schedule": "*/15 * * * *" }]` in `vercel.json` fails validation on Hobby plan with "Hobby accounts are limited to daily cron jobs." Rather than downgrade to a useless daily schedule (which would break the 1h reminder entirely) or pay $20/mo for Pro, we use an external scheduler. `vercel.json` is kept minimal so deployment always succeeds.
 
 ## 4. Test the cron manually
 
