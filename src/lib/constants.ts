@@ -18,6 +18,7 @@ export const NAV_LINKS = [
   { label: "School", href: "/school" },
   { label: "Services", href: "/services" },
   { label: "Portfolio", href: "/portfolio" },
+  { label: "Blog", href: "/blog" },
 ] as const;
 
 export const SOCIAL_LINKS = {
