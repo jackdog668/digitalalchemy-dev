@@ -13,6 +13,11 @@ const serverSchema = z.object({
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1).optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
   ADMIN_EMAIL: z.string().email().default("desibaker54@gmail.com"),
+  // Comma-separated list of addresses that receive admin notification
+  // emails (new bookings, cancellations, reminders failures). Defaults to
+  // ADMIN_EMAIL if unset. Kept SEPARATE from ADMIN_EMAIL because that var
+  // also gates admin login + Google OAuth identity, which must stay single.
+  ADMIN_NOTIFICATION_EMAILS: z.string().min(1).optional(),
   RESEND_API_KEY: z.string().min(1).optional(),
   RESEND_FROM_EMAIL: z.string().email().default("desi@digitalalchemy.dev"),
   GOOGLE_OAUTH_CLIENT_ID: z.string().min(1).optional(),
@@ -82,6 +87,33 @@ export function requireSupabase(): {
     anonKey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     serviceRoleKey: env.SUPABASE_SERVICE_ROLE_KEY,
   };
+}
+
+/**
+ * Returns the list of addresses to CC on admin notification emails.
+ * Falls back to [ADMIN_EMAIL] if ADMIN_NOTIFICATION_EMAILS is unset.
+ * Comma-separated in the env var; whitespace is trimmed. De-duplicated
+ * case-insensitively so adding ADMIN_EMAIL to the list is a no-op.
+ */
+export function getAdminNotificationEmails(): string[] {
+  const env = parseServerEnv();
+  const raw = env.ADMIN_NOTIFICATION_EMAILS?.trim();
+  if (!raw) return [env.ADMIN_EMAIL];
+  const list = raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
+  if (list.length === 0) return [env.ADMIN_EMAIL];
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const addr of list) {
+    const key = addr.toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      out.push(addr);
+    }
+  }
+  return out;
 }
 
 export function requireResend(): { apiKey: string; fromEmail: string } {

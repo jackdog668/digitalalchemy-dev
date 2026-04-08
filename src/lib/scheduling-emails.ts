@@ -2,7 +2,11 @@ import "server-only";
 
 import { Resend } from "resend";
 import { toZonedTime } from "date-fns-tz";
-import { requireResend, serverEnv } from "@/lib/env";
+import {
+  requireResend,
+  serverEnv,
+  getAdminNotificationEmails,
+} from "@/lib/env";
 import { SITE } from "@/lib/constants";
 import { formatPrice, LOCATION_LABELS } from "@/lib/scheduling-constants";
 import type { Booking, EventType } from "@/lib/scheduling-constants";
@@ -76,7 +80,7 @@ export async function sendAdminBookingNotification(
   const { apiKey, fromEmail } = requireResend();
   const env = serverEnv();
   const siteUrl = env.NEXT_PUBLIC_SITE_URL;
-  const adminEmail = env.ADMIN_EMAIL;
+  const adminRecipients = getAdminNotificationEmails();
 
   // Admin always sees times in their own timezone (Central by default).
   // We infer the admin TZ from the availability rules at send time — simpler
@@ -87,7 +91,7 @@ export async function sendAdminBookingNotification(
   const resend = new Resend(apiKey);
   await resend.emails.send({
     from: `${SITE.name} <${fromEmail}>`,
-    to: [adminEmail],
+    to: adminRecipients,
     subject: `📅 ${booking.inviteeName} booked ${eventType.title}`,
     html: renderAdminNotificationEmail({
       inviteeName: booking.inviteeName,
@@ -139,7 +143,7 @@ export async function sendCancellationEmails(
   const { apiKey, fromEmail } = requireResend();
   const env = serverEnv();
   const siteUrl = env.NEXT_PUBLIC_SITE_URL;
-  const adminEmail = env.ADMIN_EMAIL;
+  const adminRecipients = getAdminNotificationEmails();
   const adminTz = "America/Chicago";
 
   const resend = new Resend(apiKey);
@@ -159,10 +163,10 @@ export async function sendCancellationEmails(
     }),
   });
 
-  // To admin
+  // To admin(s)
   await resend.emails.send({
     from: `${SITE.name} <${fromEmail}>`,
-    to: [adminEmail],
+    to: adminRecipients,
     subject: `Cancelled: ${booking.inviteeName} — ${eventType.title}`,
     html: renderCancellationEmail({
       recipientName: SITE.founder,
