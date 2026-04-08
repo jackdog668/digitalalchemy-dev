@@ -125,6 +125,8 @@ export interface Booking {
   googleMeetUrl: string | null;
   stripePaymentIntentId: string | null;
   amountPaidCents: number | null;
+  reminder24hSentAt: string | null;
+  reminder1hSentAt: string | null;
   createdAt: string;
   updatedAt: string;
 }

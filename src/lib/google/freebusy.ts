@@ -67,6 +67,8 @@ export function busyIntervalsAsBookings(
     googleMeetUrl: null,
     stripePaymentIntentId: null,
     amountPaidCents: null,
+    reminder24hSentAt: null,
+    reminder1hSentAt: null,
     createdAt: b.start,
     updatedAt: b.start,
   }));

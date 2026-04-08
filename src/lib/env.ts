@@ -17,6 +17,9 @@ const serverSchema = z.object({
   RESEND_FROM_EMAIL: z.string().email().default("desi@digitalalchemy.dev"),
   GOOGLE_OAUTH_CLIENT_ID: z.string().min(1).optional(),
   GOOGLE_OAUTH_CLIENT_SECRET: z.string().min(1).optional(),
+  // Phase 4 — shared secret between Vercel Cron and /api/scheduling/reminders.
+  // Vercel auto-injects it as `Authorization: Bearer <CRON_SECRET>` when set.
+  CRON_SECRET: z.string().min(1).optional(),
 });
 
 type ServerEnv = z.infer<typeof serverSchema>;
@@ -113,4 +116,23 @@ export function requireGoogleOAuth(): {
     clientSecret: env.GOOGLE_OAUTH_CLIENT_SECRET,
     redirectUri: `${env.NEXT_PUBLIC_SITE_URL}/api/scheduling/google/callback`,
   };
+}
+
+/**
+ * Constant-time comparison of a request's Authorization header against the
+ * configured CRON_SECRET. Returns false if the secret is unset — fail-closed.
+ * Vercel Cron sends `Authorization: Bearer <CRON_SECRET>` automatically.
+ */
+export function verifyCronAuth(authHeader: string | null): boolean {
+  const expected = parseServerEnv().CRON_SECRET;
+  if (!expected) return false;
+  if (!authHeader) return false;
+  const expectedHeader = `Bearer ${expected}`;
+  if (authHeader.length !== expectedHeader.length) return false;
+  // Timing-safe equality
+  let diff = 0;
+  for (let i = 0; i < authHeader.length; i++) {
+    diff |= authHeader.charCodeAt(i) ^ expectedHeader.charCodeAt(i);
+  }
+  return diff === 0;
 }

@@ -9,6 +9,10 @@ import type { Booking, EventType } from "@/lib/scheduling-constants";
 import { renderBookingConfirmationEmail } from "@/lib/email/templates/booking-confirmation";
 import { renderAdminNotificationEmail } from "@/lib/email/templates/booking-admin-notification";
 import { renderCancellationEmail } from "@/lib/email/templates/booking-cancelled";
+import {
+  renderBookingReminderEmail,
+  type ReminderKind,
+} from "@/lib/email/templates/booking-reminder";
 
 // Format "Mon, Apr 8 at 2:00 PM CT" given an ISO UTC string and target TZ.
 function formatWhen(iso: string, tz: string): string {
@@ -93,6 +97,36 @@ export async function sendAdminBookingNotification(
       whenAdminLocal: formatWhen(booking.startTime, adminTz),
       priceLabel: priceLabel(eventType),
       adminUrl: `${siteUrl}/admin/scheduling/bookings/${booking.id}`,
+    }),
+  });
+}
+
+export async function sendBookingReminder(
+  booking: Booking,
+  eventType: EventType,
+  kind: ReminderKind,
+): Promise<void> {
+  const { apiKey, fromEmail } = requireResend();
+  const siteUrl = serverEnv().NEXT_PUBLIC_SITE_URL;
+  const cancelUrl = `${siteUrl}/scheduling/cancel/${encodeURIComponent(booking.cancelToken)}`;
+
+  const subjectPrefix =
+    kind === "24h" ? "Reminder — tomorrow" : "Starting soon";
+
+  const resend = new Resend(apiKey);
+  await resend.emails.send({
+    from: `${SITE.name} <${fromEmail}>`,
+    to: [booking.inviteeEmail],
+    subject: `${subjectPrefix}: ${eventType.title} — ${formatWhen(booking.startTime, booking.timezone)}`,
+    html: renderBookingReminderEmail({
+      kind,
+      inviteeName: booking.inviteeName,
+      eventTitle: eventType.title,
+      whenLocal: formatWhen(booking.startTime, booking.timezone),
+      locationLabel: locationLabel(eventType),
+      meetUrl: booking.googleMeetUrl,
+      cancelUrl,
+      siteUrl,
     }),
   });
 }

@@ -98,6 +98,8 @@ interface BookingRow {
   google_meet_url: string | null;
   stripe_payment_intent_id: string | null;
   amount_paid_cents: number | null;
+  reminder_24h_sent_at: string | null;
+  reminder_1h_sent_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -122,6 +124,8 @@ function rowToBooking(row: BookingRow): Booking {
     googleMeetUrl: row.google_meet_url,
     stripePaymentIntentId: row.stripe_payment_intent_id,
     amountPaidCents: row.amount_paid_cents,
+    reminder24hSentAt: row.reminder_24h_sent_at,
+    reminder1hSentAt: row.reminder_1h_sent_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -385,4 +389,63 @@ export async function listAllBookings(): Promise<Booking[]> {
     .order("start_time", { ascending: false });
   if (error) return [];
   return (data ?? []).map(rowToBooking);
+}
+
+// ============================================================
+// Reminder cron helpers (Phase 4)
+// ============================================================
+
+export type ReminderKind = "24h" | "1h";
+
+/**
+ * Find confirmed bookings whose start_time falls inside the reminder window
+ * for the given kind AND which have not already had that reminder sent.
+ *
+ * The cron is expected to run every 15 min. Windows are intentionally
+ * wider than the cron interval so that one skipped run doesn't miss a
+ * booking — the reminder_Xh_sent_at guard prevents double-sends.
+ *
+ *   24h kind → start_time ∈ [now + 23h, now + 25h]
+ *    1h kind → start_time ∈ [now + 30m, now + 90m]
+ */
+export async function getBookingsNeedingReminder(
+  kind: ReminderKind,
+): Promise<Booking[]> {
+  const db = createServiceRoleClient();
+  const now = Date.now();
+  const windowStartMs =
+    kind === "24h" ? now + 23 * 3600_000 : now + 30 * 60_000;
+  const windowEndMs =
+    kind === "24h" ? now + 25 * 3600_000 : now + 90 * 60_000;
+  const column =
+    kind === "24h" ? "reminder_24h_sent_at" : "reminder_1h_sent_at";
+
+  const { data, error } = await db
+    .from("scheduling_bookings")
+    .select("*")
+    .eq("status", "confirmed")
+    .is(column, null)
+    .gte("start_time", new Date(windowStartMs).toISOString())
+    .lte("start_time", new Date(windowEndMs).toISOString())
+    .order("start_time", { ascending: true });
+
+  if (error) {
+    console.error(`getBookingsNeedingReminder(${kind}) error:`, error);
+    return [];
+  }
+  return (data ?? []).map(rowToBooking);
+}
+
+export async function markReminderSent(
+  bookingId: string,
+  kind: ReminderKind,
+): Promise<void> {
+  const db = createServiceRoleClient();
+  const column =
+    kind === "24h" ? "reminder_24h_sent_at" : "reminder_1h_sent_at";
+  const { error } = await db
+    .from("scheduling_bookings")
+    .update({ [column]: new Date().toISOString() })
+    .eq("id", bookingId);
+  if (error) throw new Error(`markReminderSent(${kind}): ${error.message}`);
 }

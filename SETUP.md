@@ -147,3 +147,129 @@ Also paste these into **Vercel → Project Settings → Environment Variables** 
 - **Slots don't hide Google Calendar events** — your calendar might be using a non-primary calendar. Check `scheduling_google_oauth_tokens.calendar_id` in Supabase; defaults to `primary`.
 - **Booking succeeds but no Google event** — check server logs for `[google]` errors. Most common cause: refresh token revoked, expired scopes, or the admin's Google account is locked. Click Disconnect then Reconnect.
 - **"Your client has issued a malformed or illegal request"** — the redirect URI in Google Cloud Console doesn't match exactly. Must include the protocol, host, port, and path with no trailing slash.
+
+---
+
+# Reminder Emails + Embeddable Widget (Scheduling Phase 4)
+
+Phase 4 adds two things:
+
+1. **Reminder emails** — a Vercel Cron hits `/api/scheduling/reminders` every 15 minutes and sends a 24-hour and a 1-hour reminder to each upcoming booking's invitee. Uses the existing Resend setup from Phase 2; no new provider keys.
+2. **Embeddable `<BookingWidget />`** — a drop-in iframe that mounts the booking flow on any marketing page. Backed by a new `/embed/[slug]` route that renders the exact same `BookingFlow` component as `/book/[slug]` but with the site nav, footer, grain overlay, and Convai widget hidden via CSS.
+
+## 1. Run the migration
+
+```bash
+# In Supabase SQL Editor, run:
+supabase/migrations/20260408_scheduling_phase4_reminders.sql
+```
+
+Adds two nullable `timestamptz` columns (`reminder_24h_sent_at`, `reminder_1h_sent_at`) plus two partial indexes on `scheduling_bookings`. Idempotent — safe to re-run.
+
+## 2. Generate and set `CRON_SECRET`
+
+Vercel Cron authenticates itself to your endpoint by sending `Authorization: Bearer <CRON_SECRET>`. You generate the secret; Vercel auto-injects it into cron requests.
+
+```bash
+# Generate a 48-char random secret
+openssl rand -hex 24
+# or in PowerShell:
+# [Convert]::ToHexString((1..24 | ForEach-Object { Get-Random -Max 256 }))
+```
+
+Add to both `.env.local` AND Vercel (Settings → Environment Variables, Production scope):
+
+```
+CRON_SECRET=<paste the random hex>
+```
+
+Redeploy Vercel after adding env vars.
+
+## 3. Deploy — vercel.json activates the cron automatically
+
+`vercel.json` in the repo root now contains:
+
+```json
+{
+  "crons": [
+    { "path": "/api/scheduling/reminders", "schedule": "*/15 * * * *" }
+  ]
+}
+```
+
+Once you push and Vercel picks up the new `vercel.json`, the cron appears under Settings → Cron Jobs in the Vercel dashboard. Invocations log to the Function Logs for `/api/scheduling/reminders` — look for lines starting with `[reminder cron]`.
+
+## 4. Test the cron manually
+
+Before waiting for Vercel's scheduler:
+
+```bash
+# Replace <CRON_SECRET> with your actual secret
+curl -H "Authorization: Bearer <CRON_SECRET>" \
+     https://digitalalchemy.dev/api/scheduling/reminders
+```
+
+Expected response:
+
+```json
+{
+  "ok": true,
+  "durationMs": 42,
+  "results": [
+    { "kind": "24h", "attempted": 0, "sent": 0, "failed": 0 },
+    { "kind": "1h",  "attempted": 0, "sent": 0, "failed": 0 }
+  ],
+  "at": "2026-04-08T21:15:00.000Z"
+}
+```
+
+Without the header, you should get `401 unauthorized` — confirm that too.
+
+## 5. End-to-end reminder test
+
+1. Book a slot for ~1h from now (use the admin `/admin/scheduling` to temporarily lower `min_notice_hours` to 0 if needed, then raise it back)
+2. Wait up to 15 minutes for the cron tick (or curl it manually from Step 4)
+3. Check: invitee email inbox for a `Starting soon: ...` email
+4. Check: in Supabase, the row's `reminder_1h_sent_at` column is populated
+5. Re-run the cron manually — the same booking should NOT get a second email (the `IS NULL` guard + the populated column prevent it)
+
+Same flow works for the 24h reminder — book a slot ~24h out, then curl the endpoint.
+
+## 6. Embeddable widget usage
+
+On any **internal** Digital Alchemy page (e.g. `/work-with-me`, an MDX post), use:
+
+```tsx
+import { BookingWidget } from "@/components/scheduling/BookingWidget";
+
+<BookingWidget slug="discovery-call" height={880} />
+```
+
+On **third-party** sites (Squarespace, WordPress, raw HTML), copy-paste:
+
+```html
+<iframe
+  src="https://digitalalchemy.dev/embed/discovery-call"
+  width="100%"
+  height="880"
+  style="border:0;border-radius:12px;background:#0a0f1e;"
+  title="Book a session with Digital Alchemy"
+  loading="lazy"
+></iframe>
+```
+
+`/embed/*` is served with `Content-Security-Policy: frame-ancestors *` so any origin may iframe it. To restrict to specific partner sites later, edit `next.config.ts` and change the header to `frame-ancestors 'self' https://partner.example.com`.
+
+## 7. Verify the embed page
+
+- [ ] Visit `https://digitalalchemy.dev/embed/<slug>` directly in a browser — you should see ONLY the booking flow, no navbar, no footer, no grain, no Convai widget
+- [ ] Open DevTools → Network → check response headers on the HTML document — `Content-Security-Policy: frame-ancestors *`, no `X-Frame-Options: DENY`
+- [ ] Drop the iframe snippet above into a free Glitch/CodePen page and confirm it loads without a browser console error about "refused to display"
+
+## Troubleshooting
+
+- **Cron runs but sends nothing** — check the response JSON's `attempted` count. If `0`, no bookings are inside the window. The windows are intentionally wide (23–25h, 30–90min) to absorb missed ticks, but `start_time` still has to fall inside. Double-check the booking's `start_time` vs `now()` in Supabase.
+- **"unauthorized" from curl** — `CRON_SECRET` is unset in Vercel, or the `Authorization: Bearer ...` header doesn't match exactly. The endpoint uses timing-safe comparison.
+- **Embed iframe shows navbar/footer** — the `ChromeHider` `<style>` selector drift. Check that `src/components/layout/Navbar.tsx` still renders inside a `<header>` and Footer is still a `<footer>` — selectors are `header:has(nav)` and `footer`.
+- **Embed iframe is blank (CSP refused)** — confirm the `/embed/:path*` headers rule in `next.config.ts` is BEFORE or instead of the default `X-Frame-Options: DENY` rule. The default source now uses a negative lookahead `/((?!embed).*)` so it shouldn't match `/embed/*`. If it does, check the deployed version actually picked up the new config.
+- **Reminder sent but column not marked** — the email succeeded but the UPDATE failed. Check Supabase logs for the service-role write. The booking will get a duplicate reminder on the next cron tick.
