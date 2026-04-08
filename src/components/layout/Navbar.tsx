@@ -12,9 +12,6 @@ export function Navbar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
 
-  // Admin has its own chrome — hide the public-site navbar on /admin/**
-  if (pathname?.startsWith("/admin")) return null;
-
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
@@ -33,6 +30,11 @@ export function Navbar() {
   useEffect(() => {
     setIsMobileOpen(false);
   }, [pathname]);
+
+  // Admin has its own chrome — hide the public-site navbar on /admin/**.
+  // MUST come after all hooks to satisfy the Rules of Hooks (no early
+  // returns before useState/useEffect, or hook count drifts between renders).
+  if (pathname?.startsWith("/admin")) return null;
 
   return (
     <motion.header
