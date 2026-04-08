@@ -46,6 +46,12 @@ export const metadata: Metadata = {
     ],
     apple: "/apple-touch-icon.png",
   },
+  alternates: {
+    canonical: "/",
+    types: {
+      "application/rss+xml": `${SITE.url}/feed.xml`,
+    },
+  },
   robots: {
     index: true,
     follow: true,

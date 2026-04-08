@@ -6,17 +6,33 @@ import { ShimmerLine } from "@/components/effects/ShimmerLine";
 import { FadeInOnScroll } from "@/components/effects/FadeInOnScroll";
 import { Button } from "@/components/ui/Button";
 import { CategoryFilter } from "@/components/blog/CategoryFilter";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { SITE } from "@/lib/constants";
+
+const BLOG_DESCRIPTION =
+  "Tutorials, behind-the-build stories, and insights on vibe coding, AI art, AI music, and building real apps with AI. From the Digital Alchemy lab.";
 
 export const metadata: Metadata = {
   title: "Blog | AI Education, Vibe Coding & Creative Tech",
-  description:
-    "Tutorials, behind-the-build stories, and insights on vibe coding, AI art, AI music, and building real apps with AI. From the Digital Alchemy lab.",
+  description: BLOG_DESCRIPTION,
+  alternates: {
+    canonical: "/blog",
+    types: {
+      "application/rss+xml": `${SITE.url}/feed.xml`,
+    },
+  },
   openGraph: {
-    title: "Blog | Digital Alchemy",
-    description:
-      "Tutorials, behind-the-build stories, and insights on vibe coding, AI art, AI music, and building real apps with AI.",
     type: "website",
+    title: "Blog | Digital Alchemy",
+    description: BLOG_DESCRIPTION,
+    url: `${SITE.url}/blog`,
+    siteName: SITE.name,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog | Digital Alchemy",
+    description: BLOG_DESCRIPTION,
   },
 };
 
@@ -24,8 +40,30 @@ export default function BlogPage() {
   const posts = getAllPosts();
   const categories = getAllCategories();
 
+  const blogJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: `${SITE.name} — Blog`,
+    description: BLOG_DESCRIPTION,
+    url: `${SITE.url}/blog`,
+    publisher: {
+      "@type": "Organization",
+      name: SITE.name,
+      url: SITE.url,
+    },
+    blogPost: posts.slice(0, 20).map((p) => ({
+      "@type": "BlogPosting",
+      headline: p.title,
+      description: p.description,
+      datePublished: p.date,
+      author: { "@type": "Person", name: p.author },
+      url: `${SITE.url}/blog/${p.slug}`,
+    })),
+  };
+
   return (
     <>
+      <JsonLd data={blogJsonLd} />
       {/* ── HERO ── */}
       <section className="relative px-6 pt-32 pb-24 overflow-hidden">
         <GlowOrb color="purple" size="lg" className="-left-20 top-20" />

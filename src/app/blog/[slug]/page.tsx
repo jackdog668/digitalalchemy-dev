@@ -10,6 +10,7 @@ import { FadeInOnScroll } from "@/components/effects/FadeInOnScroll";
 import { ShimmerLine } from "@/components/effects/ShimmerLine";
 import { GlowOrb } from "@/components/effects/GlowOrb";
 import { Button } from "@/components/ui/Button";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { SITE } from "@/lib/constants";
 import Link from "next/link";
 
@@ -26,21 +27,36 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const post = getPostBySlug(slug);
   if (!post) return {};
 
+  const canonicalPath = `/blog/${post.slug}`;
+  const ogImages = post.image
+    ? [{ url: post.image, alt: post.title }]
+    : [{ url: "/og-default.png", alt: SITE.name }];
+
   return {
     title: post.title,
     description: post.description,
+    keywords: post.tags,
+    authors: [{ name: post.author }],
+    alternates: {
+      canonical: canonicalPath,
+    },
     openGraph: {
+      type: "article",
       title: post.title,
       description: post.description,
-      type: "article",
+      url: `${SITE.url}${canonicalPath}`,
+      siteName: SITE.name,
       publishedTime: post.date,
       authors: [post.author],
-      ...(post.image && { images: [{ url: post.image }] }),
+      tags: post.tags,
+      images: ogImages,
+      locale: "en_US",
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description: post.description,
+      images: ogImages.map((i) => i.url),
     },
   };
 }
@@ -55,8 +71,40 @@ export default async function BlogPostPage({ params }: PageProps) {
     .filter((p) => p.slug !== post.slug && p.category === post.category)
     .slice(0, 3);
 
+  const postUrl = `${SITE.url}/blog/${post.slug}`;
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.description,
+    image: post.image ? [post.image] : [`${SITE.url}/og-default.png`],
+    datePublished: post.date,
+    dateModified: post.date,
+    author: {
+      "@type": "Person",
+      name: post.author,
+      url: SITE.url,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: SITE.name,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE.url}/favicon.svg`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": postUrl,
+    },
+    url: postUrl,
+    keywords: post.tags.join(", "),
+    articleSection: post.category,
+  };
+
   return (
     <>
+      <JsonLd data={articleJsonLd} />
       {/* ── POST HEADER ── */}
       <section className="relative px-6 pt-32 pb-16 overflow-hidden">
         <GlowOrb color="purple" size="lg" className="-left-20 top-20" />
