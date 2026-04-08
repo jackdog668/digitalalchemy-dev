@@ -135,8 +135,14 @@ function countBookingsOnDayInTz(
 }
 
 function formatSlotLocal(iso: string, tz: string): string {
-  const d = toZonedTime(new Date(iso), tz);
-  return d.toLocaleString("en-US", {
+  // IMPORTANT: do NOT wrap `new Date(iso)` in `toZonedTime()` before calling
+  // `toLocaleString({ timeZone: tz })`. `toZonedTime` shifts the Date's
+  // internal UTC ms so that `.getHours()` returns the zoned hour — but
+  // `toLocaleString({ timeZone })` *also* applies the TZ offset, leading
+  // to a double conversion that's exactly one TZ offset off (e.g. 8 PM
+  // Chicago displayed as 3 PM). Pass the raw Date directly; Intl handles
+  // the single conversion correctly.
+  return new Date(iso).toLocaleString("en-US", {
     weekday: "short",
     month: "short",
     day: "numeric",

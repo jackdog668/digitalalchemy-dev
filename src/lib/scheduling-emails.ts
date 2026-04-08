@@ -1,7 +1,6 @@
 import "server-only";
 
 import { Resend } from "resend";
-import { toZonedTime } from "date-fns-tz";
 import {
   requireResend,
   serverEnv,
@@ -19,9 +18,11 @@ import {
 } from "@/lib/email/templates/booking-reminder";
 
 // Format "Mon, Apr 8 at 2:00 PM CT" given an ISO UTC string and target TZ.
+// IMPORTANT: do NOT call `toZonedTime()` before `toLocaleString({ timeZone })`
+// — that causes a double conversion (see formatSlotLocal in scheduling-slots.ts
+// for the full writeup). Intl handles the single conversion correctly on its own.
 function formatWhen(iso: string, tz: string): string {
-  const d = toZonedTime(new Date(iso), tz);
-  return d.toLocaleString("en-US", {
+  return new Date(iso).toLocaleString("en-US", {
     weekday: "short",
     month: "short",
     day: "numeric",
