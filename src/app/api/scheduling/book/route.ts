@@ -5,12 +5,14 @@ import {
   getAvailabilityRules,
   getBookingsForDateRange,
   createBookingRow,
+  attachGoogleEventToBooking,
 } from "@/lib/scheduling";
 import { isSlotStillAvailable } from "@/lib/scheduling-slots";
 import {
   sendBookingConfirmation,
   sendAdminBookingNotification,
 } from "@/lib/scheduling-emails";
+import { createCalendarEventForBooking } from "@/lib/google/events";
 import { isSupabaseConfigured, isResendConfigured } from "@/lib/env";
 
 // Public endpoint — creates a booking. Revalidates slot availability server-
@@ -154,6 +156,26 @@ export async function POST(req: NextRequest) {
         }
       });
     });
+  }
+
+  // Create a Google Calendar event with Meet link. Soft fails — booking is
+  // already valid in our DB and invitee already got their Resend email.
+  // If Google event creation succeeds, persist the eventId + meetUrl back
+  // to the booking row so cancellation can delete the event later.
+  try {
+    const googleResult = await createCalendarEventForBooking(
+      booking,
+      eventType,
+    );
+    if (googleResult) {
+      await attachGoogleEventToBooking(
+        booking.id,
+        googleResult.eventId,
+        googleResult.meetUrl,
+      );
+    }
+  } catch (err) {
+    console.error("[google] attach to booking failed:", err);
   }
 
   return NextResponse.json({

@@ -66,3 +66,84 @@ Visit:
 - Subscribe endpoint is rate-limited (5/min/IP)
 - `.env.local` is gitignored
 - `/admin` and `/api/admin/*` are `noindex` and excluded in `robots.txt`
+
+---
+
+# Google Calendar Integration (Scheduling Phase 3)
+
+Optional. When configured, the booking system reads your Google Calendar's free/busy and auto-creates events with Google Meet links when someone books. If env vars are missing, the site builds fine and the booking system falls back to DB-only.
+
+## 1. Create a Google Cloud project
+
+1. Go to https://console.cloud.google.com
+2. Click the project dropdown in the top bar → **New Project**
+3. Name it `digital-alchemy-scheduling` (or whatever), leave organization as-is, click Create
+4. Switch to the new project
+
+## 2. Enable the Google Calendar API
+
+1. In the sidebar: **APIs & Services** → **Library**
+2. Search for `Google Calendar API` → click it → click **Enable**
+
+## 3. Configure the OAuth consent screen
+
+1. **APIs & Services** → **OAuth consent screen**
+2. User type: **External** → Create
+3. **App information:**
+   - App name: `Digital Alchemy Scheduling`
+   - User support email: `desibaker54@gmail.com`
+   - Developer contact email: `desibaker54@gmail.com`
+4. Click **Save and Continue**
+5. **Scopes:** click **Add or remove scopes**, search for and add:
+   - `.../auth/calendar.events`
+   - `.../auth/calendar.freebusy`
+   - Save
+6. **Test users:** **Add users** → `desibaker54@gmail.com` → Save
+7. **Summary:** click **Back to dashboard**
+8. You can leave the app in **Testing** mode indefinitely — no Google verification needed as long as you're the only user.
+
+## 4. Create OAuth 2.0 credentials
+
+1. **APIs & Services** → **Credentials** → **Create Credentials** → **OAuth client ID**
+2. Application type: **Web application**
+3. Name: `Digital Alchemy Web`
+4. **Authorized redirect URIs** — add BOTH:
+   - `http://localhost:3000/api/scheduling/google/callback`
+   - `https://digitalalchemy.dev/api/scheduling/google/callback`
+5. Click **Create**
+6. Copy the **Client ID** and **Client Secret** from the popup
+
+## 5. Paste into `.env.local`
+
+```
+GOOGLE_OAUTH_CLIENT_ID=<paste client id>
+GOOGLE_OAUTH_CLIENT_SECRET=<paste client secret>
+```
+
+Also paste these into **Vercel → Project Settings → Environment Variables** (Production + Preview + Development). Trigger a redeploy.
+
+## 6. Connect from the admin UI
+
+1. `npm run dev`
+2. Sign into `/admin/login`
+3. Go to `/admin/scheduling`
+4. You'll see a "Google Calendar" card at the top. Click **Connect Google Calendar**
+5. Google consent screen appears → click your test account → grant the two scopes → redirected back to `/admin/scheduling?google=connected`
+6. The card now shows **✓ Connected as desibaker54@gmail.com**
+
+## 7. Verify end-to-end
+
+1. **Free/busy read**: In Google Calendar, create an event for tomorrow at 11:00am (30 min). Visit `/book/<your-event-type-slug>`, pick tomorrow. The 11:00 slot should be hidden.
+2. **Event creation**: Book a slot on `/book/<slug>` as a test. Check:
+   - A new event appears on your Google Calendar at that time
+   - The event has a Google Meet link
+   - Two emails arrive at the booking address: one from Resend (`Confirmed: ...`) and one from Google (`Invitation: ...`)
+3. **Cancellation**: Click the cancel link in the Resend email, cancel the booking. The Google Calendar event disappears.
+4. **Disconnect**: On `/admin/scheduling`, click **Disconnect**. Slot generation falls back to DB-only.
+
+## Troubleshooting
+
+- **"OAuth exchange did not return a full token set"** — Google only issues a refresh token on the *first* grant. If you've connected before, go to https://myaccount.google.com/permissions, revoke Digital Alchemy Scheduling, and try again.
+- **Slots don't hide Google Calendar events** — your calendar might be using a non-primary calendar. Check `scheduling_google_oauth_tokens.calendar_id` in Supabase; defaults to `primary`.
+- **Booking succeeds but no Google event** — check server logs for `[google]` errors. Most common cause: refresh token revoked, expired scopes, or the admin's Google account is locked. Click Disconnect then Reconnect.
+- **"Your client has issued a malformed or illegal request"** — the redirect URI in Google Cloud Console doesn't match exactly. Must include the protocol, host, port, and path with no trailing slash.

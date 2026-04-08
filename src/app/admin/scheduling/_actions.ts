@@ -21,6 +21,7 @@ import {
   updateBookingStatus,
 } from "@/lib/scheduling";
 import { sendCancellationEmails } from "@/lib/scheduling-emails";
+import { deleteCalendarEventForBooking } from "@/lib/google/events";
 
 // ============================================================
 // Admin guard (mirrors src/app/admin/_actions.ts assertAdmin)
@@ -256,6 +257,12 @@ export async function cancelBookingAsAdmin(id: string, reason: string) {
     } catch (err) {
       console.error("Admin cancel email failed:", err);
     }
+  }
+
+  try {
+    await deleteCalendarEventForBooking(cancelled);
+  } catch (err) {
+    console.error("[google] admin cancel delete failed:", err);
   }
 
   revalidateBookingPaths(id);

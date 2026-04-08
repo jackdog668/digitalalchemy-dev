@@ -7,6 +7,10 @@ import {
 } from "@/lib/scheduling";
 import { computeAvailableSlots } from "@/lib/scheduling-slots";
 import { isSupabaseConfigured } from "@/lib/env";
+import {
+  fetchBusyIntervals,
+  busyIntervalsAsBookings,
+} from "@/lib/google/freebusy";
 
 // Public endpoint — returns available time slots for an event type within a
 // date range, converted to the visitor's timezone. Called from the booking
@@ -91,16 +95,25 @@ export async function POST(req: NextRequest) {
   }
 
   const rules = await getAvailabilityRules();
-  const existingBookings = await getBookingsForDateRange(
+  const dbBookings = await getBookingsForDateRange(
     eventType.id,
     from.toISOString(),
     to.toISOString(),
   );
 
+  // Pull the admin's Google Calendar busy intervals and merge them in as
+  // synthetic bookings. Fails soft — returns [] on any error so the slot
+  // picker stays functional during Google API outages.
+  const googleBusy = await fetchBusyIntervals(
+    from.toISOString(),
+    to.toISOString(),
+  );
+  const googleBookings = busyIntervalsAsBookings(googleBusy, eventType.id);
+
   const slots = computeAvailableSlots({
     eventType,
     rules,
-    existingBookings,
+    existingBookings: [...dbBookings, ...googleBookings],
     viewerTz,
     fromDate: from,
     toDate: to,

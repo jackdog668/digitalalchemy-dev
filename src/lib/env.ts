@@ -15,6 +15,8 @@ const serverSchema = z.object({
   ADMIN_EMAIL: z.string().email().default("desibaker54@gmail.com"),
   RESEND_API_KEY: z.string().min(1).optional(),
   RESEND_FROM_EMAIL: z.string().email().default("desi@digitalalchemy.dev"),
+  GOOGLE_OAUTH_CLIENT_ID: z.string().min(1).optional(),
+  GOOGLE_OAUTH_CLIENT_SECRET: z.string().min(1).optional(),
 });
 
 type ServerEnv = z.infer<typeof serverSchema>;
@@ -87,4 +89,28 @@ export function requireResend(): { apiKey: string; fromEmail: string } {
     );
   }
   return { apiKey: env.RESEND_API_KEY, fromEmail: env.RESEND_FROM_EMAIL };
+}
+
+/** True when both Google OAuth env vars are set — safe to call Google APIs. */
+export function isGoogleOAuthConfigured(): boolean {
+  const env = parseServerEnv();
+  return Boolean(env.GOOGLE_OAUTH_CLIENT_ID && env.GOOGLE_OAUTH_CLIENT_SECRET);
+}
+
+export function requireGoogleOAuth(): {
+  clientId: string;
+  clientSecret: string;
+  redirectUri: string;
+} {
+  const env = parseServerEnv();
+  if (!env.GOOGLE_OAUTH_CLIENT_ID || !env.GOOGLE_OAUTH_CLIENT_SECRET) {
+    throw new Error(
+      "Google OAuth is not configured. Set GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET in .env.local.",
+    );
+  }
+  return {
+    clientId: env.GOOGLE_OAUTH_CLIENT_ID,
+    clientSecret: env.GOOGLE_OAUTH_CLIENT_SECRET,
+    redirectUri: `${env.NEXT_PUBLIC_SITE_URL}/api/scheduling/google/callback`,
+  };
 }

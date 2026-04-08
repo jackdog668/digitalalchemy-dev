@@ -355,6 +355,28 @@ export async function updateBookingStatus(
   if (error) throw new Error(`updateBookingStatus: ${error.message}`);
 }
 
+/**
+ * After a successful Google Calendar event creation, persist the eventId
+ * and Meet URL back to the booking row. Separate from createBookingRow
+ * so that the Google API failure path doesn't roll back the DB write.
+ */
+export async function attachGoogleEventToBooking(
+  id: string,
+  googleEventId: string,
+  googleMeetUrl: string | null,
+): Promise<void> {
+  const db = createServiceRoleClient();
+  const { error } = await db
+    .from("scheduling_bookings")
+    .update({
+      google_calendar_event_id: googleEventId,
+      google_meet_url: googleMeetUrl,
+    })
+    .eq("id", id);
+  if (error)
+    throw new Error(`attachGoogleEventToBooking: ${error.message}`);
+}
+
 export async function listAllBookings(): Promise<Booking[]> {
   const db = createServiceRoleClient();
   const { data, error } = await db

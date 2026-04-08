@@ -5,10 +5,16 @@ import {
   countBookings,
 } from "@/lib/scheduling";
 import { isSupabaseConfigured } from "@/lib/env";
+import { GoogleCalendarCard } from "./_components/GoogleCalendarCard";
 
 export const dynamic = "force-dynamic";
 
-export default async function SchedulingDashboard() {
+interface Props {
+  searchParams: Promise<{ google?: string }>;
+}
+
+export default async function SchedulingDashboard({ searchParams }: Props) {
+  const { google: googleFlag } = await searchParams;
   if (!isSupabaseConfigured()) {
     return (
       <div className="rounded-lg border border-da-border bg-da-surface p-6">
@@ -56,6 +62,11 @@ export default async function SchedulingDashboard() {
           value={bookingsCount}
           sub={bookingsCount === 0 ? "No bookings yet" : "Total lifetime"}
         />
+      </div>
+
+      {/* Integrations row */}
+      <div className="mb-6">
+        <GoogleCalendarCard statusFlag={googleFlag} />
       </div>
 
       {/* Cards */}

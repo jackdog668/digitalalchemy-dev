@@ -6,6 +6,7 @@ import {
   cancelBookingRow,
 } from "@/lib/scheduling";
 import { sendCancellationEmails } from "@/lib/scheduling-emails";
+import { deleteCalendarEventForBooking } from "@/lib/google/events";
 import { isSupabaseConfigured, isResendConfigured } from "@/lib/env";
 
 const RL_WINDOW_MS = 60 * 60 * 1000;
@@ -93,6 +94,13 @@ export async function POST(req: NextRequest) {
     } catch (err) {
       console.error("Cancellation email failed:", err);
     }
+  }
+
+  // Remove the Google Calendar event so the admin's calendar stays clean.
+  try {
+    await deleteCalendarEventForBooking(cancelled);
+  } catch (err) {
+    console.error("[google] delete event on cancel failed:", err);
   }
 
   return NextResponse.json({ ok: true });
