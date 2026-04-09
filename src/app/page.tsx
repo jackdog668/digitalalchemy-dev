@@ -87,6 +87,9 @@ export default function HomePage() {
                   Become an Alchemist
                 </Button>
               </MagneticWrapper>
+              <Button href="/book" variant="primary" size="lg">
+                Book a Call
+              </Button>
               <Button href="/talk" variant="primary" size="lg">
                 Talk to the Alchemist
               </Button>

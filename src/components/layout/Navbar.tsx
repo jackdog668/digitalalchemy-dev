@@ -88,7 +88,10 @@ export function Navbar() {
               />
             </Link>
           ))}
-          <div className="ml-4">
+          <div className="ml-4 flex items-center gap-2">
+            <Button href="/book" variant="primary" size="sm">
+              Book a Call
+            </Button>
             <Button href={SITE.skoolUrl} external variant="accent" size="sm">
               Join Digital Alchemy
             </Button>
@@ -163,6 +166,21 @@ export function Navbar() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{
                   delay: NAV_LINKS.length * 0.05,
+                  type: "spring",
+                  damping: 20,
+                  stiffness: 150,
+                }}
+                className="mt-2"
+              >
+                <Button href="/book" variant="primary" size="md">
+                  Book a Call
+                </Button>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{
+                  delay: (NAV_LINKS.length + 1) * 0.05,
                   type: "spring",
                   damping: 20,
                   stiffness: 150,
