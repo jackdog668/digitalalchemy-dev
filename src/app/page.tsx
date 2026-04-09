@@ -84,20 +84,11 @@ export default function HomePage() {
                   variant="accent"
                   size="lg"
                 >
-                  Become an Alchemist
+                  Join the Skool
                 </Button>
               </MagneticWrapper>
               <Button href="/book" variant="primary" size="lg">
                 Book a Call
-              </Button>
-              <Button href="/talk" variant="primary" size="lg">
-                Talk to the Alchemist
-              </Button>
-              <Button href="/portfolio" variant="primary" size="lg">
-                See What We Build
-              </Button>
-              <Button href={SITE.beaconsUrl} external variant="outline" size="lg">
-                All Links
               </Button>
             </div>
           </FadeInOnScroll>
