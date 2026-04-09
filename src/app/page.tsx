@@ -97,6 +97,90 @@ export default function HomePage() {
 
       <ShimmerLine className="opacity-50" />
 
+      {/* ── TESTIMONIALS ── */}
+      {/*
+        Real quotes pulled from Granola meeting transcripts of Desi's
+        1-on-1 and cohort sessions. Names are first-name-only at
+        Granola's granularity. TODO(Desi): text Lisa, Serenity, and
+        Ebone to confirm they're OK with being quoted on the public
+        site before leaving these live long-term. Any removal request
+        is a 10-second edit in this file.
+      */}
+      <section className="relative px-6 py-24 overflow-hidden">
+        <GlowOrb color="purple" size="md" className="-right-20 top-20" />
+        <div className="relative mx-auto max-w-6xl">
+          <FadeInOnScroll>
+            <div className="text-center">
+              <p className="text-sm uppercase tracking-wider text-da-cyan">
+                What students are saying
+              </p>
+              <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">
+                Real people.{" "}
+                <span className="text-da-indigo">Real breakthroughs.</span>
+              </h2>
+            </div>
+          </FadeInOnScroll>
+
+          <StaggerContainer className="mt-14 grid gap-6 md:grid-cols-3">
+            {[
+              {
+                quote:
+                  "You ain't been nothing but a blessing. I really enjoy this. I know I have the potential — I just needed a little bit of guidance.",
+                name: "Lisa",
+                role: "Midjourney student · 1-on-1 session",
+                initial: "L",
+                gradient: "from-da-indigo via-da-purple to-da-cyan",
+              },
+              {
+                quote:
+                  "I told my partner I wanted to build something without it costing a fortune in API fees — and in the same session Desi showed me exactly how. I already built it. This is my jam right here.",
+                name: "Serenity",
+                role: "Vibe Coding Bootcamp",
+                initial: "S",
+                gradient: "from-da-cyan via-da-indigo to-da-purple",
+              },
+              {
+                quote:
+                  "This is why you're a threat. How do you come up with this stuff?",
+                name: "Ebone",
+                role: "1-on-1 student · Google AI Studio",
+                initial: "E",
+                gradient: "from-da-purple via-da-cyan to-da-indigo",
+              },
+            ].map((t) => (
+              <StaggerItem key={t.name}>
+                <figure className="flex h-full flex-col rounded-2xl border border-da-indigo/20 bg-da-surface/60 p-6 backdrop-blur transition-all hover:-translate-y-1 hover:border-da-indigo/50 hover:shadow-[0_0_30px_rgba(99,102,241,0.15)]">
+                  <div
+                    aria-hidden="true"
+                    className="mb-4 font-display text-5xl leading-none text-da-indigo/60"
+                  >
+                    &ldquo;
+                  </div>
+                  <blockquote className="flex-1 text-sm leading-relaxed text-da-text">
+                    {t.quote}
+                  </blockquote>
+                  <figcaption className="mt-6 flex items-center gap-3 border-t border-da-border/40 pt-4">
+                    <div
+                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${t.gradient} font-display text-lg font-bold text-da-dark`}
+                    >
+                      {t.initial}
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-da-text">
+                        {t.name}
+                      </div>
+                      <div className="text-xs text-da-muted">{t.role}</div>
+                    </div>
+                  </figcaption>
+                </figure>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </div>
+      </section>
+
+      <ShimmerLine className="opacity-50" />
+
       {/* ── FEATURED CARDS ── */}
       <section className="px-6 py-24">
         <div className="mx-auto max-w-6xl">

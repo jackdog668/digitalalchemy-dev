@@ -12,6 +12,7 @@ import { GlowOrb } from "@/components/effects/GlowOrb";
 import { Button } from "@/components/ui/Button";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { TableOfContents } from "@/components/blog/TableOfContents";
+import { SubscribeForm } from "@/components/SubscribeForm";
 import { SITE } from "@/lib/constants";
 import Link from "next/link";
 
@@ -179,6 +180,33 @@ export default async function BlogPostPage({ params }: PageProps) {
           <aside>
             <TableOfContents />
           </aside>
+        </div>
+      </section>
+
+      {/* ── NEWSLETTER SIGNUP ── */}
+      {/*
+        Inline signup box at the end of the article — highest-attention
+        placement because the reader just finished consuming the content.
+        Reuses the existing SubscribeForm component and /api/subscribe
+        route (double opt-in via Resend + Supabase). No new plumbing.
+      */}
+      <section className="px-6 pb-8">
+        <div className="mx-auto max-w-3xl">
+          <div className="rounded-2xl border border-da-indigo/30 bg-gradient-to-br from-da-indigo/10 via-da-surface/40 to-da-purple/10 p-8 text-center backdrop-blur">
+            <p className="text-xs uppercase tracking-wider text-da-cyan">
+              Join the list
+            </p>
+            <h3 className="mt-2 font-display text-2xl font-bold text-da-text sm:text-3xl">
+              Get Desi&apos;s weekly vibe coding tips
+            </h3>
+            <p className="mx-auto mt-3 max-w-lg text-sm text-da-muted">
+              Real builds, real tools, no fluff. One email a week, unsubscribe
+              anytime.
+            </p>
+            <div className="mt-6 flex justify-center">
+              <SubscribeForm />
+            </div>
+          </div>
         </div>
       </section>
 
