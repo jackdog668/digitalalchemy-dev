@@ -4,6 +4,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ConvaiWidget } from "@/components/ConvaiWidget";
 import { GrainOverlay } from "@/components/effects/GrainOverlay";
+import { PostHogProvider } from "@/components/PostHogProvider";
 import { SITE } from "@/lib/constants";
 import "./globals.css";
 
@@ -68,11 +69,13 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${spaceGrotesk.variable} antialiased bg-da-dark text-da-text`}
       >
-        <GrainOverlay />
-        <Navbar />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
-        <ConvaiWidget />
+        <PostHogProvider>
+          <GrainOverlay />
+          <Navbar />
+          <main className="min-h-screen">{children}</main>
+          <Footer />
+          <ConvaiWidget />
+        </PostHogProvider>
       </body>
     </html>
   );

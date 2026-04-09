@@ -25,6 +25,14 @@ const serverSchema = z.object({
   // Phase 4 — shared secret between Vercel Cron and /api/scheduling/reminders.
   // Vercel auto-injects it as `Authorization: Bearer <CRON_SECRET>` when set.
   CRON_SECRET: z.string().min(1).optional(),
+  // PostHog analytics — public, client-safe. Both are optional; if unset
+  // the PostHogProvider becomes a no-op and nothing is tracked. Sign up
+  // at https://app.posthog.com and paste your project's API key.
+  NEXT_PUBLIC_POSTHOG_KEY: z.string().min(1).optional(),
+  NEXT_PUBLIC_POSTHOG_HOST: z
+    .string()
+    .url()
+    .default("https://us.i.posthog.com"),
 });
 
 type ServerEnv = z.infer<typeof serverSchema>;
