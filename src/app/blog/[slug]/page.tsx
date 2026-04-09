@@ -32,9 +32,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!post) return {};
 
   const canonicalPath = `/blog/${post.slug}`;
+  // If the post has a hand-picked image, use it. Otherwise, generate a
+  // branded OG card on the fly via /api/og. Every post gets a designed
+  // preview card in social shares with zero manual work.
+  const dynamicOgUrl = `${SITE.url}/api/og?title=${encodeURIComponent(
+    post.title,
+  )}&category=${encodeURIComponent(post.category ?? "Blog")}`;
   const ogImages = post.image
     ? [{ url: post.image, alt: post.title }]
-    : [{ url: "/og-default.png", alt: SITE.name }];
+    : [{ url: dynamicOgUrl, alt: post.title, width: 1200, height: 630 }];
 
   return {
     title: post.title,

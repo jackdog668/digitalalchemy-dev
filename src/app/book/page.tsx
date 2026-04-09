@@ -42,8 +42,53 @@ export default async function BookIndexPage() {
 
       <ShimmerLine />
 
-      <section className="px-6 py-16">
-        <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2">
+      {/* ── MEET DESI ── */}
+      {/*
+        Trust-building intro card shown above the event-type grid so
+        visitors know who they're booking with before they pick a slot.
+        To replace the monogram with a real photo: drop a square JPG/PNG
+        at `public/desi.jpg` and swap the monogram div for:
+          <Image src="/desi.jpg" alt="Desi Baker" width={96} height={96}
+                 className="h-24 w-24 shrink-0 rounded-full object-cover" />
+      */}
+      <section className="px-6 pt-12">
+        <div className="mx-auto max-w-3xl">
+          <div className="flex flex-col items-center gap-6 rounded-2xl border border-da-indigo/20 bg-da-surface/60 p-8 backdrop-blur sm:flex-row sm:items-start">
+            <div
+              className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-da-indigo via-da-purple to-da-cyan font-display text-4xl font-bold text-da-dark shadow-[0_0_30px_rgba(99,102,241,0.4)]"
+              aria-hidden="true"
+            >
+              D
+            </div>
+            <div className="text-center sm:text-left">
+              <p className="text-xs uppercase tracking-wider text-da-cyan">
+                Your host
+              </p>
+              <h2 className="mt-1 font-display text-2xl font-bold text-da-text">
+                Hey, I&apos;m Desi.
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-da-muted">
+                I&apos;ve spent 10+ years teaching creative pros how to build
+                real apps with AI — no coding background required. On our
+                call we&apos;ll talk about what you&apos;re building, where
+                you&apos;re stuck, and exactly what to do next. No pitch. No
+                pressure.
+              </p>
+              <p className="mt-3">
+                <span className="inline-block rounded-full border border-da-indigo/30 bg-da-indigo/10 px-3 py-1 text-xs text-da-muted">
+                  {SITE.credential}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 pt-12 pb-16">
+        <p className="mx-auto max-w-5xl text-center text-sm uppercase tracking-wider text-da-muted">
+          Pick the type of conversation
+        </p>
+        <div className="mx-auto mt-6 grid max-w-5xl gap-6 md:grid-cols-2">
           {eventTypes.length === 0 && (
             <p className="col-span-full text-center text-da-muted">
               No active event types yet. Check back soon.

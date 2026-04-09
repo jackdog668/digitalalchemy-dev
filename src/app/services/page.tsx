@@ -9,6 +9,7 @@ import {
 } from "@/components/effects/FadeInOnScroll";
 import { ShimmerLine } from "@/components/effects/ShimmerLine";
 import { GlowOrb } from "@/components/effects/GlowOrb";
+import { BookingWidget } from "@/components/scheduling/BookingWidget";
 import { services } from "@/data/services";
 
 export const metadata: Metadata = {
@@ -214,29 +215,42 @@ export default function ServicesPage() {
 
       <ShimmerLine />
 
-      {/* ── CONTACT CTA ── */}
+      {/* ── INLINE BOOKING CTA ── */}
       <section className="relative px-6 py-24 bg-da-surface/20 overflow-hidden">
         <GlowOrb color="purple" size="md" className="-left-20 top-10" />
 
-        <div className="relative mx-auto max-w-3xl text-center">
+        <div className="relative mx-auto max-w-5xl">
           <FadeInOnScroll>
-            <h2 className="font-display text-3xl font-bold sm:text-4xl">
-              Let&apos;s Build{" "}
-              <span className="text-da-cyan">Something.</span>
-            </h2>
-            <p className="mt-4 text-lg text-da-muted">
-              Ready to put AI to work for your team? Let&apos;s talk about what
-              you need.
-            </p>
-            <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <Button
-                href="mailto:hello@digitalalchemy.dev"
-                variant="accent"
-                size="lg"
-              >
-                Book a Call
-              </Button>
-              <Button href="/portfolio" variant="outline" size="lg">
+            <div className="text-center">
+              <h2 className="font-display text-3xl font-bold sm:text-4xl">
+                Let&apos;s Build{" "}
+                <span className="text-da-cyan">Something.</span>
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl text-lg text-da-muted">
+                Ready to put AI to work for your team? Pick a time below —
+                we&apos;ll talk about what you need and map out next steps.
+              </p>
+            </div>
+          </FadeInOnScroll>
+
+          <FadeInOnScroll delay={150}>
+            <div className="mt-12">
+              <BookingWidget slug="introcall" height={900} />
+            </div>
+          </FadeInOnScroll>
+
+          <FadeInOnScroll delay={250}>
+            <div className="mt-8 flex flex-col items-center gap-3 text-center">
+              <p className="text-sm text-da-muted">
+                Prefer email?{" "}
+                <a
+                  href="mailto:hello@digitalalchemy.dev"
+                  className="text-da-indigo underline decoration-da-indigo/40 underline-offset-4 hover:decoration-da-indigo"
+                >
+                  hello@digitalalchemy.dev
+                </a>
+              </p>
+              <Button href="/portfolio" variant="outline" size="md">
                 See Our Work
               </Button>
             </div>
