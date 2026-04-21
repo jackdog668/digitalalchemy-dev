@@ -101,8 +101,8 @@ export default function HomePage() {
       {/*
         Real quotes pulled from Granola meeting transcripts of Desi's
         1-on-1 and cohort sessions. Names are first-name-only at
-        Granola's granularity. TODO(Desi): text Lisa, Serenity, and
-        Ebone to confirm they're OK with being quoted on the public
+        Granola's granularity. TODO(Desi): text Lisa and Ebone to
+        confirm they're OK with being quoted on the public
         site before leaving these live long-term. Any removal request
         is a 10-second edit in this file.
       */}
@@ -130,14 +130,6 @@ export default function HomePage() {
                 role: "Midjourney student · 1-on-1 session",
                 initial: "L",
                 gradient: "from-da-indigo via-da-purple to-da-cyan",
-              },
-              {
-                quote:
-                  "I told my partner I wanted to build something without it costing a fortune in API fees — and in the same session Desi showed me exactly how. I already built it. This is my jam right here.",
-                name: "Serenity",
-                role: "Vibe Coding Bootcamp",
-                initial: "S",
-                gradient: "from-da-cyan via-da-indigo to-da-purple",
               },
               {
                 quote:
