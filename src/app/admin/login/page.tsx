@@ -6,7 +6,11 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 // Magic-link login. Only the ADMIN_EMAIL address can actually get in —
 // the middleware enforces that after the callback — but we also pre-check
 // here to give a clearer error and reduce noise in the Supabase dashboard.
-const ADMIN_EMAIL = "desibaker54@gmail.com";
+// NEXT_PUBLIC_ADMIN_EMAIL is inlined at build time; must match the
+// server-side ADMIN_EMAIL or legit admins get rejected here.
+const ADMIN_EMAIL = (
+  process.env.NEXT_PUBLIC_ADMIN_EMAIL ?? "desibaker54@gmail.com"
+).toLowerCase();
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");

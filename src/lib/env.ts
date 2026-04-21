@@ -13,6 +13,14 @@ const serverSchema = z.object({
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1).optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
   ADMIN_EMAIL: z.string().email().default("desibaker54@gmail.com"),
+  // Public mirror of ADMIN_EMAIL so the client-side login form can
+  // pre-check the entered address. Middleware + server actions remain
+  // the source of truth; this just gives a nicer UX. MUST match
+  // ADMIN_EMAIL or login will silently reject valid admins.
+  NEXT_PUBLIC_ADMIN_EMAIL: z
+    .string()
+    .email()
+    .default("desibaker54@gmail.com"),
   // Comma-separated list of addresses that receive admin notification
   // emails (new bookings, cancellations, reminders failures). Defaults to
   // ADMIN_EMAIL if unset. Kept SEPARATE from ADMIN_EMAIL because that var
