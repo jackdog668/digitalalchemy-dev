@@ -144,17 +144,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Booking failed" }, { status: 500 });
   }
 
-  // Fire emails in parallel — don't block the response if one fails
-  if (isResendConfigured()) {
-    Promise.allSettled([
+  // Send emails before returning. Previously fire-and-forget, but Vercel
+  // serverless terminates the container after the response returns, which
+  // can kill un-awaited promises mid-send. Costs ~1-2s but guarantees
+  // delivery attempts actually complete. Still non-blocking for errors —
+  // booking row is already saved, so log + move on if Resend fails.
+  if (!isResendConfigured()) {
+    console.error(
+      "[booking] RESEND_API_KEY not set — skipping invitee + admin emails. " +
+        "Booking saved but no one was notified.",
+    );
+  } else {
+    const labels = ["invitee confirmation", "admin notification"] as const;
+    const results = await Promise.allSettled([
       sendBookingConfirmation(booking, eventType),
       sendAdminBookingNotification(booking, eventType),
-    ]).then((results) => {
-      results.forEach((r) => {
-        if (r.status === "rejected") {
-          console.error("Booking email failed:", r.reason);
-        }
-      });
+    ]);
+    results.forEach((r, i) => {
+      if (r.status === "rejected") {
+        console.error(`[booking] ${labels[i]} email failed:`, r.reason);
+      } else {
+        console.log(`[booking] ${labels[i]} email sent OK`);
+      }
     });
   }
 
