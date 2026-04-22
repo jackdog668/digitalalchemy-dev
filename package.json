@@ -16,7 +16,7 @@
     "framer-motion": "^12.38.0",
     "googleapis": "^171.4.0",
     "gray-matter": "^4.0.3",
-    "next": "16.1.6",
+    "next": "^16.2.1",
     "next-mdx-remote": "^6.0.0",
     "posthog-js": "^1.365.5",
     "react": "19.2.3",
@@ -37,7 +37,7 @@
     "@types/react-dom": "^19",
     "dotenv": "^17.4.1",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "^16.2.1",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5"
