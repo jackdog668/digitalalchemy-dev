@@ -54,8 +54,11 @@ export function BookingFlow({ eventType }: Props) {
   const [monthSlots, setMonthSlots] = useState<Slot[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Detect TZ on mount
+  // Detect TZ on mount. Must run as an effect (not lazy useState) so SSR
+  // and the client's first render agree on "America/Chicago" — otherwise
+  // the timezone would mismatch and React would tear the hydration.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTimezone(detectTimezone());
   }, []);
 
@@ -75,6 +78,7 @@ export function BookingFlow({ eventType }: Props) {
       59,
       59,
     );
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     fetch("/api/scheduling/slots", {
       method: "POST",

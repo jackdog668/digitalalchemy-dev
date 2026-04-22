@@ -26,11 +26,6 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close mobile menu on route change
-  useEffect(() => {
-    setIsMobileOpen(false);
-  }, [pathname]);
-
   // Admin has its own chrome — hide the public-site navbar on /admin/**.
   // MUST come after all hooks to satisfy the Rules of Hooks (no early
   // returns before useState/useEffect, or hook count drifts between renders).
@@ -148,6 +143,7 @@ export function Navbar() {
                     damping: 20,
                     stiffness: 150,
                   }}
+                  onClick={() => setIsMobileOpen(false)}
                 >
                   <Link
                     href={link.href}
@@ -171,6 +167,7 @@ export function Navbar() {
                   stiffness: 150,
                 }}
                 className="mt-2"
+                onClick={() => setIsMobileOpen(false)}
               >
                 <Button href="/book" variant="primary" size="md">
                   Book a Call
@@ -186,6 +183,7 @@ export function Navbar() {
                   stiffness: 150,
                 }}
                 className="mt-2"
+                onClick={() => setIsMobileOpen(false)}
               >
                 <Button href={SITE.skoolUrl} external variant="accent" size="md">
                   Join Digital Alchemy

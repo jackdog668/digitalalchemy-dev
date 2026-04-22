@@ -27,6 +27,9 @@ export function TableOfContents() {
         text: n.textContent ?? "",
         level: n.tagName === "H2" ? 2 : 3,
       }));
+    // Reading the rendered article DOM is the legitimate "external system"
+    // this effect synchronizes from — there's nowhere else to derive it.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHeadings(items);
 
     if (items.length === 0) return;

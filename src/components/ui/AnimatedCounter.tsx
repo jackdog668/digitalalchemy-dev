@@ -61,6 +61,9 @@ export function AnimatedCounter({
 
   useEffect(() => {
     if (isInView && !hasAnimated) {
+      // animate() flips hasAnimated and starts a rAF loop — triggering an
+      // animation in response to viewport state is the intended effect here.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       animate();
     }
   }, [isInView, hasAnimated, animate]);
