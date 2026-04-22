@@ -1,0 +1,56 @@
+name: Scheduling reminders
+
+# Replaces Vercel Cron (Hobby plan caps to daily). Pings the reminder
+# endpoint every 15 minutes so 24h + 1h booking reminder emails actually
+# fire. GitHub Actions scheduled workflows only run from the default
+# branch, so this file must land on master to activate.
+#
+# Requires the `CRON_SECRET` repo secret — same value set in Vercel env.
+# The endpoint (`verifyCronAuth` in src/lib/env.ts) does a timing-safe
+# compare against `Authorization: Bearer <CRON_SECRET>`.
+#
+# Note: GitHub's cron scheduler can drift by several minutes under load
+# and occasionally skips runs entirely. That's fine for reminders —
+# /api/scheduling/reminders is idempotent (it only sends to bookings
+# whose reminder_Xh_sent_at is NULL) so missed ticks get picked up by
+# the next successful run.
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: scheduling-reminders
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Call reminders endpoint
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://digitalalchemy.dev' }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::error::CRON_SECRET secret is not set — aborting."
+            exit 1
+          fi
+
+          response=$(curl -sS -w "\n%{http_code}" \
+            -X POST "${SITE_URL}/api/scheduling/reminders" \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            --max-time 60)
+
+          body=$(echo "$response" | sed '$d')
+          status=$(echo "$response" | tail -n1)
+
+          echo "HTTP $status"
+          echo "$body"
+
+          if [ "$status" != "200" ]; then
+            echo "::error::Reminders endpoint returned $status"
+            exit 1
+          fi
