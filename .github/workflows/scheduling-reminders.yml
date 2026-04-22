@@ -40,7 +40,7 @@ jobs:
           fi
 
           response=$(curl -sS -w "\n%{http_code}" \
-            -X POST "${SITE_URL}/api/scheduling/reminders" \
+            "${SITE_URL}/api/scheduling/reminders" \
             -H "Authorization: Bearer ${CRON_SECRET}" \
             --max-time 60)
 
