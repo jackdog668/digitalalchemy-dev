@@ -14,26 +14,11 @@ import {
 } from "@/lib/scheduling-emails";
 import { createCalendarEventForBooking } from "@/lib/google/events";
 import { isSupabaseConfigured, isResendConfigured } from "@/lib/env";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 // Public endpoint — creates a booking. Revalidates slot availability server-
 // side to prevent double-booking races, then inserts the row and fires off
 // two emails in parallel (invitee confirmation + admin notification).
-
-const RL_WINDOW_MS = 60 * 60 * 1000; // 1 hour
-const RL_MAX = 3; // 3 bookings per hour per IP
-const bucket = new Map<string, { count: number; resetAt: number }>();
-
-function rateLimit(ip: string): boolean {
-  const now = Date.now();
-  const entry = bucket.get(ip);
-  if (!entry || entry.resetAt < now) {
-    bucket.set(ip, { count: 1, resetAt: now + RL_WINDOW_MS });
-    return true;
-  }
-  if (entry.count >= RL_MAX) return false;
-  entry.count += 1;
-  return true;
-}
 
 const bodySchema = z
   .object({
@@ -59,14 +44,17 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown";
-  if (!rateLimit(ip)) {
+  const ip = getClientIp(req);
+  const rl = await rateLimit({
+    key: "scheduling:book",
+    identifier: ip,
+    max: 3,
+    windowMs: 60 * 60 * 1000,
+  });
+  if (!rl.success) {
     return NextResponse.json(
       { error: "Too many requests" },
-      { status: 429, headers: { "Retry-After": "3600" } },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } },
     );
   }
 

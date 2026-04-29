@@ -11,26 +11,11 @@ import {
   fetchBusyIntervals,
   busyIntervalsAsBookings,
 } from "@/lib/google/freebusy";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 // Public endpoint — returns available time slots for an event type within a
 // date range, converted to the visitor's timezone. Called from the booking
 // page client component on date navigation.
-
-const RL_WINDOW_MS = 60_000;
-const RL_MAX = 30;
-const bucket = new Map<string, { count: number; resetAt: number }>();
-
-function rateLimit(ip: string): boolean {
-  const now = Date.now();
-  const entry = bucket.get(ip);
-  if (!entry || entry.resetAt < now) {
-    bucket.set(ip, { count: 1, resetAt: now + RL_WINDOW_MS });
-    return true;
-  }
-  if (entry.count >= RL_MAX) return false;
-  entry.count += 1;
-  return true;
-}
 
 const bodySchema = z
   .object({
@@ -53,14 +38,17 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown";
-  if (!rateLimit(ip)) {
+  const ip = getClientIp(req);
+  const rl = await rateLimit({
+    key: "scheduling:slots",
+    identifier: ip,
+    max: 30,
+    windowMs: 60_000,
+  });
+  if (!rl.success) {
     return NextResponse.json(
       { error: "Too many requests" },
-      { status: 429, headers: { "Retry-After": "60" } },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } },
     );
   }
 
