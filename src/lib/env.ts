@@ -41,6 +41,13 @@ const serverSchema = z.object({
     .string()
     .url()
     .default("https://us.i.posthog.com"),
+  // Upstash Redis — used by the unified rate limiter in lib/rate-limit.ts.
+  // Optional: when unset, the limiter falls back to an in-process Map
+  // (fine for local dev, useless on Vercel because each cold start clears
+  // it). Set both in production. Free tier covers tens of thousands of
+  // requests/day. https://console.upstash.com → Redis → REST API.
+  UPSTASH_REDIS_REST_URL: z.string().url().optional(),
+  UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
 });
 
 type ServerEnv = z.infer<typeof serverSchema>;

@@ -11,24 +11,7 @@ import {
 } from "@/lib/env";
 import { renderConfirmEmail } from "@/lib/email/templates/confirm";
 import { SITE } from "@/lib/constants";
-
-// Very simple in-memory rate limiter. 5 requests per minute per IP.
-// Sufficient for a small blog; swap for @upstash/ratelimit when you scale.
-const RL_WINDOW_MS = 60_000;
-const RL_MAX = 5;
-const bucket = new Map<string, { count: number; resetAt: number }>();
-
-function rateLimit(ip: string): boolean {
-  const now = Date.now();
-  const entry = bucket.get(ip);
-  if (!entry || entry.resetAt < now) {
-    bucket.set(ip, { count: 1, resetAt: now + RL_WINDOW_MS });
-    return true;
-  }
-  if (entry.count >= RL_MAX) return false;
-  entry.count += 1;
-  return true;
-}
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 const bodySchema = z
   .object({
@@ -44,15 +27,17 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown";
-
-  if (!rateLimit(ip)) {
+  const ip = getClientIp(req);
+  const rl = await rateLimit({
+    key: "subscribe",
+    identifier: ip,
+    max: 5,
+    windowMs: 60_000,
+  });
+  if (!rl.success) {
     return NextResponse.json(
       { error: "Too many requests" },
-      { status: 429, headers: { "Retry-After": "60" } },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } },
     );
   }
 

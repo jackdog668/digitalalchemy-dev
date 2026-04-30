@@ -34,10 +34,18 @@ const nextConfig: NextConfig = {
             value: "max-age=63072000; includeSubDomains; preload",
           },
           {
+            // Content Security Policy — locks down what the browser is
+            // allowed to load and execute. Removed 'unsafe-eval' (was a
+            // notable hole; allowed any script to call eval/new Function).
+            // 'unsafe-inline' for scripts is still here because Next.js
+            // injects inline bootstrap scripts and switching to nonces is
+            // a bigger refactor — revisit if/when targeted. PostHog and
+            // jsdelivr stay whitelisted for analytics + the unicornstudio
+            // CDN-loaded WebGL hero scene.
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://*.posthog.com",
+              "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.posthog.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' https: data:",
               "font-src 'self' https://fonts.gstatic.com",
