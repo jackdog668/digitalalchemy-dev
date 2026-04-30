@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+import { SocialIconsRow } from "@/components/ui/SocialIconsRow";
 import {
   FadeInOnScroll,
   StaggerContainer,
@@ -91,6 +92,11 @@ export default function HomePage() {
                 Book a Call
               </Button>
             </div>
+          </FadeInOnScroll>
+
+          {/* Social icons row — pulled from beacons.ai/dbcreations */}
+          <FadeInOnScroll delay={400}>
+            <SocialIconsRow className="mt-10" />
           </FadeInOnScroll>
         </div>
       </section>

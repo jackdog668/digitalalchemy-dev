@@ -23,8 +23,14 @@ export const NAV_LINKS = [
 ] as const;
 
 export const SOCIAL_LINKS = {
-  tiktok: "#",
-  instagram: "#",
-  youtube: "#",
-  twitter: "#",
+  tiktok: "https://tiktok.com/@db_alchemy",
+  linkedin: "https://www.linkedin.com/in/desmond-baker-896892103/",
+  twitter: "https://twitter.com/db_alchemy",
+  instagram: "https://instagram.com/digitalalchemy.dev",
+  threads: "https://www.threads.net/@digitalalchemy.dev",
+  facebook: "https://www.facebook.com/profile.php?id=61554759607214",
+  pinterest: "https://www.pinterest.com/dbcreations_/",
+  email: "mailto:dbcreationsllc@gmail.com",
+  github: "https://www.github.com/jackdog668",
+  beacons: "https://beacons.ai/dbcreations",
 } as const;
