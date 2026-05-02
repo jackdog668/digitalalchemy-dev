@@ -2,22 +2,59 @@
 
 import Script from "next/script";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Global ElevenLabs ConvAI voice agent. Renders the floating bottom-right
 // bubble on every route except /talk (which renders its own inline instance)
 // and /admin/** (the backend has its own chrome).
+//
+// Mount is deferred until the user scrolls/touches/clicks OR 3 seconds
+// elapse — whichever comes first. Without this gate the widget script
+// from unpkg + the shadow-DOM polling would compete with initial paint
+// on every page load.
 export function ConvaiWidget() {
   const pathname = usePathname();
   const hidden = pathname === "/talk" || pathname?.startsWith("/admin");
+  const [shouldMount, setShouldMount] = useState(false);
+
+  useEffect(() => {
+    if (hidden) return;
+    let mounted = false;
+    const mount = () => {
+      if (mounted) return;
+      mounted = true;
+      setShouldMount(true);
+      window.removeEventListener("scroll", mount);
+      window.removeEventListener("touchstart", mount);
+      window.removeEventListener("pointerdown", mount);
+    };
+    const timer = window.setTimeout(mount, 3000);
+    window.addEventListener("scroll", mount, { passive: true, once: true });
+    window.addEventListener("touchstart", mount, {
+      passive: true,
+      once: true,
+    });
+    window.addEventListener("pointerdown", mount, {
+      passive: true,
+      once: true,
+    });
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("scroll", mount);
+      window.removeEventListener("touchstart", mount);
+      window.removeEventListener("pointerdown", mount);
+    };
+  }, [hidden]);
 
   // Hide the "Powered by ElevenAgents" badge inside the widget's shadow DOM.
   // The widget is a custom element loaded from unpkg; its branding sits in a
   // shadow root we have to pierce after the script mounts. We poll briefly
   // and stop as soon as we successfully inject the stylesheet — no observer,
   // no retry loop, to avoid bloating the console with mutation noise.
+  // Only runs after shouldMount flips so we're not polling during the
+  // critical render path.
   useEffect(() => {
-    if (hidden || typeof window === "undefined") return;
+    if (hidden || !shouldMount || typeof window === "undefined") return;
 
     const HIDE_CSS = `
       a[href*="elevenlabs" i],
@@ -70,16 +107,16 @@ export function ConvaiWidget() {
     }, 300);
 
     return () => window.clearInterval(interval);
-  }, [hidden, pathname]);
+  }, [hidden, shouldMount, pathname]);
 
-  if (hidden) return null;
+  if (hidden || !shouldMount) return null;
 
   return (
     <>
       <elevenlabs-convai agent-id="agent_5801knndc7b9ekert03h7qakd7zr" />
       <Script
         src="https://unpkg.com/@elevenlabs/convai-widget-embed"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
       />
     </>
   );

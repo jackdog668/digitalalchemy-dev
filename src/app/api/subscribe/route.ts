@@ -1,17 +1,15 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import crypto from "crypto";
-import { Resend } from "resend";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import {
   isSupabaseConfigured,
   isResendConfigured,
-  requireResend,
   serverEnv,
 } from "@/lib/env";
 import { renderConfirmEmail } from "@/lib/email/templates/confirm";
-import { SITE } from "@/lib/constants";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
+import { sendEmail } from "@/lib/email/send";
 
 const bodySchema = z
   .object({
@@ -75,14 +73,11 @@ export async function POST(req: NextRequest) {
 
   // Send confirmation email
   try {
-    const { apiKey, fromEmail } = requireResend();
-    const resend = new Resend(apiKey);
     const siteUrl = serverEnv().NEXT_PUBLIC_SITE_URL;
     const confirmUrl = `${siteUrl}/api/subscribe/confirm?token=${confirmToken}`;
 
-    await resend.emails.send({
-      from: `${SITE.name} <${fromEmail}>`,
-      to: [email],
+    await sendEmail({
+      to: email,
       subject: "Confirm your Digital Alchemy subscription",
       html: renderConfirmEmail({ confirmUrl }),
     });

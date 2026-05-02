@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
+import { enrollSubscriberInWelcomeSequence } from "@/lib/email/sequences";
 
 // confirm_token is generated as crypto.randomBytes(32).toString("hex") in
 // /api/subscribe — exactly 64 hex chars. Anything else is malformed and
@@ -52,6 +53,12 @@ export async function GET(req: NextRequest) {
       confirm_token: null,
     })
     .eq("id", row.id);
+
+  try {
+    await enrollSubscriberInWelcomeSequence(row.id);
+  } catch (err) {
+    console.error("Welcome sequence enrollment failed:", err);
+  }
 
   return NextResponse.redirect(new URL("/blog?subscribed=1", req.url));
 }
