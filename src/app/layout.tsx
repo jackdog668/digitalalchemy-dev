@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ConvaiWidget } from "@/components/ConvaiWidget";
@@ -14,8 +15,25 @@ const inter = Inter({
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
+// Local Space Grotesk — the design system's canonical 5 OTF weights.
+// Replaces next/font/google Space_Grotesk so we ship Desi's exact files
+// (matches the DA brand kit + zero external font CDN on the critical path).
+const spaceGrotesk = localFont({
   variable: "--font-space-grotesk",
+  display: "swap",
+  src: [
+    { path: "./fonts/SpaceGrotesk-Light.otf",    weight: "300", style: "normal" },
+    { path: "./fonts/SpaceGrotesk-Regular.otf",  weight: "400", style: "normal" },
+    { path: "./fonts/SpaceGrotesk-Medium.otf",   weight: "500", style: "normal" },
+    { path: "./fonts/SpaceGrotesk-SemiBold.otf", weight: "600", style: "normal" },
+    { path: "./fonts/SpaceGrotesk-Bold.otf",     weight: "700", style: "normal" },
+  ],
+});
+
+// JetBrains Mono for every kicker, badge, code label, terminal string.
+// Per the DA brand bible: mono uppercase + tracked for all UI labels.
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
   display: "swap",
 });
@@ -67,7 +85,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${inter.variable} ${spaceGrotesk.variable} antialiased bg-da-dark text-da-text`}
+        className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased bg-da-dark text-da-text`}
       >
         <PostHogProvider>
           <GrainOverlay />

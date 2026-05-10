@@ -22,9 +22,64 @@ export const NAV_LINKS = [
   { label: "Blog", href: "/blog" },
 ] as const;
 
-export const SOCIAL_LINKS = {
-  tiktok: "#",
-  instagram: "#",
-  youtube: "#",
-  twitter: "#",
-} as const;
+// Real social handles, sourced from beacons.ai/dbcreations.
+// Ordered by surface priority — what shows first in icon rows.
+// YouTube intentionally omitted (no channel on beacons). Add here when ready.
+export const SOCIAL_LINKS = [
+  {
+    platform: "instagram",
+    url: "https://instagram.com/digitalalchemy.dev",
+    handle: "@digitalalchemy.dev",
+    label: "Instagram",
+  },
+  {
+    platform: "tiktok",
+    url: "https://tiktok.com/@db_alchemy",
+    handle: "@db_alchemy",
+    label: "TikTok",
+  },
+  {
+    platform: "threads",
+    url: "https://www.threads.net/@digitalalchemy.dev",
+    handle: "@digitalalchemy.dev",
+    label: "Threads",
+  },
+  {
+    platform: "twitter",
+    url: "https://twitter.com/db_alchemy",
+    handle: "@db_alchemy",
+    label: "X (Twitter)",
+  },
+  {
+    platform: "linkedin",
+    url: "https://www.linkedin.com/in/desmond-baker-896892103/",
+    handle: "Desmond Baker",
+    label: "LinkedIn",
+  },
+  {
+    platform: "substack",
+    url: "https://substack.com/@digitalalchemydb",
+    handle: "@digitalalchemydb",
+    label: "Substack",
+  },
+  {
+    platform: "github",
+    url: "https://github.com/jackdog668",
+    handle: "@jackdog668",
+    label: "GitHub",
+  },
+  {
+    platform: "pinterest",
+    url: "https://www.pinterest.com/dbcreations_/",
+    handle: "@dbcreations_",
+    label: "Pinterest",
+  },
+  {
+    platform: "facebook",
+    url: "https://www.facebook.com/profile.php?id=61554759607214",
+    handle: "DB Creations",
+    label: "Facebook",
+  },
+] as const;
+
+export type SocialPlatform = (typeof SOCIAL_LINKS)[number]["platform"];
