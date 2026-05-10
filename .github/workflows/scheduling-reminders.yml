@@ -32,7 +32,7 @@ jobs:
       - name: Call reminders endpoint
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
-          SITE_URL: ${{ vars.SITE_URL || 'https://digitalalchemy.dev' }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://www.digitalalchemy.dev' }}
         run: |
           if [ -z "$CRON_SECRET" ]; then
             echo "::error::CRON_SECRET secret is not set — aborting."

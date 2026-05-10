@@ -198,11 +198,10 @@ body {
     var(--da-cyan),
     var(--da-indigo)
   );
-  background-size: 300% 100%;
+  background-size: 100% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: shimmer 4s linear infinite;
 }
 
 /*

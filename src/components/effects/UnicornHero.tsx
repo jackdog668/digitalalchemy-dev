@@ -14,7 +14,12 @@ const UnicornScene = dynamic(() => import("unicornstudio-react/next"), {
   ),
 });
 
-const DESKTOP_QUERY = "(min-width: 768px)";
+// Stricter gate: real desktop only.
+//   - min-width 1024px excludes phones AND most tablets
+//   - pointer: fine excludes ALL touch devices (iPad, touch laptops in tablet mode)
+// Mobile/tablet users get the static gradient overlay below — no WebGL,
+// no SDK download, no battery drain, no LCP regression.
+const DESKTOP_QUERY = "(min-width: 1024px) and (pointer: fine)";
 
 // Subscribing to matchMedia via useSyncExternalStore avoids the
 // React 19 "set-state-in-effect" cascade and gives us a stable SSR
