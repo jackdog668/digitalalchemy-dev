@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+import { SocialIcons } from "@/components/ui/SocialIcons";
 import {
   FadeInOnScroll,
   StaggerContainer,
@@ -92,6 +92,13 @@ export default function HomePage() {
               </Button>
             </div>
           </FadeInOnScroll>
+
+          {/* Compact social strip — 5 platforms, icons only */}
+          <FadeInOnScroll delay={400}>
+            <div className="mt-10 flex justify-center">
+              <SocialIcons variant="hero" limit={5} />
+            </div>
+          </FadeInOnScroll>
         </div>
       </section>
 
@@ -121,53 +128,43 @@ export default function HomePage() {
             </div>
           </FadeInOnScroll>
 
-          <StaggerContainer className="mt-14 grid gap-6 md:grid-cols-3">
+          {/* Editorial pull-quotes — no cards, alternating left/right alignment,
+              big display-font quote text, mono attribution. Strips the "AI box"
+              feel by letting the quotes breathe instead of caging them. */}
+          <div className="mt-16 space-y-16">
             {[
               {
                 quote:
                   "You ain't been nothing but a blessing. I really enjoy this. I know I have the potential — I just needed a little bit of guidance.",
                 name: "Lisa",
                 role: "Midjourney student · 1-on-1 session",
-                initial: "L",
-                gradient: "from-da-indigo via-da-purple to-da-cyan",
               },
               {
                 quote:
                   "This is why you're a threat. How do you come up with this stuff?",
                 name: "Ebone",
                 role: "1-on-1 student · Google AI Studio",
-                initial: "E",
-                gradient: "from-da-purple via-da-cyan to-da-indigo",
               },
-            ].map((t) => (
-              <StaggerItem key={t.name}>
-                <figure className="flex h-full flex-col rounded-2xl border border-da-indigo/20 bg-da-surface/60 p-6 backdrop-blur transition-all hover:-translate-y-1 hover:border-da-indigo/50 hover:shadow-[0_0_30px_rgba(99,102,241,0.15)]">
-                  <div
-                    aria-hidden="true"
-                    className="mb-4 font-display text-5xl leading-none text-da-indigo/60"
-                  >
-                    &ldquo;
-                  </div>
-                  <blockquote className="flex-1 text-sm leading-relaxed text-da-text">
+            ].map((t, i) => (
+              <FadeInOnScroll key={t.name} delay={i * 120}>
+                <figure
+                  className={`max-w-3xl ${
+                    i % 2 === 1 ? "ml-auto text-right" : ""
+                  }`}
+                >
+                  <blockquote className="font-display text-2xl font-medium leading-snug text-da-text sm:text-3xl md:text-4xl">
+                    <span className="text-da-indigo/60">&ldquo;</span>
                     {t.quote}
+                    <span className="text-da-indigo/60">&rdquo;</span>
                   </blockquote>
-                  <figcaption className="mt-6 flex items-center gap-3 border-t border-da-border/40 pt-4">
-                    <div
-                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${t.gradient} font-display text-lg font-bold text-da-dark`}
-                    >
-                      {t.initial}
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold text-da-text">
-                        {t.name}
-                      </div>
-                      <div className="text-xs text-da-muted">{t.role}</div>
-                    </div>
+                  <figcaption className="mt-6 font-mono text-xs uppercase tracking-[0.15em] text-da-muted">
+                    &mdash; {t.name}{" "}
+                    <span className="text-da-cyan">/</span> {t.role}
                   </figcaption>
                 </figure>
-              </StaggerItem>
+              </FadeInOnScroll>
             ))}
-          </StaggerContainer>
+          </div>
         </div>
       </section>
 
@@ -182,47 +179,63 @@ export default function HomePage() {
             />
           </FadeInOnScroll>
 
-          <StaggerContainer className="grid gap-6 md:grid-cols-3">
-            {FEATURED_CARDS.map((card) => (
-              <StaggerItem key={card.title}>
-                <Link href={card.href}>
-                  <Card
-                    variant="glow"
-                    className="group h-full cursor-pointer hover:-translate-y-1"
-                  >
-                    <div
-                      className={`mb-4 h-1 w-12 rounded-full bg-gradient-to-r ${card.accent}`}
-                    />
-                    <h3 className="font-display text-xl font-semibold transition-colors group-hover:text-da-indigo">
-                      {card.title}
-                    </h3>
-                    <p className="mt-2 text-sm text-da-muted">{card.desc}</p>
-                    <span className="mt-4 inline-block text-sm text-da-indigo transition-transform group-hover:translate-x-1">
-                      Explore &rarr;
+          {/* Numbered manifesto rows — no cards, no boxes. Big mono index,
+              title + description in the middle, explore arrow on the right.
+              Hairline dividers between rows carry the structure. */}
+          <div className="mt-12 divide-y divide-da-border/40">
+            {FEATURED_CARDS.map((card, i) => (
+              <FadeInOnScroll key={card.title} delay={i * 100}>
+                <Link
+                  href={card.href}
+                  className="group block py-10 transition-colors"
+                >
+                  <div className="grid grid-cols-[auto_1fr] gap-6 md:grid-cols-[auto_1fr_auto] md:items-baseline md:gap-12">
+                    <div className="font-mono text-3xl leading-none text-da-cyan transition-transform group-hover:-translate-y-0.5 md:text-5xl">
+                      {String(i + 1).padStart(2, "0")}
+                    </div>
+                    <div>
+                      <h3 className="font-display text-2xl font-semibold text-da-text transition-colors group-hover:text-da-indigo md:text-3xl">
+                        {card.title}
+                      </h3>
+                      <p className="mt-3 max-w-2xl text-da-muted">
+                        {card.desc}
+                      </p>
+                    </div>
+                    <span className="col-start-2 mt-2 font-mono text-xs uppercase tracking-[0.15em] text-da-indigo transition-transform group-hover:translate-x-1 md:col-start-3 md:mt-0">
+                      &rarr; explore
                     </span>
-                  </Card>
+                  </div>
                 </Link>
-              </StaggerItem>
+              </FadeInOnScroll>
             ))}
-          </StaggerContainer>
+          </div>
         </div>
       </section>
 
       <ShimmerLine className="opacity-50" />
 
-      {/* ── STATS BAR ── */}
-      <section className="border-y border-da-border bg-da-surface/30 px-6 py-16">
-        <StaggerContainer className="mx-auto grid max-w-5xl grid-cols-2 gap-8 md:grid-cols-4">
-          {stats.map((stat) => (
-            <StaggerItem key={stat.label}>
-              <AnimatedCounter
-                value={stat.value}
-                suffix={stat.suffix}
-                label={stat.label}
-              />
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
+      {/* ── RECEIPTS (formerly STATS BAR) ──
+          Stripped the enclosing chrome — no bg-da-surface bar, no border-y.
+          Just a mono kicker + the big numbers living on the page surface. */}
+      <section className="px-6 py-20">
+        <div className="mx-auto max-w-5xl">
+          <FadeInOnScroll>
+            <p className="mb-12 text-center font-mono text-xs uppercase tracking-[0.18em] text-da-cyan">
+              // the receipts
+            </p>
+          </FadeInOnScroll>
+          <StaggerContainer className="grid grid-cols-2 gap-10 md:grid-cols-4">
+            {stats.map((stat) => (
+              <StaggerItem key={stat.label}>
+                <AnimatedCounter
+                  value={stat.value}
+                  suffix={stat.suffix}
+                  label={stat.label}
+                />
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </div>
       </section>
 
       <ShimmerLine className="opacity-50" />
