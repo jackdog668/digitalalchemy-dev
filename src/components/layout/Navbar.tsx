@@ -32,7 +32,8 @@ export function Navbar() {
   }, [pathname]);
 
   // Admin has its own chrome — hide the public-site navbar on /admin/**.
-  // MUST come after all hooks to satisfy the Rules of Hooks.
+  // MUST come after all hooks to satisfy the Rules of Hooks (no early
+  // returns before useState/useEffect, or hook count drifts between renders).
   if (pathname?.startsWith("/admin")) return null;
 
   return (
@@ -40,23 +41,23 @@ export function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", damping: 20, stiffness: 100 }}
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-200 ${
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
         isScrolled
-          ? "bg-void/85 backdrop-blur-xl border-b border-hairline"
+          ? "bg-da-dark/80 backdrop-blur-xl border-b border-da-border/50 shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
           : "bg-transparent"
       }`}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        {/* Logo lockup — DIGITALALCHEMY with green ALCHEMY accent */}
+        {/* Logo — subtle scale on hover */}
         <motion.div
-          whileHover={{ y: -1 }}
-          transition={{ duration: 0.15, ease: "easeOut" }}
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 400, damping: 17 }}
         >
           <Link
             href="/"
-            className="font-display text-xl font-bold tracking-tight text-ink"
+            className="font-display text-xl font-bold tracking-tight text-da-text"
           >
-            DIGITAL<span className="text-neon-green">ALCHEMY</span>
+            DIGITAL<span className="text-da-cyan">ALCHEMY</span>
           </Link>
         </motion.div>
 
@@ -71,15 +72,15 @@ export function Navbar() {
               <span
                 className={
                   pathname === link.href
-                    ? "text-neon-green"
-                    : "text-ink-muted group-hover:text-ink"
+                    ? "text-da-indigo"
+                    : "text-da-muted group-hover:text-da-text"
                 }
               >
                 {link.label}
               </span>
-              {/* Underline reveal — slides in from left on hover, stays on active */}
+              {/* Animated underline — slides in from left on hover, stays on active */}
               <span
-                className={`absolute bottom-0 left-4 right-4 h-0.5 bg-neon-green transition-transform duration-200 origin-left ${
+                className={`absolute bottom-0 left-4 right-4 h-0.5 rounded-full bg-da-indigo transition-transform duration-300 origin-left ${
                   pathname === link.href
                     ? "scale-x-100"
                     : "scale-x-0 group-hover:scale-x-100"
@@ -100,7 +101,7 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Hamburger */}
+        {/* Mobile Hamburger — animated with framer-motion */}
         <button
           onClick={() => setIsMobileOpen(!isMobileOpen)}
           className="flex flex-col gap-1.5 p-2 md:hidden"
@@ -110,24 +111,24 @@ export function Navbar() {
           <motion.span
             animate={isMobileOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="block h-0.5 w-6 bg-ink"
+            className="block h-0.5 w-6 bg-da-text"
           />
           <motion.span
             animate={isMobileOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
             transition={{ duration: 0.15 }}
-            className="block h-0.5 w-6 bg-ink"
+            className="block h-0.5 w-6 bg-da-text"
           />
           <motion.span
             animate={
               isMobileOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }
             }
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="block h-0.5 w-6 bg-ink"
+            className="block h-0.5 w-6 bg-da-text"
           />
         </button>
       </nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu — AnimatePresence for proper mount/unmount animation */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
@@ -138,7 +139,7 @@ export function Navbar() {
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className="overflow-hidden md:hidden"
           >
-            <div className="flex flex-col gap-2 border-t border-hairline bg-void/95 px-6 py-4 backdrop-blur-xl">
+            <div className="flex flex-col gap-2 border-t border-da-border/50 bg-da-dark/95 px-6 py-4 backdrop-blur-xl">
               {NAV_LINKS.map((link, i) => (
                 <motion.div
                   key={link.href}
@@ -153,10 +154,10 @@ export function Navbar() {
                 >
                   <Link
                     href={link.href}
-                    className={`block rounded-da-sm px-4 py-3 text-base font-medium transition-colors ${
+                    className={`block rounded-lg px-4 py-3 text-base font-medium transition-colors ${
                       pathname === link.href
-                        ? "bg-neon-green/10 text-neon-green"
-                        : "text-ink-muted hover:bg-card/50 hover:text-ink"
+                        ? "bg-da-indigo/10 text-da-indigo"
+                        : "text-da-muted hover:bg-da-surface/50 hover:text-da-text"
                     }`}
                   >
                     {link.label}

@@ -17,9 +17,6 @@ import type { IconType } from "react-icons";
 import { motion } from "framer-motion";
 import { SOCIAL_LINKS } from "@/lib/constants";
 
-// Map platform key (from constants.ts) → simple-icons brand glyph.
-// All glyphs render in ink-muted at rest, neon-green on hover —
-// per DA brand bible: no rainbow brand colors fighting the CTA.
 const ICON_BY_PLATFORM = {
   instagram: SiInstagram,
   tiktok: SiTiktok,
@@ -48,7 +45,6 @@ export function SocialIcons({
   className = "",
 }: SocialIconsProps) {
   const links = limit ? SOCIAL_LINKS.slice(0, limit) : SOCIAL_LINKS;
-  const iconSize = variant === "hero" ? 18 : 18;
   const gap = variant === "hero" ? "gap-4" : "gap-x-5 gap-y-2";
 
   return (
@@ -67,16 +63,16 @@ export function SocialIcons({
               rel="noopener noreferrer"
               aria-label={`${link.label} — ${link.handle}`}
               whileHover={{ y: -2 }}
-              transition={{ duration: 0.15, ease: "easeOut" }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
               className={[
                 "group inline-flex items-center gap-2",
-                "text-ink-muted hover:text-neon-green",
-                "transition-colors duration-150",
+                "text-da-muted hover:text-da-cyan",
+                "transition-colors duration-200",
               ].join(" ")}
             >
-              <Icon size={iconSize} aria-hidden="true" />
+              <Icon size={18} aria-hidden="true" />
               {variant === "footer" && (
-                <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-ink-dim group-hover:text-ink">
+                <span className="text-xs text-da-muted group-hover:text-da-text">
                   {link.handle}
                 </span>
               )}
