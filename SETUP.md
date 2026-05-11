@@ -34,7 +34,26 @@ After migration, the `content/blog/` MDX files are still on disk as a safety net
 4. Paste into `.env.local` as `RESEND_API_KEY`
 5. Set `RESEND_FROM_EMAIL=desi@digitalalchemy.dev` (any address on the verified domain)
 
-## 4. Start the site
+## 4. New subscriber autoresponder
+
+The welcome autoresponder uses the same Supabase + Resend setup as the newsletter. It starts only after the subscriber clicks the double opt-in confirmation link.
+
+1. In Supabase SQL Editor, run:
+
+```bash
+supabase/migrations/20260430_email_autoresponder.sql
+```
+
+2. Make sure `CRON_SECRET` is set in `.env.local`, Vercel, and GitHub Actions secrets.
+3. The scheduled workflow `.github/workflows/email-sequence-runner.yml` calls:
+
+```bash
+https://digitalalchemy.dev/api/email/sequence-runner
+```
+
+The endpoint is auth-gated by `Authorization: Bearer <CRON_SECRET>`, sends one due autoresponder email per enrollment, and records each sent/failed/skipped attempt in `email_sequence_sends`.
+
+## 5. Start the site
 
 ```bash
 npm run dev
@@ -53,6 +72,7 @@ Visit:
 - **Only you** can access `/admin` — middleware checks the session cookie against `ADMIN_EMAIL`
 - **Publishing** a post automatically emails all confirmed subscribers
 - **Subscribers** use double opt-in — they confirm via email before getting any newsletters
+- **Welcome sequence** enrolls subscribers after confirmation and sends the 3-email autoresponder via the scheduled runner
 - **Unsubscribe** is a single click on any email
 - **Posts** are versioned in Supabase (created_at, updated_at tracked)
 - **Drafts** never appear publicly

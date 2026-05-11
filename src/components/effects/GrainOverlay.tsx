@@ -1,22 +1,12 @@
-"use client";
-
-/**
- * GrainOverlay — fixed full-viewport film grain texture.
- *
- * Key improvements over the previous version:
- *   - Removed `steps()` timing: was producing visible frame-skip jumps
- *   - Duration reduced to 0.5s with `linear` for a smooth, continuous noise loop
- *   - `translate3d()` in the grain keyframe forces GPU compositing (willChange)
- *   - SVG inline approach keeps the grain filter crisp at all viewport sizes
- *   - Opacity lowered to 0.035 — visible enough for texture, invisible enough
- *     to never compete with content
- *
- * Accessibility: pointer-events-none + aria-hidden — fully inert to users.
- *
- * Usage:
- *   // Place once at the top of your layout, outside all content wrappers
- *   <GrainOverlay />
- */
+// GrainOverlay — fixed full-viewport film grain texture.
+//
+// Static — the previous version animated this rect at 0.5s linear infinite,
+// which forced the browser to recompute an SVG `feTurbulence` filter across
+// the entire viewport every frame. Crushed mobile FPS for a barely-perceptible
+// shimmer. Static grain reads identical to the eye and costs zero per-frame.
+//
+// No client behavior — server component (no `"use client"`) so zero JS ships.
+// Accessibility: pointer-events-none + aria-hidden — fully inert.
 
 export function GrainOverlay() {
   return (
@@ -25,10 +15,7 @@ export function GrainOverlay() {
       aria-hidden="true"
       style={{ opacity: 0.035 }}
     >
-      <svg
-        className="w-full h-full"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
         <filter id="grain">
           <feTurbulence
             type="fractalNoise"
@@ -37,17 +24,7 @@ export function GrainOverlay() {
             stitchTiles="stitch"
           />
         </filter>
-        <rect
-          width="200%"
-          height="200%"
-          filter="url(#grain)"
-          style={{
-            // 0.5s linear — no steps(), no frame skipping
-            animation: "grain 0.5s linear infinite",
-            // Tells the browser to promote this element to its own GPU layer
-            willChange: "transform",
-          }}
-        />
+        <rect width="100%" height="100%" filter="url(#grain)" />
       </svg>
     </div>
   );

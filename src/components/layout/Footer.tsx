@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { NAV_LINKS, SITE } from "@/lib/constants";
 import { Button } from "@/components/ui/Button";
+import { SocialIcons } from "@/components/ui/SocialIcons";
 import { FadeInOnScroll } from "@/components/effects/FadeInOnScroll";
 import { ShimmerLine } from "@/components/effects/ShimmerLine";
 
@@ -56,6 +57,14 @@ export function Footer() {
                 >
                   All Links
                 </Button>
+              </div>
+
+              {/* Social icon strip — branded glyphs + handles */}
+              <div className="mt-8">
+                <h3 className="font-display text-sm font-semibold uppercase tracking-wider text-da-muted">
+                  Find Me
+                </h3>
+                <SocialIcons variant="footer" className="mt-4" />
               </div>
             </div>
 

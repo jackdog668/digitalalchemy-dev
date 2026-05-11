@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Tree-shake heavy named-export libraries so unused exports don't ship.
+  // framer-motion is the big one — it's imported in 14 files including
+  // foundational components (Button, Card, SectionHeading), so even pages
+  // that only use one or two animations were paying the full bundle cost.
+  experimental: {
+    optimizePackageImports: ["framer-motion"],
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

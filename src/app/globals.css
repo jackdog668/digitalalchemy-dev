@@ -27,6 +27,50 @@
   /* Base aliases */
   --background: var(--da-dark);
   --foreground: var(--da-text);
+
+  /* ============================================================
+     DA ARCANE PALETTE — canonical brand tokens (rebrand phase 0).
+     Additive: existing da-* tokens above remain functional.
+     Source: Digital Alchemy Design System v1 (colors_and_type.css).
+     Components migrate to these via Tailwind utilities below.
+     ============================================================ */
+
+  /* Arcane accents */
+  --neon-green:    #40FF78;
+  --electro-gold:  #FFDB40;
+  --mystic-purple: #7A30FF;
+  --veo-blue:      #00C8FF;
+  --signal-red:    #FF3D57;
+
+  /* Arcane surfaces */
+  --bg-void:       #0A0B0D;
+  --bg-elevated:   #111316;
+  --bg-card:       #14171B;
+  --bg-code:       #0D0F12;
+
+  /* Arcane borders (hairlines) */
+  --border-hairline:        #1F232A;
+  --border-hairline-strong: #2A2F38;
+
+  /* Arcane ink (text) — never pure white */
+  --ink:        #F2F4F7;
+  --ink-muted:  #8B95A3;
+  --ink-dim:    #5A6370;
+
+  /* Arcane glows — neon replaces traditional drop shadows */
+  --glow-neon-green:    0 0 24px rgba(64, 255, 120, 0.40);
+  --glow-electro-gold:  0 0 24px rgba(255, 219, 64, 0.40);
+  --glow-mystic-purple: 0 0 24px rgba(122, 48, 255, 0.40);
+  --glow-veo-blue:      0 0 24px rgba(0, 200, 255, 0.40);
+  --glow-mark:          0 0 20px rgba(64, 255, 120, 0.35);
+
+  /* Sharp radii — nothing rounder than 10px ever */
+  --r-sm: 4px;   /* buttons, inputs, pills, badges */
+  --r-md: 6px;   /* cards, containers, prompts, callouts */
+  --r-lg: 8px;   /* final CTA + formula box only */
+
+  /* Grid pitch — for faint neon-grid hero backgrounds */
+  --grid-pitch: 40px;
 }
 
 /* ── Tailwind v4 Theme Tokens ──────────────────────────────── */
@@ -48,6 +92,39 @@
   /* Fonts */
   --font-sans: var(--font-inter);
   --font-display: var(--font-space-grotesk);
+  --font-mono: var(--font-jetbrains-mono);
+
+  /* ── DA Arcane palette → Tailwind utilities ─────────────────
+     Legacy `da-*` tokens above remain; new components use these.
+     Migration target: kill `da-*` aliases in phase 5.
+     ──────────────────────────────────────────────────────────── */
+
+  /* Accent colors */
+  --color-neon-green:    var(--neon-green);
+  --color-electro-gold:  var(--electro-gold);
+  --color-mystic-purple: var(--mystic-purple);
+  --color-veo-blue:      var(--veo-blue);
+  --color-signal-red:    var(--signal-red);
+
+  /* Surfaces — bg-void / bg-card / bg-elevated / bg-code */
+  --color-void:     var(--bg-void);
+  --color-elevated: var(--bg-elevated);
+  --color-card:     var(--bg-card);
+  --color-code:     var(--bg-code);
+
+  /* Ink — text-ink / text-ink-muted / text-ink-dim */
+  --color-ink:       var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-dim:   var(--ink-dim);
+
+  /* Hairline borders — border-hairline / border-hairline-strong */
+  --color-hairline:        var(--border-hairline);
+  --color-hairline-strong: var(--border-hairline-strong);
+
+  /* Sharp radii — rounded-sm/md/lg map to DA values */
+  --radius-da-sm: var(--r-sm);
+  --radius-da-md: var(--r-md);
+  --radius-da-lg: var(--r-lg);
 
   /* Animation tokens — reference keyframe names defined below */
   --animate-glow: glow 3s ease-in-out infinite alternate;
@@ -198,11 +275,10 @@ body {
     var(--da-cyan),
     var(--da-indigo)
   );
-  background-size: 300% 100%;
+  background-size: 100% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: shimmer 4s linear infinite;
 }
 
 /*
