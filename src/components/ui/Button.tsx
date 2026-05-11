@@ -25,16 +25,19 @@ interface ButtonProps {
   sound?: boolean;
 }
 
+// Arcane palette CTA styles. Sharp 4px corners, neon-green primary,
+// glow shadows instead of traditional elevation. Per DA brand bible:
+// "Primary actions are neon green. Never another color for primary."
 const variantStyles: Record<Variant, string> = {
   primary:
-    "bg-da-indigo text-white shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_35px_rgba(99,102,241,0.6)] hover:bg-da-indigo/90",
+    "bg-neon-green text-[#0A0B0D] font-semibold shadow-[0_0_18px_rgba(64,255,120,0.35)] hover:shadow-[0_0_32px_rgba(64,255,120,0.55)] hover:bg-neon-green/95",
   secondary:
-    "bg-da-purple text-white shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] hover:bg-da-purple/90",
+    "bg-mystic-purple text-ink font-semibold shadow-[0_0_18px_rgba(122,48,255,0.35)] hover:shadow-[0_0_32px_rgba(122,48,255,0.55)] hover:bg-mystic-purple/95",
   accent:
-    "bg-da-cyan text-da-dark font-semibold shadow-[0_0_20px_rgba(0,212,255,0.4)] hover:shadow-[0_0_35px_rgba(0,212,255,0.6)] hover:bg-da-cyan/90",
+    "bg-electro-gold text-[#0A0B0D] font-semibold shadow-[0_0_18px_rgba(255,219,64,0.35)] hover:shadow-[0_0_32px_rgba(255,219,64,0.55)] hover:bg-electro-gold/95",
   outline:
-    "border border-da-border text-da-text hover:border-da-indigo/60 hover:shadow-[0_0_20px_rgba(99,102,241,0.2)] hover:bg-da-indigo/5",
-  ghost: "text-da-muted hover:text-da-text hover:bg-da-surface/50",
+    "border border-hairline text-ink hover:border-neon-green hover:text-neon-green hover:shadow-[0_0_18px_rgba(64,255,120,0.2)]",
+  ghost: "text-ink-muted hover:text-ink",
 };
 
 // Which variants have sound enabled by default
@@ -72,8 +75,10 @@ export function Button({
   const { play } = useSound();
   const hasSound = sound ?? soundDefaults[variant];
 
+  // Sharp 4px corners (rounded-da-sm) — DA brand bible: max 8px ever,
+  // buttons specifically use --r-sm. Glow-button keeps the sweep on hover.
   const baseStyles =
-    "relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-300 cursor-pointer glow-button";
+    "relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-da-sm font-medium transition-all duration-200 cursor-pointer glow-button";
   const styles = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`;
 
   // Sound handlers
@@ -82,9 +87,11 @@ export function Button({
     ? () => play(variant === "accent" ? "activate" : "click")
     : undefined;
 
+  // Brand bible: "translateY(-2px) on buttons. No bounces. No spring
+  // physics. Technical, snappy, over fast." Swapped scale → y lift.
   const motionProps = {
-    whileHover: { scale: 1.03 },
-    whileTap: { scale: 0.97 },
+    whileHover: { y: -2 },
+    whileTap: { y: 0 },
     transition: springTransition,
     onMouseEnter: handleHover,
     onMouseDown: handleMouseDown,
@@ -110,8 +117,8 @@ export function Button({
   if (href) {
     return (
       <motion.div
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.97 }}
+        whileHover={{ y: -2 }}
+        whileTap={{ y: 0 }}
         transition={springTransition}
         onMouseEnter={handleHover}
         onMouseDown={handleMouseDown}
