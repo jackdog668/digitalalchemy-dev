@@ -325,3 +325,104 @@ On **third-party** sites (Squarespace, WordPress, raw HTML), copy-paste:
 - **Embed iframe shows navbar/footer** — the `ChromeHider` `<style>` selector drift. Check that `src/components/layout/Navbar.tsx` still renders inside a `<header>` and Footer is still a `<footer>` — selectors are `header:has(nav)` and `footer`.
 - **Embed iframe is blank (CSP refused)** — confirm the `/embed/:path*` headers rule in `next.config.ts` is BEFORE or instead of the default `X-Frame-Options: DENY` rule. The default source now uses a negative lookahead `/((?!embed).*)` so it shouldn't match `/embed/*`. If it does, check the deployed version actually picked up the new config.
 - **Reminder sent but column not marked** — the email succeeded but the UPDATE failed. Check Supabase logs for the service-role write. The booking will get a duplicate reminder on the next cron tick.
+
+---
+
+# Telegram booking alerts (optional)
+
+Get a push notification on your phone the moment someone books, cancels,
+or 15 minutes before any booking starts. Free, no SMS provider needed —
+uses a personal Telegram bot you create with @BotFather.
+
+If the env vars below are unset, the booking flow silently skips Telegram
+(you'll see `[telegram] skipping alert — ... not set` in Vercel logs).
+
+## 1. Create the bot
+
+1. Open Telegram, search for **@BotFather**, start a chat
+2. Send `/newbot`
+3. Pick a name (display name — e.g. `DA Bookings`)
+4. Pick a username (must end in `bot` — e.g. `dadigitalalchemybot`)
+5. BotFather replies with a token like `1234567890:AAH-xxxxxxxxxxxxxxxxxx`
+6. Save the token — that's `TELEGRAM_BOT_TOKEN`
+
+## 2. Run the migration
+
+In Supabase SQL Editor, run:
+
+```bash
+supabase/migrations/20260512_admin_15m_reminder.sql
+```
+
+Adds the `admin_reminder_15m_sent_at` column + index so the 15-min admin
+reminder doesn't double-fire. Idempotent — safe to re-run.
+
+## 3. Get your chat ID
+
+The bot only knows about chats AFTER you've messaged it once.
+
+1. Open your new bot's chat in Telegram (search the username from step 1)
+2. Send any message ("hi")
+3. Put the token in `.env.local`:
+   ```
+   TELEGRAM_BOT_TOKEN=1234567890:AAH-xxxxxxxxxxxxxxxxxx
+   ```
+4. Run the chat ID fetcher:
+   ```bash
+   npx tsx --env-file=.env.local scripts/telegram-setup.ts
+   ```
+5. The script prints every chat your bot has seen. Copy your numeric chat ID
+6. Paste into `.env.local`:
+   ```
+   TELEGRAM_CHAT_ID=987654321
+   ```
+
+## 4. Add to Vercel
+
+In Vercel → Project Settings → Environment Variables, add both for
+**Production** (and Preview if you want preview deploys to alert too):
+
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_CHAT_ID`
+
+Redeploy.
+
+## 5. Verify
+
+Make a test booking on `/book/<slug>` (use a 5-min event type with
+`min_notice_hours=0` if needed). Within a few seconds you should get a
+Telegram message:
+
+```
+NEW BOOKING
+Test Name — Discovery Call
+Mon May 12, 5:00 PM CT
+test@example.com
+View in admin → ...
+```
+
+Then cancel via the invitee email link → second message:
+
+```
+CANCELLED (by invitee)
+Test Name — Discovery Call
+Was: Mon May 12, 5:00 PM CT
+```
+
+To verify the 15-min reminder, book a slot ~20 min from now. The next
+cron tick (within 15 min) should send:
+
+```
+STARTING IN ~15 MIN
+Test Name — Discovery Call
+Mon May 12, 5:00 PM CT
+test@example.com
+Join Google Meet → ...
+```
+
+## Troubleshooting
+
+- **`scripts/telegram-setup.ts` prints "no chats yet"** — you skipped step 3.2. Open the bot in Telegram and send any message, then re-run.
+- **Bookings save but no Telegram message** — check Vercel logs for `[telegram] skipping alert` or `[telegram] sendMessage` errors. Most common: chat ID was pasted with a leading minus sign (group chats use negative IDs but your personal chat is positive), or the bot was blocked from your account.
+- **15-min reminder fires more than once** — the column update probably failed; check Supabase logs for the service-role write on `scheduling_bookings.admin_reminder_15m_sent_at`.
+- **Reminder fires for past bookings** — the cron window is `now + 7m` to `now + 23m`. If your bookings have wrong timezones in `start_time`, they could land outside this window. Sanity-check `start_time` is a UTC ISO string.

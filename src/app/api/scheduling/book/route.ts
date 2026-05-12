@@ -12,6 +12,7 @@ import {
   sendBookingConfirmation,
   sendAdminBookingNotification,
 } from "@/lib/scheduling-emails";
+import { sendNewBookingTelegramAlert } from "@/lib/scheduling-telegram";
 import { createCalendarEventForBooking } from "@/lib/google/events";
 import { isSupabaseConfigured, isResendConfigured } from "@/lib/env";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
@@ -172,9 +173,21 @@ export async function POST(req: NextRequest) {
         googleResult.eventId,
         googleResult.meetUrl,
       );
+      // Patch the in-memory booking so the Telegram alert below can
+      // include the freshly-minted Meet URL.
+      booking.googleMeetUrl = googleResult.meetUrl;
+      booking.googleCalendarEventId = googleResult.eventId;
     }
   } catch (err) {
     console.error("[google] attach to booking failed:", err);
+  }
+
+  // Telegram alert — soft fail. Booking is already saved + email queued,
+  // this is just the admin's lock-screen ping.
+  try {
+    await sendNewBookingTelegramAlert(booking, eventType);
+  } catch (err) {
+    console.error("[telegram] new booking alert failed:", err);
   }
 
   return NextResponse.json({

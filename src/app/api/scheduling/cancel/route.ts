@@ -6,6 +6,7 @@ import {
   cancelBookingRow,
 } from "@/lib/scheduling";
 import { sendCancellationEmails } from "@/lib/scheduling-emails";
+import { sendCancellationTelegramAlert } from "@/lib/scheduling-telegram";
 import { deleteCalendarEventForBooking } from "@/lib/google/events";
 import { isSupabaseConfigured, isResendConfigured } from "@/lib/env";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
@@ -89,6 +90,13 @@ export async function POST(req: NextRequest) {
     await deleteCalendarEventForBooking(cancelled);
   } catch (err) {
     console.error("[google] delete event on cancel failed:", err);
+  }
+
+  // Ping the admin so they don't have to discover the cancel in their inbox.
+  try {
+    await sendCancellationTelegramAlert(cancelled, eventType, "invitee");
+  } catch (err) {
+    console.error("[telegram] cancel alert (invitee) failed:", err);
   }
 
   return NextResponse.json({ ok: true });
