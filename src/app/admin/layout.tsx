@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { isSupabaseConfigured } from "@/lib/env";
+import { isGoogleOAuthConfigured, isSupabaseConfigured } from "@/lib/env";
+import { isConnected } from "@/lib/google/tokens";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -50,8 +51,36 @@ export default async function AdminLayout({
     );
   }
 
+  // Surface a top-of-admin warning when Google Calendar isn't connected.
+  // The booking endpoint soft-fails calendar sync, so without this banner
+  // bookings silently fail to appear on the admin's calendar (the bug Desi
+  // hit between April and May). Re-checked per request so it disappears
+  // the moment Connect is clicked. Failing-open as disconnected on errors
+  // is intentional — we'd rather show a false-positive warning than hide a
+  // real disconnection.
+  let googleDisconnected = false;
+  if (isGoogleOAuthConfigured()) {
+    try {
+      googleDisconnected = !(await isConnected(signedInEmail));
+    } catch {
+      googleDisconnected = true;
+    }
+  }
+
   return (
     <div className="min-h-screen bg-da-dark text-da-text">
+      {googleDisconnected && (
+        <div className="border-b border-amber-500/40 bg-amber-500/10 px-6 py-2 text-center text-sm text-amber-300">
+          Google Calendar is disconnected. New bookings will save but will{" "}
+          <strong>NOT</strong> appear on your calendar.{" "}
+          <Link
+            href="/admin/scheduling"
+            className="font-semibold underline underline-offset-4 hover:text-amber-200"
+          >
+            Reconnect now
+          </Link>
+        </div>
+      )}
       <header className="border-b border-da-border bg-da-surface/40 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link href="/admin" className="font-display text-lg font-bold">

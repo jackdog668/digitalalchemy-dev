@@ -6,16 +6,11 @@ import { isGoogleOAuthConfigured, serverEnv } from "@/lib/env";
 import { isConnected } from "./tokens";
 
 // Format the title of the Google Calendar event as it will appear on Desi's
-// personal calendar. Change this if you want a different at-a-glance format.
-//
-// TODO(Desi): pick a format. Current default:
-//   "Digital Alchemy: <EventTitle> w/ <InviteeName>"
-// Alternatives:
-//   `${booking.inviteeName} — ${eventType.title}`
-//   `🎯 ${eventType.title}: ${booking.inviteeName}`
-//   booking.inviteeName
+// personal calendar. Leads with the invitee's name so at-a-glance scanning
+// surfaces WHO before WHAT — much easier to triage a packed calendar than
+// the previous "Digital Alchemy:" prefix.
 function formatEventTitle(booking: Booking, eventType: EventType): string {
-  return `Digital Alchemy: ${eventType.title} w/ ${booking.inviteeName}`;
+  return `${booking.inviteeName} — ${eventType.title}`;
 }
 
 function formatEventDescription(
@@ -49,9 +44,20 @@ export async function createCalendarEventForBooking(
   booking: Booking,
   eventType: EventType,
 ): Promise<{ eventId: string; meetUrl: string | null } | null> {
-  if (!isGoogleOAuthConfigured()) return null;
+  if (!isGoogleOAuthConfigured()) {
+    console.warn(
+      "[google] skipping event — GOOGLE_OAUTH_CLIENT_ID / SECRET not set",
+    );
+    return null;
+  }
   const adminEmail = serverEnv().ADMIN_EMAIL;
-  if (!(await isConnected(adminEmail))) return null;
+  if (!(await isConnected(adminEmail))) {
+    console.warn(
+      `[google] skipping event — no token row for ${adminEmail}. ` +
+        `Reconnect at /admin/scheduling.`,
+    );
+    return null;
+  }
 
   try {
     const { calendar, tokens } = await getAuthedCalendarClient();
@@ -105,9 +111,20 @@ export async function deleteCalendarEventForBooking(
   booking: Booking,
 ): Promise<void> {
   if (!booking.googleCalendarEventId) return;
-  if (!isGoogleOAuthConfigured()) return;
+  if (!isGoogleOAuthConfigured()) {
+    console.warn(
+      "[google] skipping delete — GOOGLE_OAUTH_CLIENT_ID / SECRET not set",
+    );
+    return;
+  }
   const adminEmail = serverEnv().ADMIN_EMAIL;
-  if (!(await isConnected(adminEmail))) return;
+  if (!(await isConnected(adminEmail))) {
+    console.warn(
+      `[google] skipping delete — no token row for ${adminEmail}. ` +
+        `Reconnect at /admin/scheduling.`,
+    );
+    return;
+  }
 
   try {
     const { calendar, tokens } = await getAuthedCalendarClient();
