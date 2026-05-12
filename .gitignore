@@ -48,3 +48,6 @@ next-env.d.ts
 .claude/worktrees/
 .playwright-mcp/
 .superpowers/
+
+# supabase CLI local cache
+supabase/.temp/
