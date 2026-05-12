@@ -52,7 +52,7 @@ export const SOCIAL_LINKS = [
   },
   {
     platform: "linkedin",
-    url: "https://www.linkedin.com/in/desmond-baker-896892103/",
+    url: "https://www.linkedin.com/in/desmond-baker-jr-896892103/",
     handle: "Desmond Baker",
     label: "LinkedIn",
   },
