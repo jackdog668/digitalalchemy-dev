@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
+import { clientEnv } from "@/lib/env-client";
 
 // Magic-link login. Only the ADMIN_EMAIL address can actually get in —
 // the middleware enforces that after the callback — but we also pre-check
@@ -12,12 +14,36 @@ const ADMIN_EMAIL = (
   process.env.NEXT_PUBLIC_ADMIN_EMAIL ?? "desibaker54@gmail.com"
 ).toLowerCase();
 
-export default function AdminLoginPage() {
+// Map ?error=<code> from the callback into a human sentence so failures
+// after the email round-trip don't look like a silent loop.
+function errorMessageFor(code: string | null): string {
+  switch (code) {
+    case "unauthorized":
+      return "That email isn't authorized for admin access.";
+    case "callback_failed":
+      return "Magic link expired or already used. Request a new one.";
+    case "missing_code":
+      return "Magic link was malformed. Request a new one.";
+    default:
+      return "";
+  }
+}
+
+function LoginForm() {
+  const searchParams = useSearchParams();
+  const rawNext = searchParams.get("next");
+  // Only honor internal paths to avoid open-redirect; falls back to /admin.
+  const next =
+    rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//")
+      ? rawNext
+      : "/admin";
+  const initialErrorMsg = errorMessageFor(searchParams.get("error"));
+
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
-    "idle",
+    initialErrorMsg ? "error" : "idle",
   );
-  const [errorMsg, setErrorMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState(initialErrorMsg);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -32,10 +58,18 @@ export default function AdminLoginPage() {
     setStatus("sending");
     try {
       const supabase = createSupabaseBrowserClient();
+      // Always build the callback off the configured site URL so cookies
+      // get set on the right host (apex), regardless of where login was
+      // opened from. Falls back to current origin if the env var is empty.
+      const redirectBase =
+        clientEnv.NEXT_PUBLIC_SITE_URL || window.location.origin;
+      const callback = new URL(`${redirectBase}/admin/auth/callback`);
+      callback.searchParams.set("next", next);
+
       const { error } = await supabase.auth.signInWithOtp({
         email: email.trim(),
         options: {
-          emailRedirectTo: `${window.location.origin}/admin/auth/callback`,
+          emailRedirectTo: callback.toString(),
         },
       });
       if (error) throw error;
@@ -58,7 +92,8 @@ export default function AdminLoginPage() {
 
         {status === "sent" ? (
           <div className="mt-6 rounded-lg border border-da-indigo/30 bg-da-indigo/5 p-4 text-sm">
-            Check your inbox. The link expires in 1 hour.
+            Check your inbox. The link expires in 1 hour. Open it on the
+            same device you want to be signed in on.
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -87,5 +122,13 @@ export default function AdminLoginPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   );
 }
