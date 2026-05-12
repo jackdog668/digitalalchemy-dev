@@ -43,7 +43,11 @@ function formatEventDescription(
 export async function createCalendarEventForBooking(
   booking: Booking,
   eventType: EventType,
-): Promise<{ eventId: string; meetUrl: string | null } | null> {
+): Promise<{
+  eventId: string;
+  meetUrl: string | null;
+  calendarHtmlLink: string | null;
+} | null> {
   if (!isGoogleOAuthConfigured()) {
     console.warn(
       "[google] skipping event — GOOGLE_OAUTH_CLIENT_ID / SECRET not set",
@@ -92,11 +96,12 @@ export async function createCalendarEventForBooking(
 
     const eventId = res.data.id;
     const meetUrl = res.data.hangoutLink ?? null;
+    const calendarHtmlLink = res.data.htmlLink ?? null;
     if (!eventId) {
       console.error("[google] events.insert returned no eventId");
       return null;
     }
-    return { eventId, meetUrl };
+    return { eventId, meetUrl, calendarHtmlLink };
   } catch (err) {
     console.error("[google] createCalendarEventForBooking failed:", err);
     return null;

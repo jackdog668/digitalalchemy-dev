@@ -9,6 +9,7 @@ import { serverEnv } from "@/lib/env";
 import {
   sendTelegramAlert,
   escapeHtml,
+  escapeHtmlAttr,
   formatAdminTime,
   isTelegramConfigured,
 } from "@/lib/telegram";
@@ -17,6 +18,25 @@ import type { Booking, EventType } from "@/lib/scheduling-constants";
 function adminBookingLink(bookingId: string): string {
   const siteUrl = serverEnv().NEXT_PUBLIC_SITE_URL;
   return `${siteUrl}/admin/scheduling/bookings/${bookingId}`;
+}
+
+/** Calendar event (browser) + Meet — shown when Google sync succeeded. */
+function pushGoogleLinks(lines: string[], booking: Booking): void {
+  const hrefs: Array<{ href: string; label: string }> = [];
+  if (booking.googleCalendarHtmlLink) {
+    hrefs.push({
+      href: booking.googleCalendarHtmlLink,
+      label: "Open in Google Calendar",
+    });
+  }
+  if (booking.googleMeetUrl) {
+    hrefs.push({ href: booking.googleMeetUrl, label: "Join Google Meet" });
+  }
+  if (hrefs.length === 0) return;
+  lines.push("");
+  for (const { href, label } of hrefs) {
+    lines.push(`<a href="${escapeHtmlAttr(href)}">${label}</a>`);
+  }
 }
 
 /**
@@ -40,7 +60,10 @@ export async function sendNewBookingTelegramAlert(
     lines.push(`<i>Notes:</i> ${escapeHtml(booking.inviteeNotes)}`);
   }
   lines.push("");
-  lines.push(`<a href="${adminBookingLink(booking.id)}">View in admin</a>`);
+  lines.push(
+    `<a href="${escapeHtmlAttr(adminBookingLink(booking.id))}">View in admin</a>`,
+  );
+  pushGoogleLinks(lines, booking);
   await sendTelegramAlert(lines.join("\n"));
 }
 
@@ -82,9 +105,6 @@ export async function sendUpcomingTelegramAlert(
     `${escapeHtml(formatAdminTime(booking.startTime))}`,
     `${escapeHtml(booking.inviteeEmail)}`,
   ];
-  if (booking.googleMeetUrl) {
-    lines.push("");
-    lines.push(`<a href="${booking.googleMeetUrl}">Join Google Meet</a>`);
-  }
+  pushGoogleLinks(lines, booking);
   await sendTelegramAlert(lines.join("\n"));
 }

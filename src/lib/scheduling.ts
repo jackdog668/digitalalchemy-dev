@@ -95,6 +95,7 @@ interface BookingRow {
   cancellation_reason: string | null;
   cancelled_at: string | null;
   google_calendar_event_id: string | null;
+  google_calendar_html_link?: string | null;
   google_meet_url: string | null;
   stripe_payment_intent_id: string | null;
   amount_paid_cents: number | null;
@@ -122,6 +123,7 @@ function rowToBooking(row: BookingRow): Booking {
     cancellationReason: row.cancellation_reason,
     cancelledAt: row.cancelled_at,
     googleCalendarEventId: row.google_calendar_event_id,
+    googleCalendarHtmlLink: row.google_calendar_html_link ?? null,
     googleMeetUrl: row.google_meet_url,
     stripePaymentIntentId: row.stripe_payment_intent_id,
     amountPaidCents: row.amount_paid_cents,
@@ -362,14 +364,16 @@ export async function updateBookingStatus(
 }
 
 /**
- * After a successful Google Calendar event creation, persist the eventId
- * and Meet URL back to the booking row. Separate from createBookingRow
- * so that the Google API failure path doesn't roll back the DB write.
+ * After a successful Google Calendar event creation, persist the API ids
+ * (`eventId`, Meet URL, Calendar `htmlLink`) back to the booking row.
+ * Separate from createBookingRow so a Google API failure does not roll
+ * back the DB write.
  */
 export async function attachGoogleEventToBooking(
   id: string,
   googleEventId: string,
   googleMeetUrl: string | null,
+  googleCalendarHtmlLink: string | null,
 ): Promise<void> {
   const db = createServiceRoleClient();
   const { error } = await db
@@ -377,6 +381,7 @@ export async function attachGoogleEventToBooking(
     .update({
       google_calendar_event_id: googleEventId,
       google_meet_url: googleMeetUrl,
+      google_calendar_html_link: googleCalendarHtmlLink,
     })
     .eq("id", id);
   if (error)

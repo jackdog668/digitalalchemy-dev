@@ -11,7 +11,7 @@ import "server-only";
 //   2. Open the new bot's chat, send any message (e.g. "hi").
 //   3. Run: npx tsx --env-file=.env.local scripts/telegram-setup.ts
 //      It will print your chat ID.
-//   4. Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in .env.local AND
+//   4. Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in `.env.local` AND
 //      in Vercel (Production + Preview).
 
 import { serverEnv } from "@/lib/env";
@@ -80,6 +80,14 @@ export function escapeHtml(s: string): string {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
+}
+
+/** Safe for `href="..."` in Telegram HTML (query strings may contain `&`). */
+export function escapeHtmlAttr(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;");
 }
 
 /**
