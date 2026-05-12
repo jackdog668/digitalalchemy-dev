@@ -172,11 +172,12 @@ export async function POST(req: NextRequest) {
         booking.id,
         googleResult.eventId,
         googleResult.meetUrl,
+        googleResult.calendarHtmlLink,
       );
-      // Patch the in-memory booking so the Telegram alert below can
-      // include the freshly-minted Meet URL.
+      // Patch in-memory booking for Telegram (Meet + Calendar deep link).
       booking.googleMeetUrl = googleResult.meetUrl;
       booking.googleCalendarEventId = googleResult.eventId;
+      booking.googleCalendarHtmlLink = googleResult.calendarHtmlLink;
     }
   } catch (err) {
     console.error("[google] attach to booking failed:", err);

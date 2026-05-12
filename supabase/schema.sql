@@ -167,6 +167,7 @@ create table if not exists public.scheduling_bookings (
   cancelled_at              timestamptz,
   google_calendar_event_id  text,
   google_meet_url           text,
+  google_calendar_html_link text,
   stripe_payment_intent_id  text,
   amount_paid_cents         integer,
   created_at                timestamptz not null default now(),

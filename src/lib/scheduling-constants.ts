@@ -122,6 +122,7 @@ export interface Booking {
   cancellationReason: string | null;
   cancelledAt: string | null;
   googleCalendarEventId: string | null;
+  googleCalendarHtmlLink: string | null;
   googleMeetUrl: string | null;
   stripePaymentIntentId: string | null;
   amountPaidCents: number | null;

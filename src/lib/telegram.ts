@@ -82,6 +82,14 @@ export function escapeHtml(s: string): string {
     .replace(/>/g, "&gt;");
 }
 
+/** Safe for `href="..."` in Telegram HTML (query strings may contain `&`). */
+export function escapeHtmlAttr(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;");
+}
+
 /**
  * Format an ISO timestamp in the admin's home timezone (Chicago) so
  * messages read naturally for Desi regardless of the invitee's tz.

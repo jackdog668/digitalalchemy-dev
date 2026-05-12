@@ -64,6 +64,7 @@ export function busyIntervalsAsBookings(
     cancellationReason: null,
     cancelledAt: null,
     googleCalendarEventId: null,
+    googleCalendarHtmlLink: null,
     googleMeetUrl: null,
     stripePaymentIntentId: null,
     amountPaidCents: null,
