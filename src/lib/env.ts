@@ -48,6 +48,13 @@ const serverSchema = z.object({
   // requests/day. https://console.upstash.com → Redis → REST API.
   UPSTASH_REDIS_REST_URL: z.string().url().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
+  // Telegram bot for booking alerts. Both vars optional — if unset, the
+  // booking flow silently skips Telegram (logs `[telegram] skipping ...`).
+  // Bot token is from @BotFather. Chat ID is your personal chat with the
+  // bot — `scripts/telegram-setup.ts` will fetch it after you message the
+  // bot once.
+  TELEGRAM_BOT_TOKEN: z.string().min(1).optional(),
+  TELEGRAM_CHAT_ID: z.string().min(1).optional(),
 });
 
 type ServerEnv = z.infer<typeof serverSchema>;

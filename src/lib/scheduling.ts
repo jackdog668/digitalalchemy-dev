@@ -100,6 +100,7 @@ interface BookingRow {
   amount_paid_cents: number | null;
   reminder_24h_sent_at: string | null;
   reminder_1h_sent_at: string | null;
+  admin_reminder_15m_sent_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -126,6 +127,7 @@ function rowToBooking(row: BookingRow): Booking {
     amountPaidCents: row.amount_paid_cents,
     reminder24hSentAt: row.reminder_24h_sent_at,
     reminder1hSentAt: row.reminder_1h_sent_at,
+    adminReminder15mSentAt: row.admin_reminder_15m_sent_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -395,30 +397,47 @@ export async function listAllBookings(): Promise<Booking[]> {
 // Reminder cron helpers (Phase 4)
 // ============================================================
 
-export type ReminderKind = "24h" | "1h";
+export type ReminderKind = "24h" | "1h" | "15m_admin";
+
+const REMINDER_COLUMN: Record<ReminderKind, string> = {
+  "24h": "reminder_24h_sent_at",
+  "1h": "reminder_1h_sent_at",
+  "15m_admin": "admin_reminder_15m_sent_at",
+};
 
 /**
  * Find confirmed bookings whose start_time falls inside the reminder window
  * for the given kind AND which have not already had that reminder sent.
  *
- * The cron is expected to run every 15 min. Windows are intentionally
- * wider than the cron interval so that one skipped run doesn't miss a
- * booking — the reminder_Xh_sent_at guard prevents double-sends.
+ * The cron runs every 15 min. Windows are intentionally wider than the
+ * cron interval so that one skipped run doesn't miss a booking — the
+ * `_sent_at` column guards against double-sends.
  *
- *   24h kind → start_time ∈ [now + 23h, now + 25h]
- *    1h kind → start_time ∈ [now + 30m, now + 90m]
+ *     24h kind → start_time ∈ [now + 23h,   now + 25h]
+ *      1h kind → start_time ∈ [now + 30m,   now + 90m]
+ *  15m_admin   → start_time ∈ [now + 7m,    now + 23m]   (admin Telegram)
  */
 export async function getBookingsNeedingReminder(
   kind: ReminderKind,
 ): Promise<Booking[]> {
   const db = createServiceRoleClient();
   const now = Date.now();
-  const windowStartMs =
-    kind === "24h" ? now + 23 * 3600_000 : now + 30 * 60_000;
-  const windowEndMs =
-    kind === "24h" ? now + 25 * 3600_000 : now + 90 * 60_000;
-  const column =
-    kind === "24h" ? "reminder_24h_sent_at" : "reminder_1h_sent_at";
+  let windowStartMs: number;
+  let windowEndMs: number;
+  if (kind === "24h") {
+    windowStartMs = now + 23 * 3600_000;
+    windowEndMs = now + 25 * 3600_000;
+  } else if (kind === "1h") {
+    windowStartMs = now + 30 * 60_000;
+    windowEndMs = now + 90 * 60_000;
+  } else {
+    // 15m_admin: target = ~15 min before start. Window is centered on 15
+    // and ±8 min wide so a single cron tick at minute :00, :15, :30, :45
+    // is guaranteed to catch each upcoming booking once.
+    windowStartMs = now + 7 * 60_000;
+    windowEndMs = now + 23 * 60_000;
+  }
+  const column = REMINDER_COLUMN[kind];
 
   const { data, error } = await db
     .from("scheduling_bookings")
@@ -441,8 +460,7 @@ export async function markReminderSent(
   kind: ReminderKind,
 ): Promise<void> {
   const db = createServiceRoleClient();
-  const column =
-    kind === "24h" ? "reminder_24h_sent_at" : "reminder_1h_sent_at";
+  const column = REMINDER_COLUMN[kind];
   const { error } = await db
     .from("scheduling_bookings")
     .update({ [column]: new Date().toISOString() })

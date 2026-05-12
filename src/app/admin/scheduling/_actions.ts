@@ -21,6 +21,7 @@ import {
   updateBookingStatus,
 } from "@/lib/scheduling";
 import { sendCancellationEmails } from "@/lib/scheduling-emails";
+import { sendCancellationTelegramAlert } from "@/lib/scheduling-telegram";
 import { deleteCalendarEventForBooking } from "@/lib/google/events";
 
 // ============================================================
@@ -263,6 +264,14 @@ export async function cancelBookingAsAdmin(id: string, reason: string) {
     await deleteCalendarEventForBooking(cancelled);
   } catch (err) {
     console.error("[google] admin cancel delete failed:", err);
+  }
+
+  // Telegram receipt so the admin's chat shows their own cancellation
+  // alongside invitee-triggered ones — useful for paper trail.
+  try {
+    await sendCancellationTelegramAlert(cancelled, eventType, "admin");
+  } catch (err) {
+    console.error("[telegram] cancel alert (admin) failed:", err);
   }
 
   revalidateBookingPaths(id);

@@ -127,6 +127,7 @@ export interface Booking {
   amountPaidCents: number | null;
   reminder24hSentAt: string | null;
   reminder1hSentAt: string | null;
+  adminReminder15mSentAt: string | null;
   createdAt: string;
   updatedAt: string;
 }

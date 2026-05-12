@@ -6,20 +6,27 @@ import {
   type ReminderKind,
 } from "@/lib/scheduling";
 import { sendBookingReminder } from "@/lib/scheduling-emails";
-import { verifyCronAuth, isResendConfigured } from "@/lib/env";
+import { sendUpcomingTelegramAlert } from "@/lib/scheduling-telegram";
+import {
+  verifyCronAuth,
+  isResendConfigured,
+} from "@/lib/env";
+import { isTelegramConfigured } from "@/lib/telegram";
 
-// Vercel Cron → this endpoint, every 15 minutes.
+// External cron (cron-job.org / GitHub Actions) → this endpoint every 15 min.
 //
 // Flow:
-//   1. Verify the Authorization header matches CRON_SECRET (Vercel injects it)
-//   2. For each kind (24h, 1h): find confirmed bookings inside the window
-//      whose reminder_Xh_sent_at IS NULL
-//   3. Send the reminder email, mark the column on success
-//   4. Return a compact JSON summary so the Vercel logs are grep-able
+//   1. Verify the Authorization header matches CRON_SECRET
+//   2. For each kind:
+//        24h / 1h   → email the INVITEE (requires Resend)
+//        15m_admin  → Telegram the ADMIN (requires Telegram bot)
+//      find confirmed bookings inside the window whose `_sent_at` is null
+//   3. Send the notification, mark the column on success
+//   4. Return compact JSON summary so Vercel logs are grep-able
 //
-// We mark the column *only* after the email send resolves so a transient
-// Resend outage retries on the next cron tick. Failures are logged, not
-// thrown — one bad booking must not stop the rest from going out.
+// Notifications only mark the column AFTER the send resolves so a transient
+// Resend/Telegram outage retries on the next tick. Failures are logged,
+// not thrown — one bad booking must not stop the rest from going out.
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -29,9 +36,19 @@ interface ReminderResult {
   attempted: number;
   sent: number;
   failed: number;
+  skipped?: string;
 }
 
 async function processKind(kind: ReminderKind): Promise<ReminderResult> {
+  // Channel-specific guard: skip the whole kind cleanly if its delivery
+  // channel isn't configured, instead of attempting and erroring per row.
+  if (kind === "15m_admin" && !isTelegramConfigured()) {
+    return { kind, attempted: 0, sent: 0, failed: 0, skipped: "no-telegram" };
+  }
+  if (kind !== "15m_admin" && !isResendConfigured()) {
+    return { kind, attempted: 0, sent: 0, failed: 0, skipped: "no-resend" };
+  }
+
   const bookings = await getBookingsNeedingReminder(kind);
   let sent = 0;
   let failed = 0;
@@ -46,7 +63,12 @@ async function processKind(kind: ReminderKind): Promise<ReminderResult> {
         failed++;
         continue;
       }
-      await sendBookingReminder(booking, eventType, kind);
+
+      if (kind === "15m_admin") {
+        await sendUpcomingTelegramAlert(booking, eventType);
+      } else {
+        await sendBookingReminder(booking, eventType, kind);
+      }
       await markReminderSent(booking.id, kind);
       sent++;
     } catch (err) {
@@ -67,15 +89,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  if (!isResendConfigured()) {
-    return NextResponse.json(
-      { ok: true, skipped: "resend-not-configured" },
-      { status: 200 },
-    );
-  }
-
+  // No early skip — each kind self-guards on its delivery channel inside
+  // processKind so one missing provider doesn't kill the others.
   const startedAt = Date.now();
-  const results = await Promise.all([processKind("24h"), processKind("1h")]);
+  const results = await Promise.all([
+    processKind("24h"),
+    processKind("1h"),
+    processKind("15m_admin"),
+  ]);
   const durationMs = Date.now() - startedAt;
 
   const summary = {
