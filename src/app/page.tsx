@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
-import { SocialIcons } from "@/components/ui/SocialIcons";
+import { HeroSocialReveal } from "@/components/ui/HeroSocialReveal";
 import {
   FadeInOnScroll,
   StaggerContainer,
@@ -90,15 +90,24 @@ export default function HomePage() {
               <Button href="/book" variant="primary" size="lg">
                 Book a Call
               </Button>
+              <Button
+                href={SITE.beaconsUrl}
+                external
+                variant="outline"
+                size="lg"
+              >
+                Beacons
+              </Button>
             </div>
           </FadeInOnScroll>
 
-          {/* Compact social strip — 5 platforms, icons only */}
-          <FadeInOnScroll delay={400}>
-            <div className="mt-10 flex justify-center">
-              <SocialIcons variant="hero" limit={5} />
-            </div>
-          </FadeInOnScroll>
+          {/* Click-to-reveal social strip. Mount-animated (not scroll-triggered)
+              so the pill is visible immediately on every phone size — the old
+              FadeInOnScroll wrapper kept icons at opacity 0 below the fold on
+              small phones. See HeroSocialReveal.tsx for the why. */}
+          <div className="mt-10 flex justify-center">
+            <HeroSocialReveal limit={5} />
+          </div>
         </div>
       </section>
 
