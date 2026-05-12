@@ -130,6 +130,7 @@ export async function sendBookingReminder(
       whenLocal: formatWhen(booking.startTime, booking.timezone),
       locationLabel: locationLabel(eventType),
       meetUrl: booking.googleMeetUrl,
+      googleCalendarHtmlLink: booking.googleCalendarHtmlLink ?? null,
       cancelUrl,
       siteUrl,
     }),

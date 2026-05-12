@@ -11,6 +11,8 @@ interface BookingReminderProps {
   whenLocal: string; // pre-formatted, e.g. "Mon, Apr 8 at 2:00 PM CT"
   locationLabel: string;
   meetUrl: string | null; // populated once Google event was attached
+  /** Calendar API `htmlLink` — open the event in Google Calendar in browser */
+  googleCalendarHtmlLink: string | null;
   cancelUrl: string;
   siteUrl: string;
 }
@@ -41,8 +43,14 @@ function subcopyFor(kind: ReminderKind): string {
 
 export function renderBookingReminderEmail(p: BookingReminderProps): string {
   const joinBlock = p.meetUrl
-    ? `<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:8px 0 24px 0;"><tr><td style="background:#6366f1;border-radius:10px;">
+    ? `<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:8px 0 12px 0;"><tr><td style="background:#6366f1;border-radius:10px;">
          <a href="${esc(p.meetUrl)}" style="display:inline-block;padding:14px 24px;color:#ffffff;font-weight:600;font-size:15px;text-decoration:none;">Join Google Meet →</a>
+       </td></tr></table>`
+    : "";
+
+  const calendarBlock = p.googleCalendarHtmlLink
+    ? `<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 24px 0;"><tr><td style="border:1px solid #475569;border-radius:10px;background:#0f172a;">
+         <a href="${esc(p.googleCalendarHtmlLink)}" style="display:inline-block;padding:14px 24px;color:#e2e8f0;font-weight:600;font-size:15px;text-decoration:none;">Open in Google Calendar →</a>
        </td></tr></table>`
     : "";
 
@@ -71,6 +79,7 @@ export function renderBookingReminderEmail(p: BookingReminderProps): string {
             </table>
 
             ${joinBlock}
+            ${calendarBlock}
 
             <hr style="margin:24px 0 20px 0;border:none;border-top:1px solid #334155;" />
             <p style="margin:0;font-size:13px;color:#64748b;">Need to cancel? <a href="${esc(p.cancelUrl)}" style="color:#94a3b8;">Cancel this booking</a>.</p>

@@ -186,6 +186,14 @@ supabase/migrations/20260408_scheduling_phase4_reminders.sql
 
 Adds two nullable `timestamptz` columns (`reminder_24h_sent_at`, `reminder_1h_sent_at`) plus two partial indexes on `scheduling_bookings`. Idempotent — safe to re-run.
 
+Also run (same SQL Editor; idempotent) if you use Google Calendar sync — stores the Calendar API `htmlLink` on each booking for reminder emails and Telegram:
+
+```bash
+supabase/migrations/20260513_google_calendar_html_link.sql
+```
+
+Adds nullable `google_calendar_html_link` on `scheduling_bookings`. Required for new code paths that persist and link the event in the browser.
+
 ## 2. Generate and set `CRON_SECRET`
 
 Vercel Cron authenticates itself to your endpoint by sending `Authorization: Bearer <CRON_SECRET>`. You generate the secret; Vercel auto-injects it into cron requests.
