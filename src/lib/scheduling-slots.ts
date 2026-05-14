@@ -76,6 +76,9 @@ function overlaps(
   bufferAfterMs: number,
 ): boolean {
   // TODO(Desi): decision #1 — which booking statuses block a new slot?
+  // Note: Currently, bookings are auto-confirmed so there is no "pending" status,
+  // but we leave this strictly at "confirmed". If a "pending" status is ever added,
+  // it should be added here too.
   const BLOCKING_STATUSES: ReadonlySet<BookingStatus> = new Set([
     "confirmed",
   ]);
@@ -86,14 +89,13 @@ function overlaps(
     const bookingStartMs = new Date(booking.startTime).getTime();
     const bookingEndMs = new Date(booking.endTime).getTime();
 
-    // TODO(Desi): decision #2 — extend the EXISTING booking's footprint by
-    // the buffer. Change the +/- signs here if you'd rather extend the new
-    // slot's footprint instead.
-    const blockedStartMs = bookingStartMs - bufferBeforeMs;
-    const blockedEndMs = bookingEndMs + bufferAfterMs;
+    // TODO(Desi): decision #2 & #3 — enforce a 2-hour buffer between all meetings.
+    // By extending the blocked time by 2 hours before AND after, and using strict `<`,
+    // we guarantee any adjacent meeting must be at least 2 hours away.
+    const twoHoursMs = 2 * 60 * 60 * 1000;
+    const blockedStartMs = bookingStartMs - twoHoursMs;
+    const blockedEndMs = bookingEndMs + twoHoursMs;
 
-    // TODO(Desi): decision #3 — use strict `<` so back-to-back meetings are
-    // allowed. Change to `<=` if you want a hard separation.
     const overlapping =
       slotStartMs < blockedEndMs && slotEndMs > blockedStartMs;
 
@@ -183,7 +185,8 @@ export function computeAvailableSlots(params: {
   const durationMs = eventType.durationMinutes * 60 * 1000;
   const bufferBeforeMs = eventType.bufferBeforeMinutes * 60 * 1000;
   const bufferAfterMs = eventType.bufferAfterMinutes * 60 * 1000;
-  const minNoticeMs = eventType.minNoticeHours * 60 * 60 * 1000;
+  // Enforce at least 48 hours (2 days) notice globally
+  const minNoticeMs = Math.max(eventType.minNoticeHours, 48) * 60 * 60 * 1000;
   const maxAdvanceMs = eventType.maxAdvanceDays * 24 * 60 * 60 * 1000;
 
   const earliestBookableMs = now.getTime() + minNoticeMs;
@@ -292,8 +295,9 @@ export function isSlotStillAvailable(params: {
   const startMs = new Date(startUtc).getTime();
   const endMs = startMs + eventType.durationMinutes * 60 * 1000;
 
-  // Min notice
-  if (startMs < now.getTime() + eventType.minNoticeHours * 60 * 60 * 1000) {
+  // Min notice (enforce at least 48 hours / 2 days globally)
+  const minNoticeHours = Math.max(eventType.minNoticeHours, 48);
+  if (startMs < now.getTime() + minNoticeHours * 60 * 60 * 1000) {
     return false;
   }
 
