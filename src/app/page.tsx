@@ -249,6 +249,36 @@ export default function HomePage() {
 
       <ShimmerLine className="opacity-50" />
 
+      {/* ── CALENDAR EMBED ── */}
+      <section className="relative px-6 py-24 bg-da-surface/20">
+        <div className="mx-auto max-w-5xl">
+          <FadeInOnScroll>
+            <div className="text-center mb-12">
+              <h2 className="font-display text-3xl font-bold sm:text-4xl">
+                Upcoming <span className="text-da-cyan">Events</span>
+              </h2>
+              <p className="mt-4 text-lg text-da-muted">
+                Join us for live classes, workshops, and community events.
+              </p>
+            </div>
+            <div className="w-full bg-da-dark rounded-lg overflow-hidden shadow-xl border border-da-border/50">
+              <iframe
+                src="https://luma.com/embed/calendar/cal-8VlGboJj3KlpH4j/events"
+                width="100%"
+                height="600"
+                frameBorder="0"
+                style={{ border: "1px solid #bfcbda88", borderRadius: "4px" }}
+                allowFullScreen={true}
+                aria-hidden="false"
+                tabIndex={0}
+              ></iframe>
+            </div>
+          </FadeInOnScroll>
+        </div>
+      </section>
+
+      <ShimmerLine className="opacity-50" />
+
       {/* ── CTA BANNER ── */}
       <section className="relative overflow-hidden px-6 py-24">
         <GlowOrb color="purple" size="lg" className="-left-20 top-0" />

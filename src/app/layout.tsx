@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { ConvaiWidget } from "@/components/ConvaiWidget";
 import { GrainOverlay } from "@/components/effects/GrainOverlay";
 import { PostHogProvider } from "@/components/PostHogProvider";
+import { OrganizationSchema, WebSiteSchema } from "@/components/seo/SchemaMarkup";
 import { SITE } from "@/lib/constants";
 import "./globals.css";
 
@@ -41,13 +42,13 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: `${SITE.name} | Learn to Build Apps with AI — No Coding Required`,
+    default: `${SITE.name} | Vibe Coding & App Building | AI Consulting Chicago`,
     template: `%s | ${SITE.name}`,
   },
-  description: SITE.description,
+  description: "Learn to vibe code and build apps without a tech background. Digital Alchemy offers AI consulting, vibe coding sessions, and AI events in Chicago, IL.",
   openGraph: {
-    title: `${SITE.name} | Learn to Build Apps with AI — No Coding Required`,
-    description: SITE.description,
+    title: `${SITE.name} | Vibe Coding & App Building | AI Consulting Chicago`,
+    description: "Learn to vibe code and build apps without a tech background. Digital Alchemy offers AI consulting, vibe coding sessions, and AI events in Chicago, IL.",
     url: SITE.url,
     siteName: SITE.name,
     type: "website",
@@ -55,8 +56,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE.name} | Learn to Build Apps with AI — No Coding Required`,
-    description: SITE.description,
+    title: `${SITE.name} | Vibe Coding & App Building | AI Consulting Chicago`,
+    description: "Learn to vibe code and build apps without a tech background. Digital Alchemy offers AI consulting, vibe coding sessions, and AI events in Chicago, IL.",
   },
   icons: {
     icon: [
@@ -88,6 +89,8 @@ export default function RootLayout({
         className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased bg-da-dark text-da-text`}
       >
         <PostHogProvider>
+          <OrganizationSchema />
+          <WebSiteSchema />
           <GrainOverlay />
           <Navbar />
           <main className="min-h-screen">{children}</main>

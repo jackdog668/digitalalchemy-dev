@@ -139,12 +139,21 @@ function rowToBooking(row: BookingRow): Booking {
 // Event type queries
 // ============================================================
 
+// Hard caps on otherwise-unbounded list queries below. Tables are small
+// (event types <50, availability rules <50, bookings in a date range
+// usually <500), so the caps are defensive ceilings, not pagination.
+// If we ever blow past one, that's the signal to introduce real paging.
+const EVENT_TYPES_MAX = 100;
+const AVAILABILITY_RULES_MAX = 200;
+const BOOKINGS_IN_RANGE_MAX = 1000;
+
 export async function getAllEventTypes(): Promise<EventType[]> {
   const db = createServiceRoleClient();
   const { data, error } = await db
     .from("scheduling_event_types")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(EVENT_TYPES_MAX);
   if (error) {
     console.error("getAllEventTypes error:", error);
     return [];
@@ -158,7 +167,8 @@ export async function getActiveEventTypes(): Promise<EventType[]> {
     .from("scheduling_event_types")
     .select("*")
     .eq("status", "active")
-    .order("price_cents", { ascending: true });
+    .order("price_cents", { ascending: true })
+    .limit(EVENT_TYPES_MAX);
   if (error) {
     console.error("getActiveEventTypes error:", error);
     return [];
@@ -202,7 +212,8 @@ export async function getAvailabilityRules(): Promise<AvailabilityRule[]> {
     .from("scheduling_availability_rules")
     .select("*")
     .order("day_of_week", { ascending: true })
-    .order("start_time", { ascending: true });
+    .order("start_time", { ascending: true })
+    .limit(AVAILABILITY_RULES_MAX);
   if (error) {
     console.error("getAvailabilityRules error:", error);
     return [];
@@ -249,7 +260,8 @@ export async function getBookingsForDateRange(
     .eq("event_type_id", eventTypeId)
     .gte("start_time", fromIso)
     .lte("start_time", toIso)
-    .order("start_time", { ascending: true });
+    .order("start_time", { ascending: true })
+    .limit(BOOKINGS_IN_RANGE_MAX);
   if (error) {
     console.error("getBookingsForDateRange error:", error);
     return [];
@@ -267,7 +279,8 @@ export async function getAllBookingsInRange(
     .select("*")
     .gte("start_time", fromIso)
     .lte("start_time", toIso)
-    .order("start_time", { ascending: true });
+    .order("start_time", { ascending: true })
+    .limit(BOOKINGS_IN_RANGE_MAX);
   if (error) return [];
   return (data ?? []).map(rowToBooking);
 }

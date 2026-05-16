@@ -31,10 +31,14 @@ export default async function AdminHome() {
   }
 
   const db = createServiceRoleClient();
+  // Cap at 200 most-recent posts. If/when the blog grows past that, add a
+  // paginated admin view — but at current volume this stays under one
+  // screen of vertical scroll and avoids unbounded memory growth.
   const { data: posts, error } = await db
     .from("posts")
     .select("id, slug, title, status, category, published_at, updated_at")
-    .order("updated_at", { ascending: false });
+    .order("updated_at", { ascending: false })
+    .limit(200);
 
   if (error) {
     return (

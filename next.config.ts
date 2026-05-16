@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   // Tree-shake heavy named-export libraries so unused exports don't ship.
@@ -40,6 +41,13 @@ const nextConfig: NextConfig = {
             key: "Strict-Transport-Security",
             value: "max-age=63072000; includeSubDomains; preload",
           },
+          // Cross-origin isolation — defense-in-depth against Spectre-style
+          // cross-origin leaks. `same-origin` is strict but compatible with
+          // our existing setup (no third-party windows opening us back).
+          // Iframe-embedded PayPal popup is unaffected because it opens a
+          // NEW window, not embeds us.
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+          { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
           {
             // Content Security Policy — locks down what the browser is
             // allowed to load and execute. Removed 'unsafe-eval' (was a
@@ -52,11 +60,16 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.posthog.com",
+              // unpkg.com is here for the ElevenLabs convai-widget-embed.
+              // If we ever remove that widget, drop unpkg.com from this list
+              // — the smaller the script-src allowlist, the smaller the XSS
+              // footprint.
+              "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.posthog.com https://www.paypal.com https://unpkg.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' https: data:",
               "font-src 'self' https://fonts.gstatic.com",
               "connect-src 'self' https:",
+              "frame-src https://www.paypal.com https://www.sandbox.paypal.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",
@@ -92,4 +105,25 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Wrap with Sentry's plugin ONLY when SENTRY_DSN is configured. Without
+// the wrap the SDK's runtime init still no-ops cleanly — wrapping when
+// unconfigured would just log a noisy "no auth token" warning every build.
+const finalConfig: NextConfig = process.env.SENTRY_DSN
+  ? withSentryConfig(nextConfig, {
+      // Source map upload — only runs in CI when SENTRY_AUTH_TOKEN is set,
+      // otherwise the plugin silently skips it.
+      silent: !process.env.CI,
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      // Source-map handling: delete the .map files from the client bundle
+      // after upload so the DSN / org / project triple isn't leaked in
+      // production. (Sentry v10 renamed `hideSourceMaps` to nested
+      // `sourcemaps.deleteSourcemapsAfterUpload`.)
+      sourcemaps: { deleteSourcemapsAfterUpload: true },
+      // Tree-shake unused Sentry SDK code — saves ~30KB on the client bundle
+      // because we don't use Sentry.logger.debug() etc.
+      disableLogger: true,
+    })
+  : nextConfig;
+
+export default finalConfig;

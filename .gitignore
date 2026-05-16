@@ -43,11 +43,22 @@ next-env.d.ts
 .vercel
 
 # local claude code / tooling
-.claude/settings.local.json
-.claude/launch.json
-.claude/worktrees/
+.claude/
 .playwright-mcp/
 .superpowers/
 
+# ad-hoc local test scripts (one-off DB pokes, scratch queries).
+# These often contain hardcoded tokens during debugging — never commit.
+/test-*.ts
+/test-*.js
+
 # supabase CLI local cache
 supabase/.temp/
+
+# Captured webhook fixtures used by scripts/test-paypal-webhook-replay.ts.
+# These hold real PayPal sandbox event payloads + signature headers and
+# must never be committed.
+scripts/test-webhook-fixture.json
+
+# Sentry CLI / SDK build artifacts
+.sentryclirc

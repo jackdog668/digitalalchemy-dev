@@ -10,11 +10,12 @@ import {
 import { ShimmerLine } from "@/components/effects/ShimmerLine";
 import { GlowOrb } from "@/components/effects/GlowOrb";
 import { SITE } from "@/lib/constants";
+import { ProfilePageSchema } from "@/components/seo/SchemaMarkup";
 
 export const metadata: Metadata = {
-  title: "About | AI Education for Women Who Want to Build",
+  title: "About Desmond Baker Jr | Chicago Vibe Coding & AI Education",
   description:
-    "Meet Desmond Baker Jr — Google Gemini Certified Educator, founder of Digital Alchemy, and the guide who will help you go from 'I'm not techy' to 'I just shipped my first app.'",
+    "Meet Desmond Baker Jr — Google Gemini Certified Educator, founder of Digital Alchemy, and your guide for AI consulting, app building, and vibe coding in Chicago.",
 };
 
 const pillars = [
@@ -58,6 +59,7 @@ const creedLines = [
 export default function AboutPage() {
   return (
     <>
+      <ProfilePageSchema name="Desmond Baker Jr" description={metadata.description as string} />
       {/* ── STORY ── */}
       <section className="relative px-6 pt-32 pb-24 overflow-hidden">
         <GlowOrb color="indigo" size="lg" className="-right-32 top-20" />

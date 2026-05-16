@@ -7,6 +7,16 @@ import { z } from "zod";
 // `requireServerEnv()` which throws if any are missing. Blog reads gracefully
 // fall back to file-system MDX when Supabase is not configured.
 
+/**
+ * Treat blank `.env.local` lines (`KEY=`) as if the key were absent.
+ * Used as the first arg to `z.preprocess()` on optional vars where a literal
+ * empty string would otherwise trip `.min(N)` and tank the whole schema
+ * parse — taking every server route that calls `serverEnv()` down with it.
+ */
+function emptyToUndef(v: unknown): unknown {
+  return typeof v === "string" && v.trim() === "" ? undefined : v;
+}
+
 const serverSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.string().url().default("https://digitalalchemy.dev"),
   NEXT_PUBLIC_SUPABASE_URL: z.string().url().optional(),
@@ -55,6 +65,33 @@ const serverSchema = z.object({
   // bot once.
   TELEGRAM_BOT_TOKEN: z.string().min(1).optional(),
   TELEGRAM_CHAT_ID: z.string().min(1).optional(),
+  // PayPal — Phase 1 checkout (Bootcamp + Portfolio Building). All optional
+  // so the project builds before sandbox creds are wired. Server code that
+  // hits PayPal calls `requirePayPal()` which throws if any are missing.
+  //   PAYPAL_ENV: 'sandbox' (default) for developer.paypal.com test creds,
+  //               'live' once we cut over to the real DB Creations account.
+  //   PAYPAL_CLIENT_ID / PAYPAL_CLIENT_SECRET: from your sandbox/live app at
+  //               developer.paypal.com → Apps & Credentials.
+  //   NEXT_PUBLIC_PAYPAL_CLIENT_ID: public mirror of CLIENT_ID — PayPal's
+  //               JS SDK takes the client_id in the browser to render the
+  //               Smart Buttons. PayPal docs confirm this is safe to expose;
+  //               the SECRET stays server-side only.
+  //   PAYPAL_WEBHOOK_ID: the webhook id PayPal hands back when you register
+  //               a webhook URL in the dashboard. Required to verify event
+  //               signatures via PayPal's `verify-webhook-signature` API.
+  //   PAYPAL_WEBHOOK_PATH_TOKEN: random string Desi generates (e.g.
+  //               `openssl rand -hex 32`) — included in the webhook URL path
+  //               so it's unguessable in addition to PayPal's signature.
+  // `emptyToUndef` coerces blank `.env.local` lines (e.g. `PAYPAL_WEBHOOK_ID=`)
+  // into `undefined` before the inner schema runs. Without it, `.optional()`
+  // doesn't help — `.min(N)` fires on the empty string and the whole parse
+  // throws, taking down every route that calls `serverEnv()`.
+  PAYPAL_ENV: z.enum(["sandbox", "live"]).default("sandbox"),
+  PAYPAL_CLIENT_ID: z.preprocess(emptyToUndef, z.string().min(1).optional()),
+  PAYPAL_CLIENT_SECRET: z.preprocess(emptyToUndef, z.string().min(1).optional()),
+  NEXT_PUBLIC_PAYPAL_CLIENT_ID: z.preprocess(emptyToUndef, z.string().min(1).optional()),
+  PAYPAL_WEBHOOK_ID: z.preprocess(emptyToUndef, z.string().min(1).optional()),
+  PAYPAL_WEBHOOK_PATH_TOKEN: z.preprocess(emptyToUndef, z.string().min(16).optional()),
 });
 
 type ServerEnv = z.infer<typeof serverSchema>;
@@ -62,6 +99,12 @@ type ServerEnv = z.infer<typeof serverSchema>;
 let cached: ServerEnv | null = null;
 
 function parseServerEnv(): ServerEnv {
+  // In dev, bust the cache on every call so editing `.env.local` while
+  // `npm run dev` is running picks up immediately. The module-level cache
+  // is a hot-path optimization for prod where env is immutable. We hit
+  // the "edit .env.local and nothing updates" footgun once already this
+  // build; rather make dev slightly slower than have it keep biting.
+  if (process.env.NODE_ENV === "development") cached = null;
   if (cached) return cached;
   const parsed = serverSchema.safeParse(process.env);
   if (!parsed.success) {
@@ -178,6 +221,84 @@ export function requireGoogleOAuth(): {
     clientSecret: env.GOOGLE_OAUTH_CLIENT_SECRET,
     redirectUri: `${env.NEXT_PUBLIC_SITE_URL}/api/scheduling/google/callback`,
   };
+}
+
+/** True when all PayPal vars are set — safe to create/capture orders. */
+export function isPayPalConfigured(): boolean {
+  const env = parseServerEnv();
+  return Boolean(
+    env.PAYPAL_CLIENT_ID &&
+      env.PAYPAL_CLIENT_SECRET &&
+      env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+  );
+}
+
+/**
+ * Throws if any required PayPal var is missing. Call from server-side
+ * payment routes (create-order, capture). The webhook ID + path token are
+ * required separately by the webhook route via `requirePayPalWebhook()`.
+ */
+export function requirePayPal(): {
+  clientId: string;
+  clientSecret: string;
+  publicClientId: string;
+  environment: "sandbox" | "live";
+} {
+  const env = parseServerEnv();
+  if (
+    !env.PAYPAL_CLIENT_ID ||
+    !env.PAYPAL_CLIENT_SECRET ||
+    !env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
+  ) {
+    throw new Error(
+      "PayPal is not configured. Set PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, and NEXT_PUBLIC_PAYPAL_CLIENT_ID in .env.local.",
+    );
+  }
+  return {
+    clientId: env.PAYPAL_CLIENT_ID,
+    clientSecret: env.PAYPAL_CLIENT_SECRET,
+    publicClientId: env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+    environment: env.PAYPAL_ENV,
+  };
+}
+
+/**
+ * Throws if webhook vars are missing. Separate from `requirePayPal()` so
+ * the create-order/capture routes can run even before the webhook is
+ * registered (useful during early sandbox setup).
+ */
+export function requirePayPalWebhook(): {
+  webhookId: string;
+  pathToken: string;
+} {
+  const env = parseServerEnv();
+  if (!env.PAYPAL_WEBHOOK_ID || !env.PAYPAL_WEBHOOK_PATH_TOKEN) {
+    throw new Error(
+      "PayPal webhook is not configured. Set PAYPAL_WEBHOOK_ID and PAYPAL_WEBHOOK_PATH_TOKEN in .env.local.",
+    );
+  }
+  return {
+    webhookId: env.PAYPAL_WEBHOOK_ID,
+    pathToken: env.PAYPAL_WEBHOOK_PATH_TOKEN,
+  };
+}
+
+/**
+ * Timing-safe compare of the URL-supplied webhook path token against the
+ * configured PAYPAL_WEBHOOK_PATH_TOKEN. Fail-closed if either side is
+ * empty. Model: `verifyCronAuth` below.
+ */
+export function verifyPayPalPathToken(supplied: string | null): boolean {
+  const env = parseServerEnv();
+  const expected = env.PAYPAL_WEBHOOK_PATH_TOKEN;
+  if (!expected) return false;
+  if (!supplied) return false;
+  if (supplied.length !== expected.length) return false;
+  let diff = 0;
+  for (let i = 0; i < supplied.length; i++) {
+    diff |= supplied.charCodeAt(i) ^ expected.charCodeAt(i);
+  }
+  return diff === 0;
 }
 
 /**

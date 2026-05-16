@@ -88,8 +88,8 @@ const tiers: Tier[] = [
           "Lifetime access to materials and updates",
         ],
         cta: {
-          label: "Join the Bootcamp",
-          href: "/book",
+          label: "Join the Bootcamp — $147",
+          href: "/checkout/bootcamp",
           variant: "primary",
         },
       },
@@ -115,8 +115,8 @@ const tiers: Tier[] = [
           "Walk away with assets you can sell immediately",
         ],
         cta: {
-          label: "Book a Portfolio Session",
-          href: "/book",
+          label: "Book a Portfolio Session — $500",
+          href: "/checkout/portfolio-building",
           variant: "accent",
         },
       },

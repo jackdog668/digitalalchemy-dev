@@ -11,11 +11,12 @@ import { ShimmerLine } from "@/components/effects/ShimmerLine";
 import { GlowOrb } from "@/components/effects/GlowOrb";
 import { BookingWidget } from "@/components/scheduling/BookingWidget";
 import { services } from "@/data/services";
+import { ServiceSchema } from "@/components/seo/SchemaMarkup";
 
 export const metadata: Metadata = {
-  title: "AI Services | Consulting, Workshops & Custom AI Systems",
+  title: "AI Consulting Chicago | App Building & Workshops",
   description:
-    "Consulting, workshops, and custom tools for organizations ready to put AI to work — not just talk about it.",
+    "Chicago-based AI consulting, app building, and workshops. We build custom AI systems and vibe coding setups for teams ready to execute.",
 };
 
 const serviceIcons: Record<string, string> = {
@@ -55,6 +56,7 @@ const processSteps = [
 export default function ServicesPage() {
   return (
     <>
+      <ServiceSchema title={metadata.title as string} description={metadata.description as string} />
       {/* ── HERO ── */}
       <section className="relative px-6 pt-32 pb-24 overflow-hidden">
         <GlowOrb color="indigo" size="lg" className="-right-32 top-10" />

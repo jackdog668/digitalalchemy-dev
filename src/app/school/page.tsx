@@ -11,11 +11,12 @@ import { ShimmerLine } from "@/components/effects/ShimmerLine";
 import { GlowOrb } from "@/components/effects/GlowOrb";
 import { SITE } from "@/lib/constants";
 import { modules } from "@/data/modules";
+import { CourseSchema } from "@/components/seo/SchemaMarkup";
 
 export const metadata: Metadata = {
-  title: "The School | 100-Day AI Building Program for Beginners",
+  title: "The School | 100-Day Vibe Coding & AI App Building Program",
   description:
-    "Live classes every week where you create real projects — apps, music, art, and tools — step by step. If you can follow along with a recipe, you can do this.",
+    "Join our live vibe coding and AI app building classes. Create real projects step by step. Accessible AI education and consulting for everyone, based in Chicago, IL.",
 };
 
 const moduleIcons: Record<string, string> = {
@@ -51,6 +52,7 @@ const testimonials = [
 export default function SchoolPage() {
   return (
     <>
+      <CourseSchema title={metadata.title as string} description={metadata.description as string} />
       {/* ── HERO ── */}
       <section className="relative px-6 pt-32 pb-24 overflow-hidden">
         <GlowOrb color="purple" size="lg" className="-left-20 top-20" />

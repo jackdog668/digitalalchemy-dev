@@ -71,21 +71,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Subscribe failed" }, { status: 500 });
   }
 
-  // Send confirmation email
-  try {
-    const siteUrl = serverEnv().NEXT_PUBLIC_SITE_URL;
-    const confirmUrl = `${siteUrl}/api/subscribe/confirm?token=${confirmToken}`;
-
-    await sendEmail({
-      to: email,
-      subject: "Confirm your Digital Alchemy subscription",
-      html: renderConfirmEmail({ confirmUrl }),
-    });
-  } catch (err) {
+  // Fire-and-forget the confirmation email. The subscriber row is already
+  // saved (above), so the user has been "registered"; the email can arrive
+  // a beat later without blocking the form's spinner. Capping the SDK call
+  // at 10s (default in sendEmail) prevents a stalled Resend connection
+  // from accumulating in flight on the serverless instance.
+  const siteUrl = serverEnv().NEXT_PUBLIC_SITE_URL;
+  const confirmUrl = `${siteUrl}/api/subscribe/confirm?token=${confirmToken}`;
+  void sendEmail({
+    to: email,
+    subject: "Confirm your Digital Alchemy subscription",
+    html: renderConfirmEmail({ confirmUrl }),
+  }).catch((err) => {
     console.error("Confirm email send failed:", err);
-    // Row is saved; user can be re-sent later. Return success so we don't
-    // leak the failure to clients.
-  }
+    // Row is saved; user can be re-sent later via /admin or by re-subscribing.
+  });
 
   return NextResponse.json({ ok: true });
 }

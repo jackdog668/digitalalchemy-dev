@@ -15,13 +15,25 @@ export async function middleware(req: NextRequest) {
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  const adminEmail = process.env.ADMIN_EMAIL ?? "desibaker54@gmail.com";
+  const adminEmail = process.env.ADMIN_EMAIL;
 
-  // If Supabase isn't configured yet, admin is unreachable — 404.
+  // If Supabase isn't configured yet, admin is unreachable — 503.
   if (!supabaseUrl || !supabaseAnon) {
     return new NextResponse("Admin unavailable: Supabase not configured.", {
       status: 503,
     });
+  }
+
+  // Fail closed if ADMIN_EMAIL is unset. Middleware runs BEFORE the Zod env
+  // validator in src/lib/env.ts, so we don't get its crash-on-missing-var
+  // guarantee here. A silent fallback to a hardcoded email would mean a
+  // deploy-config bug could quietly hand admin to whatever address is in
+  // the fallback. Better to 503 and force the operator to fix the env.
+  if (!adminEmail) {
+    return new NextResponse(
+      "Admin unavailable: ADMIN_EMAIL not configured.",
+      { status: 503 },
+    );
   }
 
   const res = NextResponse.next();
