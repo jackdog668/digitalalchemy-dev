@@ -3,7 +3,6 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { ConvaiWidget } from "@/components/ConvaiWidget";
 import { GrainOverlay } from "@/components/effects/GrainOverlay";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import { OrganizationSchema, WebSiteSchema } from "@/components/seo/SchemaMarkup";
@@ -95,7 +94,6 @@ export default function RootLayout({
           <Navbar />
           <main className="min-h-screen">{children}</main>
           <Footer />
-          <ConvaiWidget />
         </PostHogProvider>
       </body>
     </html>

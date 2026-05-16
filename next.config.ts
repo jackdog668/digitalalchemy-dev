@@ -60,11 +60,10 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              // unpkg.com is here for the ElevenLabs convai-widget-embed.
-              // If we ever remove that widget, drop unpkg.com from this list
-              // — the smaller the script-src allowlist, the smaller the XSS
-              // footprint.
-              "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.posthog.com https://www.paypal.com https://unpkg.com",
+              // Removed unpkg.com when the ElevenLabs ConvaiWidget was retired
+              // (the floating "Chat with an Alchemist" button never worked).
+              // Smaller script-src allowlist = smaller XSS footprint.
+              "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.posthog.com https://www.paypal.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' https: data:",
               "font-src 'self' https://fonts.gstatic.com",
