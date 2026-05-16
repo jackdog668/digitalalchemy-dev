@@ -10,6 +10,9 @@ import {
 import { ShimmerLine } from "@/components/effects/ShimmerLine";
 import { GlowOrb } from "@/components/effects/GlowOrb";
 import { SITE } from "@/lib/constants";
+// Tier icons via lucide-react. Lucide's stroke style matches the favicon
+// (Zap-based crest) so the brand reads coherently across the site.
+import { Sprout, Rocket, Building2, type LucideIcon } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Pricing | Three Ways to Build with Desi",
@@ -38,9 +41,18 @@ interface Product {
   badge?: string;
 }
 
+// Per-tier accent color for the icon. Resolves to a Tailwind text-* class
+// at usage site so we don't rebuild the theme map here. Brand greens/cyans
+// chosen to echo the favicon Zap fill.
+const TIER_ICON_COLOR: Record<string, string> = {
+  "Learn It Yourself": "text-da-green",
+  "Get Personal Help": "text-da-cyan",
+  "Hire My Team": "text-da-gold",
+};
+
 interface Tier {
   name: string;
-  icon: string;
+  icon: LucideIcon;
   tagline: string;
   accent: string;
   highlighted?: boolean;
@@ -50,7 +62,7 @@ interface Tier {
 const tiers: Tier[] = [
   {
     name: "Learn It Yourself",
-    icon: "🌱",
+    icon: Sprout,
     tagline: "For self-starters who want to move at their own pace.",
     accent: "from-da-indigo to-da-purple",
     products: [
@@ -97,7 +109,7 @@ const tiers: Tier[] = [
   },
   {
     name: "Get Personal Help",
-    icon: "🚀",
+    icon: Rocket,
     tagline:
       "For creators who want to skip ahead with 1-on-1 guidance.",
     accent: "from-da-purple to-da-cyan",
@@ -124,7 +136,7 @@ const tiers: Tier[] = [
   },
   {
     name: "Hire My Team",
-    icon: "🏢",
+    icon: Building2,
     tagline:
       "For brands and teams ready to put AI to work — not just talk about it.",
     accent: "from-da-cyan to-da-indigo",
@@ -262,8 +274,11 @@ export default function PricingPage() {
               <div>
                 {/* Tier header */}
                 <div className="flex items-start gap-4">
-                  <span className="text-3xl leading-none" aria-hidden="true">
-                    {tier.icon}
+                  <span
+                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-da-surface/60 ${TIER_ICON_COLOR[tier.name] ?? "text-da-green"}`}
+                    aria-hidden="true"
+                  >
+                    <tier.icon size={28} strokeWidth={2} />
                   </span>
                   <div>
                     <h2 className="font-display text-2xl font-bold sm:text-3xl">

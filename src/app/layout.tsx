@@ -52,16 +52,28 @@ export const metadata: Metadata = {
     siteName: SITE.name,
     type: "website",
     locale: "en_US",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: `${SITE.name} — Learn to Build with AI`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE.name} | Vibe Coding & App Building | AI Consulting Chicago`,
     description: "Learn to vibe code and build apps without a tech background. Digital Alchemy offers AI consulting, vibe coding sessions, and AI events in Chicago, IL.",
+    images: ["/og-image.png"],
   },
+  manifest: "/site.webmanifest",
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
       { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
     apple: "/apple-touch-icon.png",
   },
