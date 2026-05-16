@@ -69,7 +69,12 @@ const nextConfig: NextConfig = {
               "img-src 'self' https: data:",
               "font-src 'self' https://fonts.gstatic.com",
               "connect-src 'self' https:",
-              "frame-src https://www.paypal.com https://www.sandbox.paypal.com",
+              // Luma (lu.ma + luma.com, plus wildcards for their CDN subdomains)
+              // is whitelisted for the /events page's embedded calendar iframe.
+              // Without these the iframe loads but the browser silently refuses
+              // to render it — symptom is a blank gray box, no user-visible error
+              // (the CSP violation only surfaces in DevTools Console).
+              "frame-src https://www.paypal.com https://www.sandbox.paypal.com https://lu.ma https://*.lu.ma https://luma.com https://*.luma.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",
