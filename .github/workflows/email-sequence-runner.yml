@@ -7,8 +7,12 @@ name: Email sequence runner
 # Requires the `CRON_SECRET` repo secret - same value set in Vercel env.
 
 on:
-  schedule:
-    - cron: "*/15 * * * *"
+  # Cron disabled - runner was failing every 15 minutes and flooding the
+  # GitHub notifications inbox. Re-enable once the underlying failure
+  # (likely CRON_SECRET mismatch or a 500 from the endpoint) is resolved,
+  # or migrate this job to DigitalOcean.
+  # schedule:
+  #   - cron: "*/15 * * * *"
   workflow_dispatch:
 
 concurrency:
