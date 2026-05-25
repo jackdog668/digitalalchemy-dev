@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   title: "About Desmond Baker Jr | Chicago Vibe Coding & AI Education",
   description:
     "Meet Desmond Baker Jr — Google Gemini Certified Educator, founder of Digital Alchemy, and your guide for AI consulting, app building, and vibe coding in Chicago.",
+  alternates: { canonical: "/about" },
 };
 
 const pillars = [

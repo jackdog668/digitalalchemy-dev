@@ -9,20 +9,20 @@
 :root {
   /* Brand Colors */
   --da-indigo: #6366f1;
-  --da-purple: #8b5cf6;
-  --da-cyan: #00D4FF;
-  --da-dark: #0f172a;
-  --da-darker: #0a0f1e;
-  --da-surface: #1e293b;
-  --da-surface-light: #334155;
+  --da-purple: #7A30FF;        /* Mystic Purple */
+  --da-cyan: #00C8FF;          /* Veo Blue */
+  --da-dark: #0A0B0D;          /* Brand Void Background */
+  --da-darker: #070809;        /* Deep Void */
+  --da-surface: #12131A;       /* Brand Card Background */
+  --da-surface-light: #1A1C24;
   --da-text: #f8fafc;
-  --da-muted: #94a3b8;
-  --da-border: #334155;
+  --da-muted: #8B95A3;         /* Ink Muted */
+  --da-border: #1F232A;        /* Hairline Border */
 
   /* Glow variants */
   --glow-indigo: rgba(99, 102, 241, 0.4);
-  --glow-purple: rgba(139, 92, 246, 0.4);
-  --glow-cyan: rgba(0, 212, 255, 0.3);
+  --glow-purple: rgba(122, 48, 255, 0.4);
+  --glow-cyan: rgba(0, 200, 255, 0.3);
 
   /* Base aliases */
   --background: var(--da-dark);

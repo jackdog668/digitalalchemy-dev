@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   title: "AI Consulting Chicago | App Building & Workshops",
   description:
     "Chicago-based AI consulting, app building, and workshops. We build custom AI systems and vibe coding setups for teams ready to execute.",
+  alternates: { canonical: "/services" },
 };
 
 const serviceIcons: Record<string, string> = {

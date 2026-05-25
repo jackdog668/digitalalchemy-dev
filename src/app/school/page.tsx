@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   title: "The School | 100-Day Vibe Coding & AI App Building Program",
   description:
     "Join our live vibe coding and AI app building classes. Create real projects step by step. Accessible AI education and consulting for everyone, based in Chicago, IL.",
+  alternates: { canonical: "/school" },
 };
 
 const moduleIcons: Record<string, string> = {
