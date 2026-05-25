@@ -8,6 +8,7 @@ import { EventSchema } from "@/components/seo/SchemaMarkup";
 export const metadata: Metadata = {
   title: "Chicago AI Events | Digital Alchemy",
   description: "Upcoming AI events, live vibe coding classes, and app building workshops in Chicago and online.",
+  alternates: { canonical: "/events" },
 };
 
 export default function EventsPage() {

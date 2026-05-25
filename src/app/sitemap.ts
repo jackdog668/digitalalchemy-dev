@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllPosts } from "@/lib/blog";
 import { SITE } from "@/lib/constants";
+import { caseStudies } from "@/data/case-studies";
 
 const STATIC_ROUTES: Array<{
   path: string;
@@ -10,8 +11,11 @@ const STATIC_ROUTES: Array<{
   { path: "", changeFrequency: "weekly", priority: 1.0 },
   { path: "/about", changeFrequency: "monthly", priority: 0.8 },
   { path: "/school", changeFrequency: "weekly", priority: 0.9 },
+  { path: "/events", changeFrequency: "weekly", priority: 0.8 },
   { path: "/services", changeFrequency: "monthly", priority: 0.8 },
+  { path: "/pricing", changeFrequency: "weekly", priority: 0.8 },
   { path: "/portfolio", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/book", changeFrequency: "monthly", priority: 0.7 },
   { path: "/blog", changeFrequency: "daily", priority: 0.9 },
 ];
 
@@ -32,5 +36,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticEntries, ...postEntries];
+  const publishedCaseStudies = caseStudies.filter((study) => study.published);
+  const caseStudyEntries: MetadataRoute.Sitemap = publishedCaseStudies.map((study) => ({
+    url: `${SITE.url}/case-studies/${study.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
+  return [...staticEntries, ...postEntries, ...caseStudyEntries];
 }
