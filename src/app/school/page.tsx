@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Music, Palette, ShieldCheck, Code2, Video, DollarSign, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -20,13 +21,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/school" },
 };
 
-const moduleIcons: Record<string, string> = {
-  music: "\uD83C\uDFB5",
-  palette: "\uD83C\uDFA8",
-  shield: "\uD83D\uDEE1\uFE0F",
-  code: "\u2328\uFE0F",
-  video: "\uD83C\uDFAC",
-  dollar: "\uD83D\uDCB0",
+// Map module icons to premium Lucide component classes for styled vector rendering
+const moduleIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  music: Music,
+  palette: Palette,
+  shield: ShieldCheck,
+  code: Code2,
+  video: Video,
+  dollar: DollarSign,
 };
 
 const testimonials = [
@@ -165,8 +167,11 @@ export default function SchoolPage() {
             {modules.map((mod) => (
               <StaggerItem key={mod.name}>
                 <Card variant="feature" className="h-full">
-                  <div className="text-3xl mb-3">
-                    {moduleIcons[mod.icon] || "\u2728"}
+                  <div className="mb-3 text-da-cyan">
+                    {(() => {
+                      const IconComponent = moduleIcons[mod.icon] || Sparkles;
+                      return <IconComponent className="w-8 h-8 stroke-[1.5]" />;
+                    })()}
                   </div>
                   <div className="text-xs font-semibold uppercase tracking-wider text-da-indigo mb-2">
                     {mod.category}

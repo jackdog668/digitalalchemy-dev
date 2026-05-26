@@ -18,6 +18,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/vibe-audit",
+        destination: "/services",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       // Default hardened headers for everything EXCEPT /embed/*.

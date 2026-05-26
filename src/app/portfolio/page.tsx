@@ -2,6 +2,16 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { 
+  Music, 
+  Palette, 
+  Code2, 
+  Video, 
+  Sparkles, 
+  Wrench, 
+  ExternalLink 
+} from "lucide-react";
+import { SiGithub } from "react-icons/si";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
@@ -17,13 +27,14 @@ import { SITE } from "@/lib/constants";
 import { projects, categories, type ProjectCategory } from "@/data/projects";
 import { stats } from "@/data/stats";
 
-/** Category → emoji for projects without screenshots */
-const categoryEmoji: Record<string, string> = {
-  Music: "\uD83C\uDFB5",
-  Design: "\uD83C\uDFA8",
-  Code: "\u2328\uFE0F",
-  Video: "\uD83C\uDFAC",
-  "AI Tools": "\u2728",
+/** Category → Lucide icon components for projects without screenshots */
+const categoryIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  Music: Music,
+  Design: Palette,
+  Code: Code2,
+  Video: Video,
+  "AI Tools": Sparkles,
+  "Creator Tools": Wrench,
 };
 
 export default function PortfolioPage() {
@@ -122,14 +133,18 @@ export default function PortfolioPage() {
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ type: "spring", damping: 25, stiffness: 200 }}
                 >
-                  {/* Wrap in anchor if project has a live URL */}
-                  <ProjectCardWrapper url={project.url}>
+                  {/* Wrap in anchor or div according to secure link controls */}
+                  <ProjectCardWrapper 
+                    url={project.url}
+                    repoUrl={project.repoUrl}
+                    hideUrl={project.hideUrl}
+                  >
                     <Card
                       variant="feature"
                       className="group h-full"
                     >
-                      {/* Screenshot thumbnail or emoji fallback */}
-                      <div className="mb-4 aspect-video rounded-lg bg-gradient-to-br from-da-surface-light to-da-surface overflow-hidden relative">
+                      {/* Screenshot thumbnail or Lucide icon fallback */}
+                      <div className="mb-4 aspect-video rounded-lg bg-gradient-to-br from-da-surface-light to-da-surface overflow-hidden relative border border-da-border/30">
                         {project.screenshot ? (
                           <>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -140,16 +155,21 @@ export default function PortfolioPage() {
                               loading="lazy"
                             />
                             {/* Hover overlay */}
-                            <div className="absolute inset-0 bg-da-indigo/0 group-hover:bg-da-indigo/10 transition-colors duration-300 flex items-center justify-center">
-                              <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm font-medium text-white bg-da-dark/80 px-4 py-2 rounded-full backdrop-blur-sm">
-                                View Live &rarr;
-                              </span>
-                            </div>
+                            {(!project.hideUrl || project.repoUrl) && (
+                              <div className="absolute inset-0 bg-da-indigo/0 group-hover:bg-da-indigo/10 transition-colors duration-300 flex items-center justify-center">
+                                <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm font-medium text-white bg-da-dark/80 px-4 py-2 rounded-full backdrop-blur-sm">
+                                  {project.repoUrl && project.hideUrl ? "View Code on GitHub &rarr;" : "View Live &rarr;"}
+                                </span>
+                              </div>
+                            )}
                           </>
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <span className="text-4xl opacity-30">
-                              {categoryEmoji[project.category] || "\u2728"}
+                          <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+                            <span className="text-da-cyan opacity-40">
+                              {(() => {
+                                const Icon = categoryIcons[project.category] || Sparkles;
+                                return <Icon className="w-10 h-10 stroke-[1.5]" />;
+                              })()}
                             </span>
                           </div>
                         )}
@@ -177,11 +197,21 @@ export default function PortfolioPage() {
                         ))}
                       </div>
 
-                      {/* Live link indicator */}
-                      {project.url && (
+                      {/* Status indicator */}
+                      {project.url && !project.hideUrl ? (
                         <div className="mt-4 flex items-center gap-2 text-xs text-da-cyan">
                           <span className="inline-block h-1.5 w-1.5 rounded-full bg-da-cyan animate-pulse" />
                           Live
+                        </div>
+                      ) : project.repoUrl ? (
+                        <div className="mt-4 flex items-center gap-2 text-xs text-da-purple font-mono">
+                          <SiGithub className="w-3 h-3" />
+                          GitHub Repo
+                        </div>
+                      ) : (
+                        <div className="mt-4 flex items-center gap-2 text-xs text-da-muted font-mono">
+                          <span className="inline-block h-1.5 w-1.5 rounded-full bg-da-border" />
+                          Showcase
                         </div>
                       )}
                     </Card>
@@ -228,21 +258,32 @@ export default function PortfolioPage() {
   );
 }
 
-/** Wraps a card in an anchor tag if the project has a URL, otherwise renders children directly */
+/** Wraps a card in an anchor tag or GitHub link depending on project configuration */
 function ProjectCardWrapper({
   url,
+  repoUrl,
+  hideUrl,
   children,
 }: {
   url?: string;
+  repoUrl?: string;
+  hideUrl?: boolean;
   children: React.ReactNode;
 }) {
-  if (!url) return <>{children}</>;
+  // If explicitly hidden or no urls provided, make card static
+  if (hideUrl || (!url && !repoUrl)) {
+    return <div className="block h-full">{children}</div>;
+  }
+  
+  // Prefer GitHub repoUrl if configured or if live url is hidden
+  const targetUrl = url || repoUrl;
+  
   return (
     <a
-      href={url}
+      href={targetUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="block h-full"
+      className="block h-full cursor-pointer"
     >
       {children}
     </a>

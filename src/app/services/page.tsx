@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Brain, Terminal, Briefcase, Cpu, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -20,11 +21,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/services" },
 };
 
-const serviceIcons: Record<string, string> = {
-  brain: "\uD83E\uDDE0",
-  workshop: "\uD83D\uDEE0\uFE0F",
-  portfolio: "\uD83D\uDCBC",
-  gear: "\u2699\uFE0F",
+// Map service icons to premium Lucide component classes for styled vector rendering
+const serviceIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  brain: Brain,
+  workshop: Terminal,
+  portfolio: Briefcase,
+  gear: Cpu,
 };
 
 const processSteps = [
@@ -96,8 +98,11 @@ export default function ServicesPage() {
             {services.map((service) => (
               <StaggerItem key={service.title}>
                 <Card variant="glow" className="h-full">
-                  <div className="text-3xl mb-3">
-                    {serviceIcons[service.icon] || "\u2728"}
+                  <div className="mb-3 text-da-cyan">
+                    {(() => {
+                      const IconComponent = serviceIcons[service.icon] || Sparkles;
+                      return <IconComponent className="w-8 h-8 stroke-[1.5]" />;
+                    })()}
                   </div>
                   <h3 className="font-display text-xl font-bold text-da-text">
                     {service.title}
