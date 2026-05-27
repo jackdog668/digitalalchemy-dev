@@ -102,8 +102,29 @@ const tiers: Tier[] = [
         cta: {
           label: "Join the Bootcamp — $147",
           href: "/checkout/bootcamp",
+          variant: "outline",
+        },
+      },
+      {
+        name: "Skool Lifetime Bundle",
+        price: "$300",
+        period: "one-time",
+        description:
+          "Lifetime access to the Skool academy—no recurring monthly fees. Includes all future blueprints, live workshops, plus a completely FREE Done-For-You Website Build.",
+        features: [
+          "Lifetime access to the Digital Alchemy Skool",
+          "FREE Done-For-You Website Build ($50 value)",
+          "All active and future App Blueprints",
+          "Direct community support + weekly live builds",
+          "One payment, yours forever",
+        ],
+        cta: {
+          label: "Get Lifetime Bundle — $300",
+          href: "https://www.paypal.com/ncp/payment/ZHCAAXSYAUZES",
+          external: true,
           variant: "primary",
         },
+        badge: "Best value",
       },
     ],
   },
@@ -115,6 +136,27 @@ const tiers: Tier[] = [
     accent: "from-da-purple to-da-cyan",
     highlighted: true,
     products: [
+      {
+        name: "Done-For-You Website",
+        price: "$50",
+        period: "one-time",
+        description:
+          "I will design, build, and launch your mobile-perfect, ultra-fast single-page website this week. Includes search & buy domain collaboration.",
+        features: [
+          "1 Custom Single-Page Website (Hero, About, Offers, Socials)",
+          "100% Mobile Responsive (optimized for phone traffic)",
+          "Domain search and buy collaboration WITH Desi on kickoff call",
+          "Zero ongoing server hosting fees (hosted on Vercel)",
+          "1 round of polish revisions",
+        ],
+        cta: {
+          label: "Get Your Site — $50",
+          href: "https://www.paypal.com/ncp/payment/2FVD64KMBDBJU",
+          external: true,
+          variant: "accent",
+        },
+        badge: "New offer",
+      },
       {
         name: "Portfolio Building",
         price: "Starting at $500",
@@ -129,7 +171,7 @@ const tiers: Tier[] = [
         cta: {
           label: "Book a Portfolio Session — $500",
           href: "/checkout/portfolio-building",
-          variant: "accent",
+          variant: "outline",
         },
       },
     ],
