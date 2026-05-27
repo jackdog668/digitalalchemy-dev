@@ -48,16 +48,18 @@ export function UnicornHero() {
   return (
     <div className="absolute inset-0 z-0" aria-hidden="true">
       {isDesktop && (
-        <UnicornScene
-          projectId="MVkjffIpWmaJtF0iIv18"
-          sdkUrl="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.1.5/dist/unicornStudio.umd.js"
-          width="100%"
-          height="100%"
-          lazyLoad={true}
-          dpi={1}
-          scale={1}
-          fps={30}
-        />
+        <div className="absolute inset-0 [&_div]:text-transparent [&_span]:text-transparent [&_p]:text-transparent text-transparent">
+          <UnicornScene
+            projectId="MVkjffIpWmaJtF0iIv18"
+            sdkUrl="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.1.5/dist/unicornStudio.umd.js"
+            width="100%"
+            height="100%"
+            lazyLoad={true}
+            dpi={1}
+            scale={1}
+            fps={30}
+          />
+        </div>
       )}
       {/* Dark gradient overlay — also doubles as the mobile fallback so the
           hero never looks empty when WebGL is gated off. */}

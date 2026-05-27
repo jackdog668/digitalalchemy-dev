@@ -67,45 +67,6 @@ const tiers: Tier[] = [
     accent: "from-da-indigo to-da-purple",
     products: [
       {
-        name: "Digital Alchemy Skool",
-        price: "$27",
-        period: "/month",
-        description:
-          "Live weekly classes, a community of creators, and the full vault of past sessions. Cancel anytime.",
-        features: [
-          "Live classes every week (AI art, vibe coding, AI music)",
-          "27+ App Blueprints — copy/paste starting templates",
-          "Community of creators building in public",
-          "Full library of past class recordings",
-          "Cancel anytime — no contract",
-        ],
-        cta: {
-          label: "Join the Skool",
-          href: SITE.skoolUrl,
-          external: true,
-          variant: "accent",
-        },
-        badge: "Most popular",
-      },
-      {
-        name: "Vibe Coding Bootcamp",
-        price: "$147",
-        period: "one-time",
-        description:
-          "The flagship cohort. Build your first real, deployed AI app in one focused program — start to finish.",
-        features: [
-          "Step-by-step curriculum from idea to deployed app",
-          "Full commercial rights on what you build",
-          "Cohort community + accountability",
-          "Lifetime access to materials and updates",
-        ],
-        cta: {
-          label: "Join the Bootcamp — $147",
-          href: "/checkout/bootcamp",
-          variant: "outline",
-        },
-      },
-      {
         name: "Skool Lifetime Bundle",
         price: "$300",
         period: "one-time",
