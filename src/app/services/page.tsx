@@ -97,7 +97,7 @@ export default function ServicesPage() {
           >
             {services.map((service) => (
               <StaggerItem key={service.title}>
-                <Card variant="glow" className="h-full">
+                <Card variant="glow" className="h-full flex flex-col">
                   <div className="mb-3 text-da-cyan">
                     {(() => {
                       const IconComponent = serviceIcons[service.icon] || Sparkles;
@@ -121,13 +121,19 @@ export default function ServicesPage() {
                       </li>
                     ))}
                   </ul>
-                  {"pricing" in service && (
-                    <div className="mt-4 pt-4 border-t border-da-border">
-                      <span className="text-sm font-semibold text-da-cyan">
-                        {(service as { pricing: string }).pricing}
-                      </span>
-                    </div>
-                  )}
+                  <div className="mt-auto pt-6 border-t border-da-border mt-6 flex items-center justify-between gap-4">
+                    <span className="text-sm font-semibold text-da-cyan">
+                      {service.pricing}
+                    </span>
+                    <Button
+                      href={service.cta.href}
+                      external={"external" in service.cta && (service.cta as { external: boolean }).external}
+                      variant="outline"
+                      size="sm"
+                    >
+                      {service.cta.label}
+                    </Button>
+                  </div>
                 </Card>
               </StaggerItem>
             ))}

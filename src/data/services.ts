@@ -1,5 +1,24 @@
 export const services = [
   {
+    title: "Done-For-You Website",
+    description:
+      "I will design, build, and launch your mobile-perfect, ultra-fast single-page website this week. Includes domain search and buy collaboration on your kickoff call — zero ongoing hosting fees.",
+    features: [
+      "Custom single-page website (Hero, About, Offers, Socials)",
+      "100% mobile responsive — optimized for phone traffic",
+      "Domain search and buy collaboration WITH Desi on kickoff call",
+      "Zero ongoing server hosting fees (hosted on Vercel)",
+      "1 round of polish revisions",
+    ],
+    pricing: "$50 one-time",
+    icon: "portfolio",
+    cta: {
+      label: "Get Your Site — $50",
+      href: "https://www.paypal.com/ncp/payment/2FVD64KMBDBJU",
+      external: true,
+    },
+  },
+  {
     title: "AI Consulting for Brands",
     description:
       "We start with three questions: What takes you the most time every week? What tasks do you keep putting off? Where are you copy-pasting between apps? Then we design and build the AI solution.",
@@ -11,6 +30,10 @@ export const services = [
     ],
     pricing: "$500–2,000 per engagement",
     icon: "brain",
+    cta: {
+      label: "Book a Discovery Call",
+      href: "/book",
+    },
   },
   {
     title: "Vibe Coding Workshops",
@@ -24,6 +47,10 @@ export const services = [
     ],
     pricing: "Custom pricing per team",
     icon: "workshop",
+    cta: {
+      label: "Request a Workshop",
+      href: "/book",
+    },
   },
   {
     title: "Portfolio Building",
@@ -37,6 +64,10 @@ export const services = [
     ],
     pricing: "Starting at $500",
     icon: "portfolio",
+    cta: {
+      label: "Book a Portfolio Session",
+      href: "/book",
+    },
   },
   {
     title: "Custom AI Systems",
@@ -50,5 +81,10 @@ export const services = [
     ],
     pricing: "$2,000+ per project",
     icon: "gear",
+    cta: {
+      label: "Start a Project",
+      href: "/book",
+    },
   },
 ] as const;
+

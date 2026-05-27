@@ -91,12 +91,11 @@ export default function HomeClient() {
                 Book a Call
               </Button>
               <Button
-                href={SITE.beaconsUrl}
-                external
+                href="/pricing"
                 variant="outline"
                 size="lg"
               >
-                Beacons
+                Products
               </Button>
             </div>
           </FadeInOnScroll>
