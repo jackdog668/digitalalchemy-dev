@@ -38,16 +38,6 @@ export interface PaymentProduct {
 
 const PRODUCT_LIST: PaymentProduct[] = [
   {
-    slug: "bootcamp",
-    name: "Vibe Coding Bootcamp",
-    amountCents: 14700,
-    currency: "USD",
-    blurb:
-      "Build your first real, deployed AI app in one focused cohort — start to finish.",
-    description: "Digital Alchemy — Vibe Coding Bootcamp (one-time)",
-    successUrl: "/checkout/success?product=bootcamp",
-  },
-  {
     slug: "portfolio-building",
     name: "Portfolio Building (1-on-1)",
     amountCents: 50000,

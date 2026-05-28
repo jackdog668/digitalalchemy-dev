@@ -204,24 +204,20 @@ const tiers: Tier[] = [
 
 const faqs = [
   {
-    q: "What's the difference between the Skool community and the Bootcamp?",
-    a: "Skool is your ongoing membership — weekly live classes, community, and a back-catalog of every session, $27/mo. The Bootcamp is a focused one-time program ($147) where you ship a deployed AI app from scratch. Most people start with the Bootcamp for the first win, then join Skool to keep building.",
-  },
-  {
     q: "Do I need a coding background?",
     a: "No. 63% of active vibe coders have no traditional dev background. Every program here is designed for creative pros — you describe what you want, AI helps you build it. We teach the workflow, not the syntax.",
   },
   {
     q: "Are there payment plans?",
-    a: "Skool is month-to-month — cancel anytime. The Bootcamp is one payment up front. For 1-on-1 coaching and team engagements, we set custom terms during the discovery call.",
+    a: "Skool is month-to-month — cancel anytime. For 1-on-1 coaching and team engagements, we set custom terms during the discovery call.",
   },
   {
     q: "Can I get a refund?",
-    a: "Skool: cancel before the next billing cycle, no questions. Bootcamp: 7-day money-back guarantee if you've completed the first module and decide it's not for you. Custom services are scoped before payment, so refunds are handled case-by-case.",
+    a: "Skool: cancel before the next billing cycle, no questions. Custom services are scoped before payment, so refunds are handled case-by-case.",
   },
   {
     q: "How do I know which tier fits me?",
-    a: "If you want to learn at your own pace and join a community → Skool. If you want a focused project and a finished app → Bootcamp. If you want personal coaching → Portfolio Building. If you have a team or business problem → Hire My Team. Still unsure? Book a free intro call and we'll figure it out together.",
+    a: "If you want to learn at your own pace and join a community → Skool. If you want personal coaching → Portfolio Building. If you have a team or business problem → Hire My Team. Still unsure? Book a free intro call and we'll figure it out together.",
   },
 ];
 
