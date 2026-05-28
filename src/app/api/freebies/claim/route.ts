@@ -13,6 +13,7 @@ const bodySchema = z
   .object({
     email: z.string().email().max(254),
     slug: z.string().min(1),
+    websiteUrl: z.string().optional(),
   })
   .strict();
 
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid input fields" }, { status: 400 });
   }
 
-  const { email: rawEmail, slug } = parsed.data;
+  const { email: rawEmail, slug, websiteUrl } = parsed.data;
   const email = rawEmail.toLowerCase().trim();
 
   // 2. Fetch Freebie Product Metadata
@@ -52,6 +53,14 @@ export async function POST(req: NextRequest) {
       { error: "Too many requests. Try again in a minute." },
       { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
     );
+  }
+
+  // 3.5 Honeypot Check (Silently drop spam bots)
+  if (websiteUrl && websiteUrl.trim() !== "") {
+    console.log(`[freebies] Spam bot honeypot triggered by email: ${email}`);
+    const siteUrl = serverEnv().NEXT_PUBLIC_SITE_URL;
+    const downloadUrl = `${siteUrl}${freebie.fileUrl}`;
+    return NextResponse.json({ ok: true, downloadUrl });
   }
 
   // 4. Secure Database Log (Bypass RLS on Server)

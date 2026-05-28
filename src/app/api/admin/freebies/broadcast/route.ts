@@ -114,41 +114,53 @@ export async function POST(req: NextRequest) {
     errors: [] as string[],
   };
 
-  // Dispatch campaign in parallel chunks
-  const dispatchPromises = Array.from(recipientsMap.entries()).map(async ([email, slug]) => {
-    try {
-      const product = getFreebie(slug) ?? targetProduct;
-      const personalizedDownloadUrl = `${siteUrl}${product?.fileUrl ?? "/portfolio"}`;
+  // Dispatch campaign in parallel chunks using batch queue slicing
+  const CHUNK_SIZE = 50;
+  const recipientEntries = Array.from(recipientsMap.entries());
 
-      const compiledHtml = renderBroadcastEmail({
-        content: bodyHtml,
-        subject,
-        customerEmail: email,
-        downloadUrl: personalizedDownloadUrl,
-        siteUrl,
-      });
+  for (let i = 0; i < recipientEntries.length; i += CHUNK_SIZE) {
+    const chunk = recipientEntries.slice(i, i + CHUNK_SIZE);
+    
+    await Promise.all(
+      chunk.map(async ([email, slug]) => {
+        try {
+          const product = getFreebie(slug) ?? targetProduct;
+          const personalizedDownloadUrl = `${siteUrl}${product?.fileUrl ?? "/portfolio"}`;
 
-      const personalizedSubject = interpolateMergeTags(subject, {
-        customerEmail: email,
-        downloadUrl: personalizedDownloadUrl,
-        siteUrl,
-      });
+          const compiledHtml = renderBroadcastEmail({
+            content: bodyHtml,
+            subject,
+            customerEmail: email,
+            downloadUrl: personalizedDownloadUrl,
+            siteUrl,
+          });
 
-      await sendEmail({
-        to: email,
-        subject: personalizedSubject,
-        html: compiledHtml,
-      });
+          const personalizedSubject = interpolateMergeTags(subject, {
+            customerEmail: email,
+            downloadUrl: personalizedDownloadUrl,
+            siteUrl,
+          });
 
-      results.success++;
-    } catch (err) {
-      console.error(`[broadcast] dispatch failed for ${email}:`, err);
-      results.failed++;
-      results.errors.push(`${email}: ${(err as Error).message}`);
+          await sendEmail({
+            to: email,
+            subject: personalizedSubject,
+            html: compiledHtml,
+          });
+
+          results.success++;
+        } catch (err) {
+          console.error(`[broadcast] dispatch failed for ${email}:`, err);
+          results.failed++;
+          results.errors.push(`${email}: ${(err as Error).message}`);
+        }
+      })
+    );
+
+    // Minor throttle buffer between chunks to avoid hitting API rate limits or connection pool thresholds
+    if (i + CHUNK_SIZE < recipientEntries.length) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
-  });
-
-  await Promise.all(dispatchPromises);
+  }
 
   return NextResponse.json({
     ok: true,

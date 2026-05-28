@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import posthog from "posthog-js";
 
 interface ClaimClientProps {
   freebieSlug: string;
@@ -13,9 +14,13 @@ export function ClaimClient({ freebieSlug, freebieName }: ClaimClientProps) {
   const [msg, setMsg] = useState("");
   const [downloadUrl, setDownloadUrl] = useState("");
   const [submittedEmail, setSubmittedEmail] = useState("");
+  const [honeypot, setHoneypot] = useState("");
 
   const triggerDownload = async () => {
     try {
+      // Telemetry: track direct file download clicked
+      posthog.capture("freebie_download_clicked", { slug: freebieSlug });
+
       const response = await fetch(downloadUrl);
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
@@ -26,6 +31,8 @@ export function ClaimClient({ freebieSlug, freebieName }: ClaimClientProps) {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
+
+      posthog.capture("freebie_download_success", { slug: freebieSlug });
     } catch {
       window.open(downloadUrl, "_blank");
     }
@@ -40,7 +47,11 @@ export function ClaimClient({ freebieSlug, freebieName }: ClaimClientProps) {
       const res = await fetch("/api/freebies/claim", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: trimmedEmail, slug: freebieSlug }),
+        body: JSON.stringify({ 
+          email: trimmedEmail, 
+          slug: freebieSlug,
+          websiteUrl: honeypot // honeymoon trap for bots
+        }),
       });
       const data = await res.json();
       if (res.ok && data.downloadUrl) {
@@ -48,6 +59,14 @@ export function ClaimClient({ freebieSlug, freebieName }: ClaimClientProps) {
         setSubmittedEmail(trimmedEmail);
         setStatus("sent");
         setEmail("");
+
+        // Telemetry: capture successful human conversion lead capture
+        if (!honeypot) {
+          posthog.capture("freebie_claim_success", { 
+            slug: freebieSlug, 
+            email: trimmedEmail 
+          });
+        }
       } else {
         setStatus("error");
         setMsg(data.error ?? "Something went wrong. Please try again.");
@@ -106,6 +125,18 @@ export function ClaimClient({ freebieSlug, freebieName }: ClaimClientProps) {
           aria-label="Email address"
           className="w-full rounded-xl border border-da-border bg-da-surface/60 px-5 py-4 text-sm text-da-text outline-none backdrop-blur-md transition-all placeholder-da-muted focus:border-da-indigo focus:ring-1 focus:ring-da-indigo/30 disabled:opacity-50"
         />
+
+        {/* Honeypot field - completely invisible to humans, irresistible trap to spam bots */}
+        <div className="absolute opacity-0 -z-10 w-0 h-0 overflow-hidden" aria-hidden="true">
+          <input
+            type="text"
+            name="website_url"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </div>
       </div>
 
       <button
