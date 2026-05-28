@@ -98,11 +98,11 @@ export default function HomeClient() {
                 Products
               </Button>
               <Button
-                href="/checkout/bootcamp-v2"
+                href="/freebies/domain-purchase-guide"
                 variant="secondary"
                 size="lg"
               >
-                yo, this is V two
+                yo, is this V2
               </Button>
             </div>
           </FadeInOnScroll>
