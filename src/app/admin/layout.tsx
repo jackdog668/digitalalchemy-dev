@@ -90,6 +90,9 @@ export default async function AdminLayout({
             <Link href="/admin" className="hover:text-da-text">
               Posts
             </Link>
+            <Link href="/admin/freebies" className="hover:text-da-text">
+              Freebies
+            </Link>
             <Link href="/admin/scheduling" className="hover:text-da-text">
               Scheduling
             </Link>

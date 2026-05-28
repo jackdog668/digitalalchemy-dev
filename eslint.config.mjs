@@ -12,6 +12,13 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "node_modules/**",
+    ".playwright-mcp/**",
+    "public/**",
+    "scripts/**",
+    "supabase/**",
+    "test-db.ts",
+    "test-query.ts",
   ]),
 ]);
 

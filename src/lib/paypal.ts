@@ -48,6 +48,16 @@ const PRODUCT_LIST: PaymentProduct[] = [
     successUrl: "/checkout/success?product=bootcamp",
   },
   {
+    slug: "bootcamp-v2",
+    name: "Vibe Coding Bootcamp V2",
+    amountCents: 14700,
+    currency: "USD",
+    blurb:
+      "Build your first real, deployed AI app in one focused cohort — start to finish. Version 2.0 with all-new modules!",
+    description: "Digital Alchemy — Vibe Coding Bootcamp V2 (one-time)",
+    successUrl: "/checkout/success?product=bootcamp-v2",
+  },
+  {
     slug: "portfolio-building",
     name: "Portfolio Building (1-on-1)",
     amountCents: 50000,

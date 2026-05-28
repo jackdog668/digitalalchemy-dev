@@ -97,6 +97,13 @@ export default function HomeClient() {
               >
                 Products
               </Button>
+              <Button
+                href="/checkout/bootcamp-v2"
+                variant="secondary"
+                size="lg"
+              >
+                yo, this is V two
+              </Button>
             </div>
           </FadeInOnScroll>
 
