@@ -3,7 +3,7 @@
 interface FreebieDeliveryProps {
   customerEmail: string;
   productName: string;
-  downloadUrl: string;
+  downloadUrl?: string;
   siteUrl: string;
 }
 
@@ -25,23 +25,12 @@ export function renderFreebieDeliveryEmail(p: FreebieDeliveryProps): string {
           <tr><td>
             <p style="margin:0 0 8px 0;font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:#00D4FF;font-weight:700;">Digital Alchemy delivery</p>
             <h1 style="margin:0 0 16px 0;font-size:24px;line-height:1.2;color:#f8fafc;">Your guide is ready, ${esc(p.customerEmail)}</h1>
-            <p style="margin:0 0 24px 0;color:#94a3b8;font-size:16px;line-height:1.6;">Thanks for claiming **${esc(p.productName)}**. Your guide is fully compiled and ready below. You can open it instantly in any browser to get the step-by-step roadmap.</p>
+            <p style="margin:0 0 24px 0;color:#94a3b8;font-size:16px;line-height:1.6;">Thanks for claiming **${esc(p.productName)}**. We have attached your visual guide directly to this email! You can download and open the HTML attachment below natively in any browser to get the step-by-step roadmap.</p>
 
             <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background:#0f172a;border:1px solid #334155;border-radius:12px;padding:24px;margin-bottom:28px;">
               <tr><td align="center">
                 <p style="margin:0 0 6px 0;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#6366f1;">Resource Claimed</p>
-                <p style="margin:0 0 20px 0;font-size:16px;font-weight:600;color:#f8fafc;">${esc(p.productName)}</p>
-
-                <!-- Premium Call-To-Action Button -->
-                <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto;">
-                  <tr>
-                    <td align="center" bgcolor="#6366f1" style="border-radius:8px;">
-                      <a href="${esc(p.downloadUrl)}" target="_blank" style="font-size:14px;font-weight:bold;color:#ffffff;text-decoration:none;padding:12px 28px;display:inline-block;border-radius:8px;">
-                        Open Visual Guide ↗
-                      </a>
-                    </td>
-                  </tr>
-                </table>
+                <p style="margin:0;font-size:16px;font-weight:600;color:#f8fafc;">${esc(p.productName)}</p>
               </td></tr>
             </table>
 

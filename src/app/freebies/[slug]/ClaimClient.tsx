@@ -12,31 +12,8 @@ export function ClaimClient({ freebieSlug, freebieName }: ClaimClientProps) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [msg, setMsg] = useState("");
-  const [downloadUrl, setDownloadUrl] = useState("");
   const [submittedEmail, setSubmittedEmail] = useState("");
   const [honeypot, setHoneypot] = useState("");
-
-  const triggerDownload = async () => {
-    try {
-      // Telemetry: track direct file download clicked
-      posthog.capture("freebie_download_clicked", { slug: freebieSlug });
-
-      const response = await fetch(downloadUrl);
-      const blob = await response.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = `${freebieSlug}.html`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(blobUrl);
-
-      posthog.capture("freebie_download_success", { slug: freebieSlug });
-    } catch {
-      window.open(downloadUrl, "_blank");
-    }
-  };
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -54,8 +31,7 @@ export function ClaimClient({ freebieSlug, freebieName }: ClaimClientProps) {
         }),
       });
       const data = await res.json();
-      if (res.ok && data.downloadUrl) {
-        setDownloadUrl(data.downloadUrl);
+      if (res.ok) {
         setSubmittedEmail(trimmedEmail);
         setStatus("sent");
         setEmail("");
@@ -83,30 +59,20 @@ export function ClaimClient({ freebieSlug, freebieName }: ClaimClientProps) {
       <div className="text-center py-6 animate-fade-in">
         {/* Onomatopoeia Badge */}
         <div className="inline-block rounded-md border border-[#40FF78]/30 bg-[#40FF78]/10 px-4 py-1.5 text-xs font-mono font-bold tracking-widest text-[#40FF78] uppercase">
-          Boom!!! Unlocked
+          Boom!!! Sent
         </div>
 
         <h3 className="mt-6 text-2xl font-bold font-display text-da-text">
-          Your Guide is Ready!
+          Check Your Inbox!
         </h3>
         
-        <p className="mt-3 text-sm text-da-muted leading-relaxed max-w-md mx-auto">
-          We just fired a copy straight to your inbox at <strong className="text-da-text">{submittedEmail}</strong> (check your spam/promotions folder if it doesn&apos;t arrive in 2 minutes).
+        <p className="mt-4 text-sm text-da-muted leading-relaxed max-w-md mx-auto">
+          We just fired the visual guide directly to your inbox at <strong className="text-da-text">{submittedEmail}</strong>.
         </p>
         
-        <p className="mt-4 text-sm text-da-muted">
-          Or cut the waiting and download the visual guide file directly:
+        <p className="mt-4 text-xs text-da-muted/70 italic">
+          (Be sure to check your promotions or spam folder if it doesn&apos;t show up in 30 seconds!)
         </p>
-
-        {/* Dynamic Glowing Download Action Button */}
-        <div className="mt-6">
-          <button
-            onClick={triggerDownload}
-            className="inline-block w-full rounded-xl bg-[#40FF78] px-6 py-4 text-sm font-bold text-[#0A0B0D] uppercase tracking-wider transition-all duration-300 hover:bg-[#40FF78]/90 hover:scale-[1.02] shadow-[0_0_30px_rgba(64,255,120,0.3)] hover:shadow-[0_0_40px_rgba(64,255,120,0.55)] cursor-pointer"
-          >
-            Download Visual Guide ↓
-          </button>
-        </div>
       </div>
     );
   }
