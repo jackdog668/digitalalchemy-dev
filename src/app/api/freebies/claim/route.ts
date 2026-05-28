@@ -6,6 +6,8 @@ import { renderFreebieDeliveryEmail } from "@/lib/email/templates/freebie-delive
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
 import { sendEmail } from "@/lib/email/send";
 import { serverEnv } from "@/lib/env";
+import fs from "fs";
+import path from "path";
 
 const bodySchema = z
   .object({
@@ -70,6 +72,24 @@ export async function POST(req: NextRequest) {
   const siteUrl = serverEnv().NEXT_PUBLIC_SITE_URL;
   const downloadUrl = `${siteUrl}${freebie.fileUrl}`;
 
+  // Read file from disk to attach directly to the email as a double safety net
+  let fileAttachment: Array<{ filename: string; content: Buffer }> = [];
+  try {
+    const filePath = path.join(process.cwd(), "public", freebie.fileUrl);
+    if (fs.existsSync(filePath)) {
+      const fileBuffer = fs.readFileSync(filePath);
+      const filename = freebie.fileUrl.split("/").pop() ?? `${freebie.slug}.html`;
+      fileAttachment = [
+        {
+          filename,
+          content: fileBuffer,
+        },
+      ];
+    }
+  } catch (err) {
+    console.error("[freebies] failed to read guide file for attachment:", err);
+  }
+
   // 6. Resend automated delivery (Fire-and-forget to avoid blocking the spinner)
   void sendEmail({
     to: email,
@@ -80,6 +100,7 @@ export async function POST(req: NextRequest) {
       downloadUrl: downloadUrl,
       siteUrl: siteUrl,
     }),
+    attachments: fileAttachment,
   }).catch((err) => {
     console.error("[freebies] Resend automated delivery failed:", err);
   });

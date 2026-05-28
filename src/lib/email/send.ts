@@ -10,6 +10,7 @@ interface SendEmailInput {
   html: string;
   text?: string;
   replyTo?: string;
+  attachments?: Array<{ filename: string; content: Buffer | string }>;
   /** Hard cap on the Resend SDK call. Defaults to 10s. */
   timeoutMs?: number;
 }
@@ -60,6 +61,7 @@ export async function sendEmail(input: SendEmailInput): Promise<string | null> {
     html: input.html,
     text: input.text,
     replyTo: input.replyTo,
+    attachments: input.attachments,
   }) as Promise<ResendSendResult>;
 
   const result = await withTimeout(

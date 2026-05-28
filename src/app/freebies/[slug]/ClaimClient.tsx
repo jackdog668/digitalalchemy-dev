@@ -12,20 +12,40 @@ export function ClaimClient({ freebieSlug, freebieName }: ClaimClientProps) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [msg, setMsg] = useState("");
   const [downloadUrl, setDownloadUrl] = useState("");
+  const [submittedEmail, setSubmittedEmail] = useState("");
+
+  const triggerDownload = async () => {
+    try {
+      const response = await fetch(downloadUrl);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = `${freebieSlug}.html`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch {
+      window.open(downloadUrl, "_blank");
+    }
+  };
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("sending");
     setMsg("");
+    const trimmedEmail = email.trim();
     try {
       const res = await fetch("/api/freebies/claim", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), slug: freebieSlug }),
+        body: JSON.stringify({ email: trimmedEmail, slug: freebieSlug }),
       });
       const data = await res.json();
       if (res.ok && data.downloadUrl) {
         setDownloadUrl(data.downloadUrl);
+        setSubmittedEmail(trimmedEmail);
         setStatus("sent");
         setEmail("");
       } else {
@@ -52,23 +72,21 @@ export function ClaimClient({ freebieSlug, freebieName }: ClaimClientProps) {
         </h3>
         
         <p className="mt-3 text-sm text-da-muted leading-relaxed max-w-md mx-auto">
-          We just fired a copy straight to your inbox at <strong className="text-da-text">{email}</strong> (check your spam/promotions folder if it doesn&apos;t arrive in 2 minutes).
+          We just fired a copy straight to your inbox at <strong className="text-da-text">{submittedEmail}</strong> (check your spam/promotions folder if it doesn&apos;t arrive in 2 minutes).
         </p>
         
-        <p className="mt-2 text-sm text-da-muted">
-          Or cut the waiting and open the visual guide directly:
+        <p className="mt-4 text-sm text-da-muted">
+          Or cut the waiting and download the visual guide file directly:
         </p>
 
         {/* Dynamic Glowing Download Action Button */}
-        <div className="mt-8">
-          <a
-            href={downloadUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block w-full rounded-xl bg-[#40FF78] px-6 py-4 text-sm font-bold text-[#0A0B0D] uppercase tracking-wider transition-all duration-300 hover:bg-[#40FF78]/90 hover:scale-[1.02] shadow-[0_0_30px_rgba(64,255,120,0.3)] hover:shadow-[0_0_40px_rgba(64,255,120,0.55)]"
+        <div className="mt-6">
+          <button
+            onClick={triggerDownload}
+            className="inline-block w-full rounded-xl bg-[#40FF78] px-6 py-4 text-sm font-bold text-[#0A0B0D] uppercase tracking-wider transition-all duration-300 hover:bg-[#40FF78]/90 hover:scale-[1.02] shadow-[0_0_30px_rgba(64,255,120,0.3)] hover:shadow-[0_0_40px_rgba(64,255,120,0.55)] cursor-pointer"
           >
-            Open Visual Guide ↗
-          </a>
+            Download Visual Guide ↓
+          </button>
         </div>
       </div>
     );
