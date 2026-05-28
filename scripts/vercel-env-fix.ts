@@ -19,7 +19,7 @@ if (!token) throw new Error("No Vercel token in auth.json");
 const project = JSON.parse(readFileSync(".vercel/project.json", "utf8"));
 const { projectId, orgId } = project;
 
-const TARGETS = ["production"] as const;
+const TARGETS = ["production", "preview"] as const;
 const UPDATES: Array<{ key: string; value: string }> = [
   { key: "RESEND_FROM_EMAIL", value: "desi@digitalalchemy.dev" },
   { key: "ADMIN_NOTIFICATION_EMAILS", value: "dbcreationsllc@gmail.com" },

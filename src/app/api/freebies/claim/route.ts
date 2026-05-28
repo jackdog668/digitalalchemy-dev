@@ -99,20 +99,22 @@ export async function POST(req: NextRequest) {
     console.error("[freebies] failed to read guide file for attachment:", err);
   }
 
-  // 6. Resend automated delivery (Fire-and-forget to avoid blocking the spinner)
-  void sendEmail({
-    to: email,
-    subject: freebie.subject,
-    html: renderFreebieDeliveryEmail({
-      customerEmail: email,
-      productName: freebie.name,
-      downloadUrl: downloadUrl,
-      siteUrl: siteUrl,
-    }),
-    attachments: fileAttachment,
-  }).catch((err) => {
+  // 6. Resend automated delivery (Awaited to prevent Vercel from freezing the serverless container mid-flight)
+  try {
+    await sendEmail({
+      to: email,
+      subject: freebie.subject,
+      html: renderFreebieDeliveryEmail({
+        customerEmail: email,
+        productName: freebie.name,
+        downloadUrl: downloadUrl,
+        siteUrl: siteUrl,
+      }),
+      attachments: fileAttachment,
+    });
+  } catch (err) {
     console.error("[freebies] Resend automated delivery failed:", err);
-  });
+  }
 
   // 7. Instant UI download payload
   return NextResponse.json({ ok: true, downloadUrl });
