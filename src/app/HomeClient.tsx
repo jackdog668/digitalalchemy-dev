@@ -48,6 +48,8 @@ export default function HomeClient() {
         {/* WebGL background scene */}
         <UnicornHero />
 
+        <GlossyFloatingBubbles />
+
         <div className="relative z-10 mx-auto max-w-5xl text-center">
           {/* Credential badge */}
           <FadeInOnScroll>
@@ -74,9 +76,6 @@ export default function HomeClient() {
               required. Just show up ready to learn.
             </p>
           </FadeInOnScroll>
-
-          {/* CTAs */}
-          <GlossyFloatingBubbles />
 
           {/* Click-to-reveal social strip. Mount-animated (not scroll-triggered)
               so the pill is visible immediately on every phone size — the old

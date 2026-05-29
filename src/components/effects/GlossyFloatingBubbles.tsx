@@ -42,7 +42,7 @@ const BUBBLE_ITEMS: BubbleItem[] = [
     color: "#818cf8", // Neon Indigo
     glowColor: "rgba(129, 140, 248, 0.45)",
     rgb: "129, 140, 248",
-    desktopPosition: { top: "22%", left: "1%" },
+    desktopPosition: { top: "20%", left: "3%" },
     floatDelay: 0,
     floatDuration: 6,
   },
@@ -53,7 +53,7 @@ const BUBBLE_ITEMS: BubbleItem[] = [
     color: "#9D66FF", // Neon Purple
     glowColor: "rgba(157, 102, 255, 0.45)",
     rgb: "157, 102, 255",
-    desktopPosition: { top: "40%", left: "3%" },
+    desktopPosition: { top: "42%", left: "10%" },
     floatDelay: 1.5,
     floatDuration: 7,
   },
@@ -64,7 +64,7 @@ const BUBBLE_ITEMS: BubbleItem[] = [
     color: "#FFDB40", // Electro Gold
     glowColor: "rgba(255, 219, 64, 0.5)",
     rgb: "255, 219, 64",
-    desktopPosition: { top: "56%", left: "0.5%" },
+    desktopPosition: { top: "62%", left: "2.5%" },
     floatDelay: 1,
     floatDuration: 8.5,
   },
@@ -75,7 +75,7 @@ const BUBBLE_ITEMS: BubbleItem[] = [
     color: "#D946EF", // Vivid Fuchsia/Magenta
     glowColor: "rgba(217, 70, 239, 0.45)",
     rgb: "217, 70, 239",
-    desktopPosition: { bottom: "10%", left: "2.5%" },
+    desktopPosition: { bottom: "12%", left: "8%" },
     floatDelay: 3,
     floatDuration: 8,
   },
@@ -87,7 +87,7 @@ const BUBBLE_ITEMS: BubbleItem[] = [
     color: "#FF3D57", // Signal Red
     glowColor: "rgba(255, 61, 87, 0.5)",
     rgb: "255, 61, 87",
-    desktopPosition: { top: "22%", right: "4.5%" },
+    desktopPosition: { top: "20%", right: "3%" },
     floatDelay: 2.5,
     floatDuration: 9,
   },
@@ -98,7 +98,7 @@ const BUBBLE_ITEMS: BubbleItem[] = [
     color: "#00C8FF", // Veo Blue
     glowColor: "rgba(0, 200, 255, 0.5)",
     rgb: "0, 200, 255",
-    desktopPosition: { top: "38%", right: "2%" },
+    desktopPosition: { top: "38%", right: "10%" },
     floatDelay: 0.5,
     floatDuration: 6.5,
   },
@@ -109,7 +109,7 @@ const BUBBLE_ITEMS: BubbleItem[] = [
     color: "#818cf8", // Neon Indigo
     glowColor: "rgba(129, 140, 248, 0.45)",
     rgb: "129, 140, 248",
-    desktopPosition: { top: "66%", right: "4%" },
+    desktopPosition: { top: "68%", right: "2.5%" },
     floatDelay: 3.5,
     floatDuration: 6.8,
   },
@@ -120,7 +120,7 @@ const BUBBLE_ITEMS: BubbleItem[] = [
     color: "#40FF78", // Neon Green
     glowColor: "rgba(64, 255, 120, 0.5)",
     rgb: "64, 255, 120",
-    desktopPosition: { bottom: "10%", right: "1%" },
+    desktopPosition: { bottom: "12%", right: "8%" },
     floatDelay: 2,
     floatDuration: 7.5,
   },
@@ -158,7 +158,7 @@ export function GlossyFloatingBubbles() {
       {/* ── DESKTOP FLOATING DRAGGABLE FIELD ── */}
       <div 
         ref={constraintsRef}
-        className="absolute w-[98vw] max-w-[98rem] h-full left-1/2 -translate-x-1/2 top-0 bottom-0 z-20 pointer-events-none hidden lg:block"
+        className="absolute w-full h-full left-0 top-0 z-20 pointer-events-none hidden lg:block"
       >
         <div className="relative w-full h-full pointer-events-none">
           {BUBBLE_ITEMS.map((bubble) => {
