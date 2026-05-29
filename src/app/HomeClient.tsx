@@ -14,6 +14,7 @@ import { MagneticWrapper } from "@/components/effects/MagneticWrapper";
 import { UnicornHero } from "@/components/effects/UnicornHero";
 import { TextReveal } from "@/components/effects/TextReveal";
 import { ShimmerLine } from "@/components/effects/ShimmerLine";
+import { GlossyFloatingBubbles } from "@/components/effects/GlossyFloatingBubbles";
 import { SITE } from "@/lib/constants";
 import { stats } from "@/data/stats";
 import Link from "next/link";
@@ -75,37 +76,7 @@ export default function HomeClient() {
           </FadeInOnScroll>
 
           {/* CTAs */}
-          <FadeInOnScroll delay={300}>
-            <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <MagneticWrapper strength={0.25}>
-                <Button
-                  href={SITE.skoolUrl}
-                  external
-                  variant="accent"
-                  size="lg"
-                >
-                  Join the Skool
-                </Button>
-              </MagneticWrapper>
-              <Button href="/book" variant="primary" size="lg">
-                Book a Call
-              </Button>
-              <Button
-                href="/pricing"
-                variant="outline"
-                size="lg"
-              >
-                Products
-              </Button>
-              <Button
-                href="/freebies/domain-purchase-guide"
-                variant="secondary"
-                size="lg"
-              >
-                yo, is this V2
-              </Button>
-            </div>
-          </FadeInOnScroll>
+          <GlossyFloatingBubbles />
 
           {/* Click-to-reveal social strip. Mount-animated (not scroll-triggered)
               so the pill is visible immediately on every phone size — the old
