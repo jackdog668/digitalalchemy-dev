@@ -89,7 +89,8 @@ export default function SchoolPage() {
           />
 
           <FadeInOnScroll delay={100}>
-            <div className="overflow-x-auto">
+            {/* Desktop Comparison Table */}
+            <div className="overflow-x-auto hidden md:block">
               <table className="w-full text-left">
                 <thead>
                   <tr className="border-b border-da-border">
@@ -136,6 +137,59 @@ export default function SchoolPage() {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Stacked Comparison Cards */}
+            <div className="flex flex-col gap-6 md:hidden">
+              {[
+                [
+                  "Pre-recorded videos you watch alone",
+                  "Live classes where you build alongside me",
+                ],
+                [
+                  '"Here\'s what AI can do"',
+                  '"Open your laptop. We\'re building this right now."',
+                ],
+                [
+                  "You finish feeling informed",
+                  "You finish with a working project",
+                ],
+                [
+                  "No one notices if you disappear",
+                  "Your community checks in on you",
+                ],
+                [
+                  "You learn a tool",
+                  "You learn a skill you can sell",
+                ],
+              ].map(([typical, alchemy], i) => (
+                <div
+                  key={typical}
+                  className="rounded-xl border border-da-border/40 bg-da-surface/30 p-5 backdrop-blur-sm shadow-md"
+                >
+                  <div className="text-[10px] font-semibold font-mono tracking-widest uppercase text-da-cyan mb-3">
+                    // COMPARISON {String(i + 1).padStart(2, "0")}
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <span className="text-[10px] font-semibold font-mono tracking-wider text-da-muted block mb-1 uppercase">
+                        The Typical Course
+                      </span>
+                      <p className="text-sm text-da-muted line-through decoration-da-border/80">
+                        {typical}
+                      </p>
+                    </div>
+                    <div className="border-t border-da-border/30 pt-3">
+                      <span className="text-[10px] font-semibold font-mono tracking-wider text-da-cyan block mb-1 uppercase">
+                        Digital Alchemy
+                      </span>
+                      <p className="text-sm text-da-text font-medium">
+                        {alchemy}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </FadeInOnScroll>
 

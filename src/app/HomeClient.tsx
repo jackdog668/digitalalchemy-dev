@@ -44,11 +44,9 @@ export default function HomeClient() {
   return (
     <>
       {/* ── HERO ── */}
-      <section className="relative flex min-h-screen items-center overflow-hidden px-6 pt-24">
+      <section className="relative flex min-h-screen flex-col justify-center items-center overflow-hidden px-6 pt-24 pb-12 lg:pb-0">
         {/* WebGL background scene */}
         <UnicornHero />
-
-        <GlossyFloatingBubbles />
 
         <div className="relative z-10 mx-auto max-w-5xl text-center">
           {/* Credential badge */}
@@ -85,6 +83,8 @@ export default function HomeClient() {
             <HeroSocialReveal limit={5} />
           </div>
         </div>
+
+        <GlossyFloatingBubbles />
       </section>
 
       <ShimmerLine className="opacity-50" />
@@ -209,7 +209,7 @@ export default function HomeClient() {
               // the receipts
             </p>
           </FadeInOnScroll>
-          <StaggerContainer className="grid grid-cols-2 gap-10 md:grid-cols-4">
+          <StaggerContainer className="grid grid-cols-2 gap-x-6 gap-y-8 md:gap-10 md:grid-cols-4">
             {stats.map((stat) => (
               <StaggerItem key={stat.label}>
                 <AnimatedCounter
